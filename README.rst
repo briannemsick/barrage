@@ -3,10 +3,10 @@ Barrage
 =======
 |Version| |Python| |License| |Black|
 
-.. |Version| image:: https://img.shields.io/badge/version-0.1.0a0-blue.svg
+.. |Version| image:: https://img.shields.io/pypi/v/barrage.svg
    :target: https://pypi.org/project/barrage
 
-.. |Python| image:: https://img.shields.io/badge/python-3-blue.svg
+.. |Python| image:: https://img.shields.io/pypi/pyversions/barrage.svg
    :target: https://www.python.org/downloads/
 
 .. |License| image:: https://img.shields.io/badge/license-MIT-green.svg
