@@ -18,7 +18,7 @@ Barrage
 Barrage is an opinionated supervised deep learning tool built on top of
 ``TensorFlow 2.x`` designed to standardize and orchestrate the training and scoring of
 complicated models. Barrage is built around a ``JSON`` config and the
-``TensorFlow 2.x`` library with the ``Tensorflow.Keras`` API.
+``TensorFlow 2.x`` library using the ``Tensorflow.Keras`` API.
 
 ------------------
 Guiding Principles
@@ -27,7 +27,7 @@ Guiding Principles
 #. **Minimal Code**: build well-tested, configurable, and reliable config recipes.
    Use custom code only when it is absolutely necessary.
 
-#. **Component Reusability**: decompose deep learning dataset preparation into
+#. **Component Reusability**: decompose deep learning dataset processing into
    fundamental components (e.g. dataset loaders, data transformations,
    augmentation functions) to maximize reuse between models.
 
@@ -66,7 +66,6 @@ Select Feature Highlights
 
 As well as standard ``TensorFlow.Keras`` features such as learning rate scheduling,
 sample weights, etc...
-
 
 ------------
 Installation

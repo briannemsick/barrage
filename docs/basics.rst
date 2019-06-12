@@ -5,13 +5,14 @@ Barrage
 .. contents:: **Table of Contents**:
 
 Welcome to the Barrage package, it may take a while getting used to writing configs
-instead of code and or learning the dataset classes in the short term; however, the
-standardization, repeatability, and code reuse will pay dividends in the long term.
+instead of code and or learning the fundamental dataset classes in the short term;
+however, the standardization, repeatability, and code reuse should  pay dividends in
+the long term.
 
 ----------
 Python API
 ----------
-The barrage ``python`` API is concise and simple:
+The Barrage ``python`` API is concise and simple:
 
 .. code-block:: python
 
@@ -42,8 +43,9 @@ and ``max_queue_size`` can be specified for the dataset iterators:
 Automatic Artifacting
 ---------------------
 
-Barrage automically artifacts under the hood based on the specified artifact directory.
-Descriptions of the files and folders written:
+Barrage automatically artifacts under the hood based on the user specified artifact directory.
+
+The files and folders written are as follows:
 
 * ``{artifact_dir}/config.json``: human readable copy of the user specified config
   with defaults applied.

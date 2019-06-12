@@ -4,20 +4,16 @@ Barrage Dataset
 
 .. contents:: **Table of Contents**:
 
-Deep learning requires datasets that cannot fit into memory, transforms fit on
-training data but applied to validation and scoring data, on the fly augmentation,
-etc... Datasets are designed to address these necessities across many domains while
-keeping a consistent API.
 
+Barrage datasets are built around ``pandas.DataFrame``  and are designed to be flexible, performant,
+and powerful data iterators. The underlying data in a Barrage dataset can either be stored as filepaths
+or directly inside columns a convenient property for both small and large datasets.
 
-Datasets are built around ``pandas.DataFrame`` (each row is a record) and comprised of
-three key components:
+Datasets are comprised of three components:
 
-#. Loaders: load an individual record (e.g. load a filepath, select data from inside
-   the DataFrame, etc...).
+#. Loaders: load an individual record.
 
-#. Transformers: fully fledged transforms with ``.fit()`` and ``.transform()`` that handle
-   the unique deep learning intricacies.
+#. Transformers: fit transforms and apply them at batch time.
 
 #. Augmentor: apply a chain of augmentation functions.
 
@@ -28,15 +24,15 @@ High-level
 ``TensorFlow.Keras`` has a lot of data type API combinations that can be used with ``model.fit``
 whether it be ``dicts``, ``numpy arrays``, ``tensors``, ``generators``, ``sequences``, etc..
 
-Barrage uses the ``dicts`` + ``sequences`` API. There are several key benefits:
+Barrage uses the ``dicts`` + ``sequences`` API for several key reasons:
 
 #. ``dicts`` are the preferred API - using lists with multi input and multi output is error prone
    and inevitably leads to order mismatch.
 
-#. Everything is a ``sequence`` - a trivial implementation detail for small datasets and an absolute
-   necessity for large datasets.
+#. Everything is a ``sequence`` - irrelevant for small datasets but
+   an absolute necessity for large datasets.
 
-#. **Single API** - ``sequence`` regardless of size and ``dicts`` regardless of single/multi input/output.
+#. **Single API** - ``sequence`` regardless of data size and ``dicts`` regardless of single/multi input/output.
 
 
 **Note**: All ``input`` and ``output`` ``network layers`` **must be named**. The ``output``
@@ -47,8 +43,6 @@ The ``input`` layer names are required for the ``loader``.
 ~~~~~~~~~~~~~~
 System Diagram
 ~~~~~~~~~~~~~~
-
-Deep learning requires demanding dataset orchestration.
 
 Barrage supports 3 modes of data:
 
@@ -61,12 +55,13 @@ Barrage supports 3 modes of data:
   RecordMode.VALIDATION
   RecordMode.SCORE
 
-A critical component is fitting transforms over a first pass of the data and passing
-the params to the network builder:
+Before deep learning training begins, the transformer does a first pass over the train dataset to fit
+transforms:
 
 .. image:: source/transform.png
 
-The previously fit transformer is then used in the batching and postprocessing behavior:
+After deep learning training begins, the transformer applies the transform in conjunction with
+loading and augmentation:
 
 .. image:: source/record.png
 
@@ -74,7 +69,7 @@ The previously fit transformer is then used in the batching and postprocessing b
 Data Types
 ~~~~~~~~~~
 
-Data types are critical at each hand-off between components. Here is a summary of the data type:
+Data types are critical at each hand-off between components. Here is a summary of the data types:
 
 ``Data Record``: a tuple of dictionaries of arrays comprising a single element of a
 ``TensorFlow.Keras`` batch.
@@ -250,7 +245,8 @@ Base Class
 
 
 ``RecordTransformer`` is an abstract base class with properties ``self.mode`` (``RecordMode``) and ``self.params`` from the config.
-In addition it has ``self.loader`` (``RecordLoader``). To write a new ``RecordTransformer`` implement the ``fit``, ``transform``,
+In addition, it has ``self.loader`` a handle to the ``RecordLoader`` which allows the ``RecordTransformer`` to be agnostic to how
+the data was stored by the user. To write a new ``RecordTransformer`` implement the ``fit``, ``transform``,
 ``postprocess``, ``save``, and ``load`` methods:
 
 .. code-block:: python
@@ -310,8 +306,8 @@ In addition it has ``self.loader`` (``RecordLoader``). To write a new ``RecordTr
       """
       raise NotImplementedError()
 
-In addition set ``self.network_params = {...}`` to pass ``network_params`` to the ``network builder`` in addition
-to the params that are passed in the config.
+Setting ``self.network_params = dict(...)`` passes the ``network_params`` to the
+``network builder`` in addition to the params from the config.
 
 For example:
 
@@ -351,6 +347,7 @@ of the previous function.
 For example consider the config:
 
 .. code:: javascript
+
     "augmentor": [
       {
         "import": "placeholder.augment_1",
@@ -359,10 +356,10 @@ For example consider the config:
         }
       },
       {
-        "import": "placeholder.augment_2,
+        "import": "placeholder.augment_2",
       },
       {
-        "import": "placeholder.augment_3,
+        "import": "placeholder.augment_3",
         "params": {
           "num": 42
           "s": "foo bar"

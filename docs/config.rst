@@ -4,13 +4,13 @@ Barrage Config
 
 .. contents:: **Table of Contents**:
 
-Configs serve a vital role in barrage. They are an entire recipe for a deep learning
+Configs serve a central role in Barrage. They are an entire recipe for a deep learning
 model - comprised of the components (e.g. etl classes, ``TensorFlow`` metrics,
-``TensorFlow`` optimizers, etc...), auto-configuring defaults and best practices,
-and serve as instructions for the underlying barrage engine to orchestrate training and
+``TensorFlow`` optimizers, etc...), with auto-configuring defaults and best practices,
+and serve as instructions for the underlying Barrage engine to orchestrate training and
 scoring.
 
-Configs are broken into four sections:
+Configs are broken into four distinct sections:
 
 #. ``dataset``: define how to load, transform, augment a dataset.
 
@@ -94,8 +94,13 @@ The following shorthands are adopted for ``import`` python path strings for
   # Search TensorFlow paths automatically
   "Adam" = "tensorflow.python.keras.optimizer_v2.adam.Adam" == "tensorflow.keras.optimizers.Adam"
 
-In addition in the ``dataset`` section of the config, imports will search
-the ``barrage.dataset``.
+In addition in the ``dataset`` section of the config, imports adopt the same shorthand
+for built in components inside ``barage.dataset``:
+
+.. code-block:: python
+
+  # Search barrage.dataset paths
+  "ColumnSelector" == "barrage.dataset.ColumnSelector"
 
 -----------------------
 Config Section: dataset
@@ -347,9 +352,9 @@ Config Section: services
 #. if the validation metric that is monitored is not changing -> early stop.
 
 **Note**: Early stopping has the potential to prematurely terminate a train even when
-it may continue to improve later (e.g. learning rate scheduling). To avoid this issue,
-the defaults have been generously set for a large number of checkpoint intervals and
-a very lax improvement condition (near floating point precision).
+``loss`` or ``val_loss`` may continue to improve later (e.g. learning rate scheduling).
+To avoid this issue, the defaults have been generously set for a large number of checkpoint
+intervals and a very lax improvement condition (near floating point precision).
 
 
 ~~~~~~
