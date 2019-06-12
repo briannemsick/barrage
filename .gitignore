@@ -1,0 +1,17 @@
+# General
+*.DS_Store
+*.pyc
+*.swp
+build/*
+dist/*
+*.egg-info
+*html
+
+# Testing
+.coverage
+.cache
+.pytest_cache
+.mypy_cache
+
+# Package
+artifact*/

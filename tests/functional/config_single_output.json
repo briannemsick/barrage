@@ -1,0 +1,69 @@
+{
+  "dataset": {
+    "loader": {
+      "import": "ColumnSelector",
+      "params": {
+        "inputs": {
+          "input": ["x1", "x2", "x3", "x4"]
+        },
+        "outputs": {
+          "softmax": ["label"]
+        }
+      }
+    },
+    "transformer": {
+      "import": "tests.functional.test_single_output.Transformer"
+    }
+  },
+  "model": {
+    "network": {
+      "import": "tests.functional.test_single_output.net",
+      "params": {
+        "num_dense": 5,
+        "dense_dim": 10
+      }
+    },
+    "outputs": [{
+      "name": "softmax",
+      "loss": {
+        "import": "sparse_categorical_crossentropy"
+      },
+      "metrics": [{
+        "import": "accuracy"
+      }]
+    }]
+  },
+  "solver": {
+    "optimizer": {
+      "import": "Adam",
+      "learning_rate": 1e-2
+    },
+    "learning_rate_reducer": {
+      "monitor": "val_loss",
+      "mode": "min",
+      "patience": 5,
+      "factor": 0.1
+    },
+    "batch_size": 16,
+    "epochs": 10
+  },
+  "services": {
+    "best_checkpoint": {
+      "monitor": "val_accuracy",
+      "mode": "max"
+    },
+    "tensorboard": {},
+    "train_early_stopping": {
+      "monitor": "loss",
+      "mode": "min",
+      "patience": 10,
+      "min_delta": 1e-2
+    },
+    "validation_early_stopping": {
+      "monitor": "val_loss",
+      "mode": "min",
+      "patience": 10,
+      "min_delta": 1e-2
+    }
+  }
+}

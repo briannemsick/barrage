@@ -1,0 +1,220 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "import_block": {
+      "type": "object",
+      "properties": {
+        "import": {
+          "type": "string"
+        },
+        "params": {
+          "type": "object"
+        }
+      },
+      "required": ["import"],
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "dataset": {
+      "type": "object",
+      "properties": {
+        "loader": {
+          "$ref": "#/definitions/import_block"
+        },
+        "transformer": {
+          "$ref": "#/definitions/import_block"
+        },
+        "augmentor": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/import_block"
+          }
+        },
+        "sample_count": {
+          "type": "string"
+        },
+        "seed": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": ["loader", "transformer", "augmentor"],
+      "additionalProperties": false
+    },
+    "model": {
+      "type": "object",
+      "properties": {
+        "network": {
+          "$ref": "#/definitions/import_block"
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "loss": {
+                "$ref": "#/definitions/import_block"
+              },
+              "loss_weight": {
+                "type": "number",
+                "minimum": 0
+              },
+              "metrics": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/import_block"
+                }
+              },
+              "sample_weight_mode": {
+                "type": "string"
+              }
+            },
+            "required": ["name", "loss"],
+            "additionalProperties": false
+          },
+          "minItems": 1
+        }
+      },
+      "required": ["network", "outputs"],
+      "additionalProperties": false
+    },
+    "solver": {
+      "type": "object",
+      "properties": {
+        "optimizer": {
+          "type": "object",
+          "properties": {
+            "import": {
+              "type": "string"
+            },
+            "learning_rate": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "params": {
+              "type": "object"
+            }
+          },
+          "required": ["import", "learning_rate"],
+          "additionalProperties": false
+        },
+        "batch_size": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "epochs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9999
+        },
+        "steps": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "learning_rate_scheduler": {
+          "$ref": "#/definitions/import_block"
+        },
+        "learning_rate_reducer": {
+        "type": "object",
+        "properties": {
+          "monitor": {
+            "type": "string"
+          },
+          "mode": {
+            "type": "string",
+            "enum": ["min", "max"]
+          },
+          "patience": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "factor": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          }
+        },
+        "required": ["monitor", "mode", "patience", "factor"]
+        }
+      },
+      "required": ["optimizer", "batch_size", "epochs"],
+      "additionalProperties": false
+    },
+    "services": {
+      "type": "object",
+      "properties": {
+        "best_checkpoint": {
+          "type": "object",
+          "properties": {
+            "monitor": {
+              "type": "string"
+            },
+            "mode": {
+              "type": "string",
+              "enum": ["min", "max"]
+            }
+          },
+          "required": ["monitor", "mode"],
+          "additionalProperties": false
+        },
+        "tensorboard": {
+          "type": "object"
+        },
+        "train_early_stopping": {
+          "type": "object",
+          "properties": {
+            "monitor": {
+              "type": "string"
+            },
+            "mode": {
+              "type": "string",
+              "enum": ["min", "max"]
+            },
+            "patience": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "min_delta": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "required": ["monitor", "mode", "patience", "min_delta"]
+        },
+        "validation_early_stopping": {
+          "type": "object",
+          "properties": {
+            "monitor": {
+              "type": "string"
+            },
+            "mode": {
+              "type": "string",
+              "enum": ["min", "max"]
+            },
+            "patience": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "min_delta": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "required": ["monitor", "mode", "patience", "min_delta"]
+        }
+      },
+      "required": [
+        "best_checkpoint",
+        "tensorboard",
+        "train_early_stopping",
+        "validation_early_stopping"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": ["dataset", "model", "solver", "services"],
+  "additionalProperties": false
+}
