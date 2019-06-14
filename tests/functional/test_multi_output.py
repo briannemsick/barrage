@@ -143,10 +143,6 @@ def add_noise(data_record, ind, input_key, scale=0.01):
     return data_record
 
 
-def learning_rate(epoch, lr, alpha=0.99):
-    return lr * alpha ** epoch
-
-
 def net():
     input_x = layers.Input(shape=(3,), name="input_x")
     input_z = layers.Input(shape=(2,), name="input_z")

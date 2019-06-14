@@ -66,20 +66,6 @@ def test_import_or_alias(python_path, result, raises):
             assert obj() == result
 
 
-def test_import_partial_wrap_func():
-    import_block = {
-        "import": "tests.unit.utils.test_import_utils.import_test",
-        "params": {"unit": "test"},
-    }
-    func = import_utils.import_partial_wrap_func(import_block)
-    assert func() == "test"
-
-    import_block["params"] = {"test": "unit"}
-    with pytest.raises(TypeError):
-        func = import_utils.import_partial_wrap_func(import_block)
-        func()
-
-
 @pytest.mark.parametrize(
     "import_block,result",
     [

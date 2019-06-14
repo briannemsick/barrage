@@ -1,8 +1,7 @@
 from typing import List
 
-from tensorflow.python.keras.callbacks import LearningRateScheduler, ReduceLROnPlateau
-from tensorflow.python.keras.optimizer_v2 import optimizer_v2
-
+from tensorflow.python.keras.callbacks import ReduceLROnPlateau
+from tensorflow.python.keras.optimizer_v2 import optimizer_v2, learning_rate_schedule
 from barrage.utils import import_utils
 
 
@@ -22,10 +21,20 @@ def build_optimizer(cfg_solver: dict) -> optimizer_v2.OptimizerV2:
     params = cfg_solver["optimizer"].get("params", {})
     learning_rate = cfg_solver["optimizer"]["learning_rate"]
 
+    if isinstance(learning_rate, dict):
+        lr_cls = import_utils.import_obj_with_search_modules(
+            learning_rate["import"], ["tensorflow.keras.optimizers.schedules"]
+        )
+        lr = lr_cls(**learning_rate["params"])
+        if not isinstance(lr, learning_rate_schedule.LearningRateSchedule):
+            raise TypeError(f"import learning rate: {lr} is not a LearningRateSchedule")
+    else:
+        lr = learning_rate
+
     opt_cls = import_utils.import_obj_with_search_modules(
         path, ["tensorflow.keras.optimizers"], True
     )
-    opt = opt_cls(learning_rate=learning_rate, **params)
+    opt = opt_cls(learning_rate=lr, **params)
 
     if not isinstance(opt, optimizer_v2.OptimizerV2):
         raise TypeError(f"import optimizer: {opt} is not an OptimizerV2")
@@ -58,18 +67,3 @@ def create_learning_rate_reducer(
     params = cfg_solver["learning_rate_reducer"]
     params["verbose"] = 1
     return ReduceLROnPlateau(**params)
-
-
-def create_learning_rate_scheduler(cfg_solver: dict) -> LearningRateScheduler:
-    """Create a LearningRateScheduler callback.
-
-    Args:
-        cfg_solver: dict, solver subsection of config.
-
-    Returns:
-        LearningRateScheduler, LearningRateScheduler callback.
-    """
-    schedule = import_utils.import_partial_wrap_func(
-        cfg_solver["learning_rate_scheduler"]
-    )
-    return LearningRateScheduler(schedule=schedule, verbose=1)

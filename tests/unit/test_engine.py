@@ -42,9 +42,16 @@ def cfg():
         "solver": {
             "batch_size": 16,
             "epochs": 2,
-            "optimizer": {"import": "Adam", "learning_rate": 0.001},
-            "learning_rate_scheduler": {
-                "import": "tests.unit.test_engine.simple_policy"
+            "optimizer": {
+                "import": "Adam",
+                "learning_rate": {
+                    "import": "ExponentialDecay",
+                    "params": {
+                        "initial_learning_rate": 0.1,
+                        "decay_steps": 100,
+                        "decay_rate": 0.99,
+                    },
+                }
             },
             "learning_rate_reducer": {
                 "monitor": "val_loss",
@@ -97,10 +104,6 @@ def records_score():
     y = np.random.rand(NUM_SAMPLES, 2) + 100
     x = y + 50
     return pd.DataFrame({"x1": x[:, 0], "x2": x[:, 1], "y1": y[:, 0], "y2": y[:, 1]})
-
-
-def simple_policy(epoch, lr):
-    return lr / float(epoch + 1)
 
 
 def test_train(shared_artifact_dir, cfg, records_train, records_validation):

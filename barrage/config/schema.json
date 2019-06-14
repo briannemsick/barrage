@@ -92,8 +92,10 @@
               "type": "string"
             },
             "learning_rate": {
-              "type": "number",
-              "exclusiveMinimum": 0
+              "anyOf": [
+                {"type": "number", "exclusiveMinimum": 0},
+                {"$ref": "#/definitions/import_block"}
+              ]
             },
             "params": {
               "type": "object"
@@ -114,9 +116,6 @@
         "steps": {
           "type": "integer",
           "minimum": 1
-        },
-        "learning_rate_scheduler": {
-          "$ref": "#/definitions/import_block"
         },
         "learning_rate_reducer": {
         "type": "object",

@@ -101,9 +101,6 @@ class BarrageModel(object):
             callbacks.append(
                 solver.create_learning_rate_reducer(cfg["solver"], metrics_names)
             )
-        if "learning_rate_scheduler" in cfg["solver"]:
-            logger.info("Creating learning rate scheduler")
-            callbacks.append(solver.create_learning_rate_scheduler(cfg["solver"]))
 
         logger.info("Training network")
         logger.info(net.summary())

@@ -83,8 +83,8 @@ Let's consider several examples where a config import is translated into python 
 
 The above strategy additionally works for ``TensorFlow`` imports but can lead to
 verbose python paths (e.g. ``tensorflow.keras.losses.CategoricalCrossentropy``).
-The following shorthands are adopted for ``import`` python path strings for
-``TensorFlow`` imports only:
+The following import shorthands are adopt for all ``TensorFlow`` imports
+(e.g ``metrics``, ``loss``, ``optimizers``, ``schedulers``, etc...):
 
 .. code-block:: python
 
@@ -94,8 +94,8 @@ The following shorthands are adopted for ``import`` python path strings for
   # Search TensorFlow paths automatically
   "Adam" = "tensorflow.python.keras.optimizer_v2.adam.Adam" == "tensorflow.keras.optimizers.Adam"
 
-In addition in the ``dataset`` section of the config, imports adopt the same shorthand
-for built in components inside ``barage.dataset``:
+In addition in the ``dataset`` section of the config, the following import shorthands are
+adopted (e.g. ``loaders``, ``transformers``, etc..):
 
 .. code-block:: python
 
@@ -225,11 +225,11 @@ Breakdown
 
 * ``outputs.name``: string that **must match** an output name from the ``Model`` return by ``network``.
 
-* ``outputs.loss``: import a loss (must be ``v2`` class compliant).
+* ``outputs.loss``: import a loss (must be ``v2`` loss class compliant).
 
 * ``outputs.loss_weight``: loss weight for a multi output network.
 
-* ``outputs.metrics``: import a list of metrics (must be ``v2`` class compliant).
+* ``outputs.metrics``: import a list of metrics (must be ``v2`` metric or loss class compliant).
 
 * ``outputs.sample_weight_mode``: sample weight mode.
 
@@ -254,9 +254,9 @@ Schema
 .. code:: javascript
 
   "solver": {
-    "optimizer": { // optional, all or none
-      "import": string,
-      "learning_rate": float,
+    "optimizer": {  // optional, all or none
+      "import": string,  // required
+      "learning_rate": float or import block  // required
       "params": dict  // optional
     },
     "batch_size": int,  // optional
@@ -268,10 +268,6 @@ Schema
         "patience": int,
         "factor": float
         // optional additional ReduceLROnPlateau callback  params
-    },
-    "learning_rate_scheduler": {  // optional
-        "import": string,
-        "params": dict  // optional
     }
   }
 
@@ -299,7 +295,24 @@ Defaults
 Breakdown
 ~~~~~~~~~
 
-* ``optimizer``: import a ``TensorFlow`` optimizer (must be compatible with ``v2`` optimizers).
+* ``optimizer``: import a ``TensorFlow`` optimizer (must be compatible with ``v2`` optimizer class).
+
+* ``optimizer.learning_rate``: can be a float or an import block to a schedule (must be compatible with ``v2`` schedule class)
+
+.. code:: javascript
+
+  // float
+  "learning_rate": 1e-3
+
+  // import block
+  "learning_rate": {
+    "import": "ExponentialDecay",
+    "params": {
+      "initial_learning_rate": 1e-3,
+      "decay_steps": 100,
+      "decay_rate": 0.99,
+    }
+  }
 
 * ``batch_size``: batch size.
 
@@ -315,24 +328,6 @@ Breakdown
 
 
   callbacks.ReduceLROnPlateau(**cfg["solver"]["learning_rate_reducer"])
-
-*  ``learning_rate_reducer``: defines ``schedule`` for a ``LearningRateScheduler`` callback.
-
-.. code-block:: python
-
-  from tensorflow.python.keras import callbacks
-
-
-  # Under the hood the implementation uses partial functions to wrap a scheduler with params
-  # to comply with the TensorFlow.Keras API.
-  #
-  # For example:
-  def learning_rate(epoch, lr, alpha=0.99):
-      """Normally this function would be incompatible with the TensorFlow.Keras API."""
-      return lr * alpha ** epoch
-
-
-  callbacks.LearningRateScheduler(schedule=import_partial_wrap_func(cfg["solver"]["learning_rate_scheduler"]))
 
 ------------------------
 Config Section: services

@@ -41,6 +41,28 @@ def test_build_optimizer(cfg_solver, python_path, result):
             solver.build_optimizer(cfg_solver)
 
 
+def test_build_optimizer_with_schedule():
+    schedule_sgd = tf.keras.optimizers.schedules.ExponentialDecay(
+        initial_learning_rate=0.1, decay_steps=100, decay_rate=0.99
+    )
+    opt_sgd = tf.keras.optimizers.SGD(learning_rate=schedule_sgd)
+    cfg_sgd = {
+        "optimizer": {
+            "import": "SGD",
+            "learning_rate": {
+                "import": "ExponentialDecay",
+                "params": {
+                    "initial_learning_rate": 0.1,
+                    "decay_steps": 100,
+                    "decay_rate": 0.99,
+                },
+            },
+        }
+    }
+    opt = solver.build_optimizer(cfg_sgd)
+    assert opt_sgd.get_config() == opt.get_config()
+
+
 def test_create_learning_rate_reducer():
     cfg_solver = {
         "learning_rate_reducer": {
@@ -77,25 +99,6 @@ def test_create_learning_rate_reducer():
     metrics_names = ["loss"]
     with pytest.raises(ValueError):
         solver.create_learning_rate_reducer(cfg_solver, metrics_names)
-
-
-def simple_learning_rate_schedule(epoch, lr, alpha=1, beta=1):
-    return lr * alpha * beta
-
-
-@pytest.mark.parametrize("alpha,beta", [(0.5, 0.2), (1.0, 2.0)])
-def test_learning_rate_scheduler(alpha, beta):
-    cfg_solver = {
-        "learning_rate_scheduler": {
-            "import": "tests.unit.test_solver.simple_learning_rate_schedule",
-            "params": {"alpha": alpha, "beta": beta},
-        }
-    }
-    result = solver.create_learning_rate_scheduler(cfg_solver)
-    assert isinstance(result, tf.keras.callbacks.LearningRateScheduler)
-    epoch = 2
-    lr = 5
-    assert result.schedule(epoch, lr) == lr * alpha * beta
 
 
 class FakeOptimizer(object):
