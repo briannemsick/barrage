@@ -20,8 +20,8 @@ setup(
     python_requires=">=3.6.0",
     install_requires=["jsonschema>=3.0.0", "numpy>=1.16.0", "pandas>=0.24.0"],
     extras_require={
-        "cpu": ["tensorflow==2.0.0b0"],
-        "gpu": ["tensorflow-gpu==2.0.0b0"],
+        "tensorflow": ["tensorflow==2.0.0b0"],
+        "tensorflow-gpu": ["tensorflow-gpu==2.0.0b0"],
         "tests": ["black", "flake8", "mypy", "pre-commit", "pytest", "pytest-cov"],
     },
     classifiers=[
@@ -34,6 +34,5 @@ setup(
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
     ],
-    packages=find_packages(),
-    include_package_data=True,
+    packages=find_packages(exclude=["docs", "examples", "tests"]),
 )

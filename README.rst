@@ -75,7 +75,11 @@ Installation
 
 ::
 
-    pip install barrage
+    # TensorFlow CPU
+    pip install barrage[tensorflow]
+
+    # TensorFlow GPU
+    pip install barrage[tensorflow-gpu]
 
 
 **GitHub source**:
