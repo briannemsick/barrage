@@ -51,7 +51,7 @@ def cfg():
                         "decay_steps": 100,
                         "decay_rate": 0.99,
                     },
-                }
+                },
             },
             "learning_rate_reducer": {
                 "monitor": "val_loss",

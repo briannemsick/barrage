@@ -66,8 +66,7 @@ def test_create_best_checkpoint(artifact_dir, cfg_services, metrics_names):
         save_best_only=True,
         save_weights_only=True,
     )
-    assert isinstance(result, tf.keras.callbacks.ModelCheckpoint)
-    assert isinstance(expected, tf.keras.callbacks.ModelCheckpoint)
+    assert type(result) == type(expected)
     assert vars(result) == vars(expected)
 
 
@@ -84,8 +83,7 @@ def test_create_resume_checkpoint(artifact_dir):
         save_best_only=False,
         save_weights_only=True,
     )
-    assert isinstance(result, tf.keras.callbacks.ModelCheckpoint)
-    assert isinstance(expected, tf.keras.callbacks.ModelCheckpoint)
+    assert type(result) == type(expected)
     assert vars(result) == vars(expected)
 
 
@@ -100,8 +98,7 @@ def test_create_tensorboard(artifact_dir, cfg_services):
     result = services._create_tensorboard(artifact_dir, cfg_services)
     log_dir = os.path.join(artifact_dir, services.TENSORBOARD)
     expected = tf.keras.callbacks.TensorBoard(log_dir=log_dir, write_grads=True)
-    assert isinstance(result, tf.keras.callbacks.TensorBoard)
-    assert isinstance(expected, tf.keras.callbacks.TensorBoard)
+    assert type(result) == type(expected)
     assert vars(result) == vars(expected)
 
 
@@ -111,8 +108,7 @@ def test_csv_logger(artifact_dir):
     expected = tf.keras.callbacks.CSVLogger(
         filename=filename, separator=",", append=True
     )
-    assert isinstance(result, tf.keras.callbacks.CSVLogger)
-    assert isinstance(expected, tf.keras.callbacks.CSVLogger)
+    assert type(result) == type(expected)
     assert vars(result) == vars(expected)
 
 
@@ -148,8 +144,7 @@ def test_train_early_stopping(artifact_dir, cfg_services, metrics_names):
     expected = tf.keras.callbacks.EarlyStopping(
         monitor="acc", mode="max", min_delta=0.1, patience=5
     )
-    assert isinstance(result, tf.keras.callbacks.EarlyStopping)
-    assert isinstance(expected, tf.keras.callbacks.EarlyStopping)
+    assert type(result) == type(expected)
     assert vars(result) == vars(expected)
 
 
@@ -185,8 +180,7 @@ def test_validation_early_stopping(artifact_dir, cfg_services, metrics_names):
     expected = tf.keras.callbacks.EarlyStopping(
         monitor="val_acc", mode="max", min_delta=0.1, patience=5
     )
-    assert isinstance(result, tf.keras.callbacks.EarlyStopping)
-    assert isinstance(expected, tf.keras.callbacks.EarlyStopping)
+    assert type(result) == type(expected)
     assert vars(result) == vars(expected)
 
 

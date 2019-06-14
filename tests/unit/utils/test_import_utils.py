@@ -9,7 +9,7 @@ def import_test(unit="test"):
 
 
 @pytest.mark.parametrize(
-    "python_path,search_modules,both_cases,result",
+    "python_path,search_modules,both_cases,expected",
     [
         ("tests.unit.utils.test_import_utils.import_test", None, False, True),
         ("tests.unit.utils.test_import_utils.import_test2", None, False, False),
@@ -32,9 +32,9 @@ def import_test(unit="test"):
     ],
 )
 def test_import_obj_with_search_modules(
-    python_path, search_modules, both_cases, result
+    python_path, search_modules, both_cases, expected
 ):
-    if result:
+    if expected:
         obj = import_utils.import_obj_with_search_modules(
             python_path, search_modules, both_cases
         )
@@ -47,27 +47,27 @@ def test_import_obj_with_search_modules(
 
 
 @pytest.mark.parametrize(
-    "python_path,result,raises",
+    "python_path,expected,raises",
     [
         ("tests.unit.utils.test_import_utils.import_test", "test", False),
         ("import_test", "import_test", False),
         ("tests.unit.utils.test_import_utils.import_test2", None, True),
     ],
 )
-def test_import_or_alias(python_path, result, raises):
+def test_import_or_alias(python_path, expected, raises):
     if raises:
         with pytest.raises(ImportError):
             import_utils.import_or_alias(python_path)
     else:
         obj = import_utils.import_or_alias(python_path)
         if isinstance(obj, str):
-            assert obj == result
+            assert obj == expected
         else:
-            assert obj() == result
+            assert obj() == expected
 
 
 @pytest.mark.parametrize(
-    "import_block,result",
+    "import_block,expected",
     [
         ({"import": "categorical_crossentropy"}, "categorical_crossentropy"),
         (
@@ -87,21 +87,21 @@ def test_import_or_alias(python_path, result, raises):
         ({"import": "tests.unit.test_solver.FakeMetric"}, TypeError),
     ],
 )
-def test_import_loss(import_block, result):
-    if isinstance(result, str):
+def test_import_loss(import_block, expected):
+    if isinstance(expected, str):
         loss = import_utils.import_loss(import_block)
-        assert loss == result
-    elif result == TypeError:
+        assert loss == expected
+    elif expected == TypeError:
         with pytest.raises(TypeError):
             import_utils.import_loss(import_block)
     else:
         loss = import_utils.import_loss(import_block)
-        assert type(loss) == type(result)
-        assert vars(loss) == vars(result)
+        assert type(loss) == type(expected)
+        assert loss.get_config() == expected.get_config()
 
 
 @pytest.mark.parametrize(
-    "import_block,result",
+    "import_block,expected",
     [
         ({"import": "categorical_crossentropy"}, "categorical_crossentropy"),
         (
@@ -122,15 +122,14 @@ def test_import_loss(import_block, result):
         ({"import": "tests.unit.test_solver.FakeMetric"}, TypeError),
     ],
 )
-def test_import_metric(import_block, result):
-    if isinstance(result, str):
+def test_import_metric(import_block, expected):
+    if isinstance(expected, str):
         metric = import_utils.import_metric(import_block)
-        assert metric == result
-    elif result == TypeError:
+        assert metric == expected
+    elif expected == TypeError:
         with pytest.raises(TypeError):
             import_utils.import_metric(import_block)
     else:
         metric = import_utils.import_metric(import_block)
-        assert type(metric) == type(result)
-        # TODO issue metrics with vars
-        assert metric.name == result.name
+        assert type(metric) == type(expected)
+        assert metric.get_config() == expected.get_config()

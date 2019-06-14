@@ -13,7 +13,7 @@ cfg_ftrl = {"optimizer": {"import": "Ftrl", "learning_rate": 0.3}}
 
 
 @pytest.mark.parametrize(
-    "cfg_solver,python_path,result",
+    "cfg_solver,python_path,expected",
     [
         (cfg_adam, "Adam", opt_adam),
         (cfg_adam, "adam", opt_adam),
@@ -30,14 +30,14 @@ cfg_ftrl = {"optimizer": {"import": "Ftrl", "learning_rate": 0.3}}
         (cfg_ftrl, "tensorflow.keras.optimizers.Ftrl", opt_ftrl),
     ],
 )
-def test_build_optimizer(cfg_solver, python_path, result):
+def test_build_optimizer(cfg_solver, python_path, expected):
     cfg_solver["optimizer"]["import"] = python_path
-    if isinstance(result, optimizer_v2.OptimizerV2):
+    if isinstance(expected, optimizer_v2.OptimizerV2):
         opt = solver.build_optimizer(cfg_solver)
-        assert type(opt) == type(result)
-        assert vars(opt) == vars(result)
+        assert type(opt) == type(expected)
+        assert opt.get_config() == expected.get_config()
     else:
-        with pytest.raises(result):
+        with pytest.raises(expected):
             solver.build_optimizer(cfg_solver)
 
 
@@ -78,15 +78,12 @@ def test_create_learning_rate_reducer():
     expected = tf.keras.callbacks.ReduceLROnPlateau(
         monitor="val_loss", mode="min", patience=5, factor=0.1, verbose=1
     )
-    assert isinstance(result, tf.keras.callbacks.ReduceLROnPlateau)
-    assert isinstance(expected, tf.keras.callbacks.ReduceLROnPlateau)
+    assert type(result) == type(expected)
     vars_result = vars(result)
-
-    # TODO investigate the monitor op
-    del vars_result["monitor_op"]
     vars_expected = vars(expected)
-    del vars_expected["monitor_op"]
-    assert vars_result == vars(expected)
+    vars_result.pop("monitor_op")
+    vars_expected.pop("monitor_op")
+    assert vars_result == vars_expected
 
     cfg_solver = {
         "learning_rate_reducer": {
