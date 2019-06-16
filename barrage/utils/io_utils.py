@@ -5,7 +5,7 @@ import pickle
 import numpy as np
 
 
-def load_json(filename: str, path: str):
+def load_json(filename: str, path: str = ""):
     """Load a json object.
 
     Args:
@@ -19,7 +19,7 @@ def load_json(filename: str, path: str):
         return json.load(fn)
 
 
-def save_json(obj, filename: str, path: str):
+def save_json(obj, filename: str, path: str = ""):
     """Save a json object.
 
     Args:
@@ -40,7 +40,7 @@ def save_json(obj, filename: str, path: str):
         json.dump(obj, fn, indent=2, sort_keys=True, default=_default)
 
 
-def load_pickle(filename: str, path: str):
+def load_pickle(filename: str, path: str = ""):
     """Load a pickled object.
 
     Args:
@@ -54,7 +54,7 @@ def load_pickle(filename: str, path: str):
         return pickle.load(fn)
 
 
-def save_pickle(obj, filename: str, path: str):
+def save_pickle(obj, filename: str, path: str = ""):
     """Save a pickled object.
 
     Args:

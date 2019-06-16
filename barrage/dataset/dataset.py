@@ -45,15 +45,6 @@ class RecordDataset(Sequence):
         mode: RecordMode,
         batch_size: int,
     ):
-        """Initialize record dataset: configure loader, transformer and augmentor.
-
-        Args:
-            artifact_dir: str, path to artifact directory.
-            cfg_dataset: dict, dataset subsection of config.
-            records: pd.DataFrame, data records.
-            mode: RecordMode, dataset mode.
-            batch_size: int, batch size.
-        """
         if not isinstance(records, pd.DataFrame):
             raise TypeError("records must be type pd.DataFrame")
         records.reset_index(drop=True, inplace=True)

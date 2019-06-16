@@ -2,7 +2,9 @@
 Barrage
 =======
 
------------------
-Version ``0.1.0``
------------------
+.. contents:: **Versions**:
+
+-------------
+Version 0.1.0
+-------------
 Initial release.

@@ -70,7 +70,7 @@ Please run ``lint``, ``mypy``, and ``pytest`` before raising the pull request.
 
 ::
 
-  python -m pytest --cov=barrage --cov-report html:cov_html tests/
+  python -m pytest --cov=barrage --cov-config=setup.cfg --cov-report html:cov_html tests/
 
 
 ~~~~~~~~~~~~~~~~~~~~~~
