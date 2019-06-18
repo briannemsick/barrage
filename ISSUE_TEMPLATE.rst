@@ -1,7 +1,10 @@
 **System information**:
-- **OS Platform and Distribution (e.g., Linux Ubuntu 16.04)**:
-- **Python version**:
-- **Barrage version**:
+
+* **OS Platform and Distribution (e.g., Linux Ubuntu 16.04)**:
+
+* **Python version**:
+
+* **Barrage version**:
 
 **Describe the problem**:
 Describe the problem clearly, including expected behavior.

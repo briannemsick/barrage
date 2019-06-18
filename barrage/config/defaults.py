@@ -4,8 +4,8 @@ AUGMENTOR = []  # type: list
 
 # Solver
 BATCH_SIZE = 32
-EPOCHS = 10
-OPTIMIZER = {"import": "Adam", "learning_rate": 1e-3, "params": {}}
+EPOCHS = 50
+OPTIMIZER = {"import": "Adam", "learning_rate": 1e-3}
 
 # Services
 BEST_CHECKPOINT = {"monitor": "val_loss", "mode": "min"}
