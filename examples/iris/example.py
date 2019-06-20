@@ -181,9 +181,9 @@ class CustomIrisLoader(RecordLoader):
 
 class CustomInputMeanVarTransformer(RecordTransformer):
     def fit(self, records):
-        # Records underlying data fits in memory for iris. But if we pretended it didn't,
-        # we can still make this transformer function by using the loader and iterating
-        # over each record
+        # Records underlying data fits in memory for iris. But if we pretended it did
+        # not, we can still make this transformer function by using the loader and
+        # iterating over each record
         key = self.params["key"]
 
         # We will use Var(X - K) = Var(X) in computation

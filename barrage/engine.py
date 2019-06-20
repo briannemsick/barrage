@@ -1,8 +1,7 @@
 import pandas as pd
 import tensorflow as tf
 
-from barrage import dataset, logger, model, services, solver
-from barrage.config import prepare_config
+from barrage import config, dataset, logger, model, services, solver
 from barrage.utils import io_utils, tf_utils
 
 
@@ -47,7 +46,7 @@ class BarrageModel(object):
         tf_utils.reset()
 
         logger.info("Validating config schema and applying defaults")
-        cfg = prepare_config(cfg)
+        cfg = config.prepare_config(cfg)
 
         logger.info(f"Making artifact directory: {self._artifact_dir}")
         services.make_artifact_dir(self._artifact_dir)

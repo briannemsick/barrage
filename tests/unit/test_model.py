@@ -1,7 +1,6 @@
 import pytest
 import tensorflow as tf
-from tensorflow.python.keras import layers
-from tensorflow.python.keras.models import Model
+from tensorflow.python.keras import layers, models
 
 from barrage import model
 
@@ -10,7 +9,7 @@ def simple_net(dense_dim=5, input_dim=4, output_dim=3, **params):
     inputs = layers.Input(shape=(input_dim,), name="input")
     dense_1 = layers.Dense(dense_dim, activation="relu")(inputs)
     outputs = layers.Dense(output_dim, activation="linear", name="output")(dense_1)
-    net = Model(inputs=inputs, outputs=outputs)
+    net = models.Model(inputs=inputs, outputs=outputs)
     return net
 
 

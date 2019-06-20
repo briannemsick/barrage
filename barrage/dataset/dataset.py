@@ -7,7 +7,7 @@ from tensorflow.python.keras.utils import Sequence
 
 from barrage import logger
 from barrage.dataset import (
-    batchify_data_records,
+    core,
     BatchDataRecordsType,
     RecordAugmentor,
     RecordLoader,
@@ -135,7 +135,7 @@ class RecordDataset(Sequence):
                 for _, record in batch_records.iterrows()
             ]
 
-        return batchify_data_records(lst_data_records)
+        return core.batchify_data_records(lst_data_records)
 
     def on_epoch_end(self):
         """Shuffle sample_order on epoch end."""

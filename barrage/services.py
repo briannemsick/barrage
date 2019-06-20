@@ -1,14 +1,7 @@
 import os
 from typing import List
 
-from tensorflow.python.keras.callbacks import (
-    Callback,
-    ModelCheckpoint,
-    TensorBoard,
-    CSVLogger,
-    EarlyStopping,
-    TerminateOnNaN,
-)
+from tensorflow.python.keras import callbacks
 
 from barrage import logger
 
@@ -41,7 +34,7 @@ def make_artifact_dir(artifact_dir: str):
 
 def create_all_services(
     artifact_dir: str, cfg_services: dict, metrics_names: List[str]
-) -> List[Callback]:
+) -> List[callbacks.Callback]:
     """Create all services (callbacks).
 
     Args:
@@ -59,13 +52,13 @@ def create_all_services(
         _create_csv_logger(artifact_dir),
         _create_train_early_stopping(cfg_services, metrics_names),
         _create_validation_early_stopping(cfg_services, metrics_names),
-        TerminateOnNaN(),
+        callbacks.TerminateOnNaN(),
     ]
 
 
 def _create_best_checkpoint(
     artifact_dir: str, cfg_services: dict, metrics_names: List[str]
-) -> ModelCheckpoint:
+) -> callbacks.ModelCheckpoint:
     """Create a callback that saves the best model.
 
     Args:
@@ -81,7 +74,7 @@ def _create_best_checkpoint(
         checkpoint_params["monitor"], metrics_names, True, "best_checkpoint"
     )
     filepath = get_best_checkpoint_filepath(artifact_dir)
-    return ModelCheckpoint(
+    return callbacks.ModelCheckpoint(
         filepath=filepath,
         monitor=checkpoint_params["monitor"],
         mode=checkpoint_params["mode"],
@@ -91,7 +84,7 @@ def _create_best_checkpoint(
     )
 
 
-def _create_resume_checkpoint(artifact_dir: str) -> ModelCheckpoint:
+def _create_resume_checkpoint(artifact_dir: str) -> callbacks.ModelCheckpoint:
     """Create a callback that saves the model every epoch.
 
     Args:
@@ -101,7 +94,7 @@ def _create_resume_checkpoint(artifact_dir: str) -> ModelCheckpoint:
         ModelCheckpoint, callback that saves the model every epoch.
     """
     filepath = get_resume_checkpoints_filepath(artifact_dir)
-    return ModelCheckpoint(
+    return callbacks.ModelCheckpoint(
         filepath=filepath,
         monitor="val_loss",
         mode="min",
@@ -111,7 +104,7 @@ def _create_resume_checkpoint(artifact_dir: str) -> ModelCheckpoint:
     )
 
 
-def _create_tensorboard(artifact_dir: str, cfg_services: dict) -> TensorBoard:
+def _create_tensorboard(artifact_dir: str, cfg_services: dict) -> callbacks.TensorBoard:
     """Create a TensorBoard callback.
 
     Args:
@@ -125,10 +118,10 @@ def _create_tensorboard(artifact_dir: str, cfg_services: dict) -> TensorBoard:
     if "log_dir" in tensorboard_params:
         logger.warning("'log_dir' automatically handled for 'tensorboard' service")
     tensorboard_params["log_dir"] = os.path.join(artifact_dir, TENSORBOARD)
-    return TensorBoard(**tensorboard_params)
+    return callbacks.TensorBoard(**tensorboard_params)
 
 
-def _create_csv_logger(artifact_dir: str) -> CSVLogger:
+def _create_csv_logger(artifact_dir: str) -> callbacks.CSVLogger:
     """Create a CSVLogger callback.
 
     Args:
@@ -138,12 +131,12 @@ def _create_csv_logger(artifact_dir: str) -> CSVLogger:
         CSVLogger, CSVLogger callbackk.
     """
     filename = os.path.join(artifact_dir, CSV_LOGGER_FILENAME)
-    return CSVLogger(filename=filename, separator=",", append=True)
+    return callbacks.CSVLogger(filename=filename, separator=",", append=True)
 
 
 def _create_train_early_stopping(
     cfg_services: dict, metrics_names: List[str]
-) -> EarlyStopping:
+) -> callbacks.EarlyStopping:
     """Create an early stopping callback that monitors a training 'metric'.
 
     Args:
@@ -157,12 +150,12 @@ def _create_train_early_stopping(
     early_stopping_params["monitor"] = _force_monitor_to_mode(
         early_stopping_params["monitor"], metrics_names, False, "train_early_stopping"
     )
-    return EarlyStopping(**early_stopping_params)
+    return callbacks.EarlyStopping(**early_stopping_params)
 
 
 def _create_validation_early_stopping(
     cfg_services: dict, metrics_names: List[str]
-) -> EarlyStopping:
+) -> callbacks.EarlyStopping:
     """Create an early stopping callback that monitors a validation 'metric'.
 
     Args:
@@ -179,7 +172,7 @@ def _create_validation_early_stopping(
         True,
         "validation_early_stopping",
     )
-    return EarlyStopping(**early_stopping_params)
+    return callbacks.EarlyStopping(**early_stopping_params)
 
 
 def get_best_checkpoint_filepath(artifact_dir: str) -> str:

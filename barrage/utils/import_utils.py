@@ -3,8 +3,7 @@ import importlib
 import inspect
 from typing import Callable, List, Union
 
-from tensorflow.python.keras.losses import Loss
-from tensorflow.python.keras.metrics import Metric
+from tensorflow.python.keras import losses, metrics
 
 from barrage import logger
 
@@ -118,7 +117,7 @@ def import_partial_wrap_func(import_block: dict) -> Callable:
     return partial(func, **params)
 
 
-def import_loss(import_block: dict) -> Union[Loss, str]:
+def import_loss(import_block: dict) -> Union[losses.Loss, str]:
     """Import a loss from an import block.
 
     Args:
@@ -140,14 +139,14 @@ def import_loss(import_block: dict) -> Union[Loss, str]:
                 f"import loss: {loss} must be a class for v2 tensorflow.keras API"
             )
         loss = loss(**params)
-        if not isinstance(loss, Loss):
+        if not isinstance(loss, losses.Loss):
             raise TypeError(
                 f"import loss: {loss} is not a tensorflow.python.keras.losses.Loss"
             )
         return loss
 
 
-def import_metric(import_block: dict) -> Union[Metric, Loss, str]:
+def import_metric(import_block: dict) -> Union[metrics.Metric, losses.Loss, str]:
     """Import a metric from an import block.
 
     Note: A loss can be a metric, but a metric cannot always be a loss.
@@ -172,7 +171,7 @@ def import_metric(import_block: dict) -> Union[Metric, Loss, str]:
                 "for v2 tensorflow.keras API"
             )
         metric = metric(**params)
-        if not isinstance(metric, (Metric, Loss)):
+        if not isinstance(metric, (metrics.Metric, losses.Loss)):
             raise TypeError(
                 f"import metric: {metric} is not a "
                 "tensorflow.python.keras.metrics.Metric or "

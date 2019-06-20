@@ -1,4 +1,4 @@
-__version__ = "0.1.0rc0"
+__version__ = "0.1.0a0"
 
 from .utils.logging_utils import logging as logger  # noqa
 

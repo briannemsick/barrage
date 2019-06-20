@@ -1,6 +1,6 @@
 from typing import List
 
-from tensorflow.python.keras.callbacks import ReduceLROnPlateau
+from tensorflow.python.keras import callbacks
 from tensorflow.python.keras.optimizer_v2 import optimizer_v2, learning_rate_schedule
 from barrage.utils import import_utils
 
@@ -44,7 +44,7 @@ def build_optimizer(cfg_solver: dict) -> optimizer_v2.OptimizerV2:
 
 def create_learning_rate_reducer(
     cfg_solver: dict, metrics_names: List[str]
-) -> ReduceLROnPlateau:
+) -> callbacks.ReduceLROnPlateau:
     """Create a ReduceLROnPlateau callback.
 
     Args:
@@ -66,4 +66,4 @@ def create_learning_rate_reducer(
         )
     params = cfg_solver["learning_rate_reducer"]
     params["verbose"] = 1
-    return ReduceLROnPlateau(**params)
+    return callbacks.ReduceLROnPlateau(**params)

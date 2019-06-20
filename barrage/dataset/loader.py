@@ -3,12 +3,7 @@ from abc import ABC, abstractmethod
 import numpy as np
 import pandas as pd
 
-from barrage.dataset import (
-    batchify_data_records,
-    BatchDataRecordsType,
-    DataRecordType,
-    RecordMode,
-)
+from barrage.dataset import core, BatchDataRecordsType, DataRecordType, RecordMode
 
 
 class RecordLoader(ABC):
@@ -51,7 +46,7 @@ class RecordLoader(ABC):
         Returns:
             BatchDataRecordsType, all data records.
         """
-        return batchify_data_records(
+        return core.batchify_data_records(
             [self.load(record) for _, record in records.iterrows()]
         )
 
