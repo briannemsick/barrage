@@ -14,9 +14,9 @@ import pandas as pd
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-import tensorflow as tf
+from tensorflow.python.keras import layers, models
 
-from barrage import engine
+from barrage import BarrageModel
 from barrage.dataset import RecordMode, RecordLoader, RecordTransformer
 from barrage.utils import io_utils
 
@@ -25,7 +25,9 @@ def get_data():
     """Load iris dataset."""
     dataset = load_iris()
     X, y = dataset.data, dataset.target
-    X_train, X_val, y_train, y_val = train_test_split(X, y, random_state=42)
+    X_train, X_val, y_train, y_val = train_test_split(
+        X, y, test_size=0.2, random_state=42
+    )
 
     records_train = pd.DataFrame(X_train, columns=["i1", "i2", "i3", "i4"])
     records_train["label"] = y_train
@@ -40,16 +42,16 @@ def net(num_dense=2, dim_dense=10):
     """Simple dense network."""
 
     # Take note of the input name for the config
-    inputs = tf.keras.layers.Input(shape=(4,), name="iris")
+    inputs = layers.Input(shape=(4,), name="iris")
     dense = inputs
 
     for _ in range(num_dense):
-        dense = tf.keras.layers.Dense(dim_dense, activation="relu")(dense)
+        dense = layers.Dense(dim_dense, activation="relu")(dense)
 
     # Take note of the output name for the config
-    outputs = tf.keras.layers.Dense(3, activation="softmax", name="flower")(dense)
+    outputs = layers.Dense(3, activation="softmax", name="flower")(dense)
 
-    return tf.keras.models.Model(inputs=inputs, outputs=outputs)
+    return models.Model(inputs=inputs, outputs=outputs)
 
 
 def vanilla_iris():
@@ -108,7 +110,7 @@ def vanilla_iris():
     }
 
     # Train the model
-    engine.BarrageModel("vanilla").train(cfg, records_train, records_val)
+    BarrageModel("vanilla").train(cfg, records_train, records_val)
 
 
 def overkill_iris():
@@ -158,7 +160,7 @@ def overkill_iris():
     }
 
     # Train the model
-    engine.BarrageModel("overkill").train(cfg, records_train, records_val)
+    BarrageModel("overkill").train(cfg, records_train, records_val)
 
 
 class CustomIrisLoader(RecordLoader):

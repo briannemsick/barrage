@@ -1,0 +1,66 @@
+{
+  "dataset": {
+    "loader": {
+      "import": "ColumnSelector",
+      "params": {
+        "inputs": {
+          "sequence": ["sentence"]
+        },
+        "outputs": {
+          "target": ["label"]
+        }
+      }
+    },
+    "transformer": {
+      "import": "example.CustomKerasTokenizerWrapper",
+      "params": {
+        "tokenizer": {
+          "num_words": 5000
+        },
+        "pad": {
+          "padding": "post",
+          "maxlen": 128
+        },
+        "input_key": "sequence",
+        "output_key": "target"
+      }
+    }
+  },
+  "model": {
+    "network": {
+      "import": "example.net",
+      "params": {
+        "embedding_dim": 64,
+        "num_classes": 2
+      }
+    },
+    "outputs": [{
+      "name": "target",
+      "loss": {
+        "import": "binary_crossentropy"
+      },
+      "metrics": [
+        {
+          "import": "accuracy"
+        },
+        {
+          "import": "AUC"
+        }
+      ]
+    }]
+  },
+  "solver": {
+    "optimizer": {
+      "import": "Adam",
+      "learning_rate": 1e-3
+    },
+    "batch_size": 32,
+    "epochs": 10
+  },
+  "services": {
+    "best_checkpoint": {
+      "monitor": "val_AUC",
+      "mode": "max"
+    }
+  }
+}
