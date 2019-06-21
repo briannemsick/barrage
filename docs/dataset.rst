@@ -58,12 +58,12 @@ Barrage supports 3 modes of data:
 Before deep learning training begins, the transformer does a first pass over the train dataset to fit
 transforms:
 
-.. image:: resource/transform.png
+.. image:: resources/transform.png
 
 After deep learning training begins, the transformer applies the transform in conjunction with
 loading and augmentation:
 
-.. image:: resource/record.png
+.. image:: resources/record.png
 
 ~~~~~~~~~~
 Data Types
