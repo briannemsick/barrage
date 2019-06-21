@@ -1,0 +1,13 @@
+dist: xenial
+language: python
+python:
+  - "3.6"
+  - "3.7"
+install:
+  - pip install -e .
+  - pip install -e .[tests]
+  - pip install -e .[tensorflow]
+script:
+  - flake8
+  - find . -name "*.py" | xargs mypy
+  - pytest -vv --cov=barrage

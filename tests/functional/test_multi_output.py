@@ -178,6 +178,6 @@ def test_multi_output(artifact_dir, records_train, records_validation, records_s
             "regression_2": regression_2,
         }
     )
-    assert (df_scores["classification"] == records_score["y_cls"]).mean() > 0.5
+    assert (df_scores["classification"] == records_score["y_cls"]).mean() > 0.4
     assert abs((df_scores["regression_1"] - records_score["y_reg_1"]).mean()) < 0.5
     assert abs((df_scores["regression_2"] - records_score["y_reg_2"]).mean()) < 0.5
