@@ -11,3 +11,5 @@ script:
   - flake8
   - find . -name "*.py" | xargs mypy
   - pytest -vv --cov=barrage
+after_success:
+  - coveralls

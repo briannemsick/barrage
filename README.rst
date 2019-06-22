@@ -4,7 +4,7 @@ release of ``barrage`` will be after ``TensorFlow 2.0`` is released.
 =======
 Barrage
 =======
-|Version| |Python| |License| |Black|
+|Version| |Python| |License| |Build| |Coverage| |Black|
 
 .. |Version| image:: https://img.shields.io/pypi/v/barrage.svg
    :target: https://pypi.org/project/barrage
@@ -14,6 +14,12 @@ Barrage
 
 .. |License| image:: https://img.shields.io/badge/license-MIT-green.svg
    :target: https://github.com/briannemsick/barrage/blob/master/LICENSE
+
+.. |Build| image:: https://travis-ci.com/briannemsick/barrage.svg?branch=master
+   :target: https://travis-ci.com/briannemsick/barrage
+
+.. |Coverage| image:: https://coveralls.io/repos/github/briannemsick/barrage/badge.svg?branch=master
+   :target: https://coveralls.io/github/briannemsick/barrage?branch=master
 
 .. |Black| image:: https://img.shields.io/badge/code%20style-black-000000.svg
    :target: https://github.com/python/black

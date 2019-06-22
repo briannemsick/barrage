@@ -27,7 +27,15 @@ setup(
     extras_require={
         "tensorflow": ["tensorflow==2.0.0b1"],
         "tensorflow-gpu": ["tensorflow-gpu==2.0.0b1"],
-        "tests": ["black", "flake8", "mypy", "pre-commit", "pytest", "pytest-cov"],
+        "tests": [
+            "black",
+            "coveralls",
+            "flake8",
+            "mypy",
+            "pre-commit",
+            "pytest",
+            "pytest-cov",
+        ],
     },
     classifiers=[
         "Programming Language :: Python",
