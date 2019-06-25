@@ -148,8 +148,8 @@ predict.
 
 #. Loader:
 
-   #. Input Data - load a text file or select text column from ``pd.DataFrame``.
-   #. Output Data - select label column.
+   #. Input Data - load a text file or select text column key.
+   #. Output Data - select label column key.
 
 #. Transformer:
 
@@ -161,8 +161,8 @@ predict.
 
 #. Loader:
 
-   #. Input Data - load input stream(s) file(s) or select column(s) from ``pd.DataFrame``.
-   #. Output Data - load output stream(s) file(s) or select column(s) from ``pd.DataFrame``.
+   #. Input Data - load input stream(s) file(s) or select column(s) key(s).
+   #. Output Data - load output stream(s) file(s) or select column(s) key(s).
 
 #. Transformer:
 
@@ -198,13 +198,13 @@ To write a new ``RecordLoader`` implement the abstract ``load`` method:
 .. code-block:: python
 
   @abstractmethod
-  def load(self, record: pd.Series) -> DataRecordType:  # pragma: no cover
-      """Method for loading a record into DataRecordType.
+  def load(self, record: pd.Series) -> DataRecord:  # pragma: no cover
+      """Method for loading a record into DataRecord.
       Args:
           record: pd.Series, record.
 
       Returns:
-          DataRecordType, data record.
+          DataRecord, data record.
       """
       raise NotImplementedError()
 
@@ -262,26 +262,26 @@ the data was stored by the user. To write a new ``RecordTransformer`` implement 
 
   @abstractmethod
   def transform(
-      self, data_record: DataRecordType
-  ) -> DataRecordType:  # pragma: no cover
+      self, data_record: DataRecord
+  ) -> DataRecord:  # pragma: no cover
       """Apply transform to a data record.
 
       Args:
-          data_record: DataRecordType, data record.
+          data_record: DataRecord, data record.
 
       Returns:
-          DataRecordType, data record.
+          DataRecord, data record.
       """
       raise NotImplementedError()
 
   @abstractmethod
   def postprocess(
-      self, score: RecordScoreType
-  ) -> RecordScoreType:  # pragma: no cover
+      self, score: RecordScore
+  ) -> RecordScore:  # pragma: no cover
       """Postprocess score to undo transform.
 
       Args:
-          score: RecordScoreType, record output from net.
+          score: RecordScore, record output from net.
 
       Returns:
           score.

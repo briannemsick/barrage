@@ -426,7 +426,7 @@ Breakdown
 
   callbacks.ModelCheckpoint(filepath=..., **cfg["services"]["best_checkpoint"], save_best_only=True)
 
-* ``tensorboard``: defines params for a ``TensorBoard`` callback:
+* ``tensorboard``: defines params for a ``TensorBoard`` callback (``log_dir`` preconfigured automatically):
 
 .. code-block:: python
 

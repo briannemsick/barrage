@@ -22,7 +22,7 @@ class BarrageModel(object):
         cfg: dict,
         records_train: pd.DataFrame,
         records_validation: pd.DataFrame,
-        workers: int = 1,
+        workers: int = 10,
         max_queue_size: int = 10,
     ) -> tf.keras.Model:
         """Train the network.
@@ -113,7 +113,7 @@ class BarrageModel(object):
         return net
 
     def predict(
-        self, records_score: pd.DataFrame, workers: int = 1, max_queue_size: int = 10
+        self, records_score: pd.DataFrame, workers: int = 10, max_queue_size: int = 10
     ) -> dataset.BatchRecordScores:
         """Score records.
 

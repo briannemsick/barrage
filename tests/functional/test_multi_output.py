@@ -9,21 +9,21 @@ from tensorflow.python.keras.models import Model
 from barrage import BarrageModel
 from barrage.utils import io_utils
 
-NUM_SAMPLES_TRAIN = 304
-NUM_SAMPLES_VALIDATION = 173
-NUM_SAMPLES_SCORE = 129
+NUM_SAMPLES_TRAIN = 613
+NUM_SAMPLES_VALIDATION = 216
+NUM_SAMPLES_SCORE = 297
 
 
 @pytest.fixture
 def records_train():
     # Classification output and weight
     y_cls = np.random.randint(0, 3, NUM_SAMPLES_TRAIN).astype(np.float32)
-    w_cls = y_cls + 1
+    w_cls = y_cls * 0.1 + 1
 
     # x = input 1
     x1 = np.random.normal(0, 2.0, NUM_SAMPLES_TRAIN) + y_cls
-    x2 = np.random.normal(-1.0, 1.0, NUM_SAMPLES_TRAIN) + y_cls
-    x3 = np.random.normal(1.0, 0.5, NUM_SAMPLES_TRAIN) + y_cls
+    x2 = np.random.normal(-1.0, 0.25, NUM_SAMPLES_TRAIN) + y_cls
+    x3 = np.random.normal(1.0, 0.1, NUM_SAMPLES_TRAIN) + y_cls
 
     # z = input 2
     z1 = np.random.normal(0.5, 0.25, NUM_SAMPLES_TRAIN) + y_cls
@@ -61,12 +61,12 @@ def records_train():
 def records_validation():
     # Classification output and weight
     y_cls = np.random.randint(0, 3, NUM_SAMPLES_VALIDATION).astype(np.float32)
-    w_cls = y_cls + 1
+    w_cls = y_cls * 0.1 + 1
 
     # x = input 1
     x1 = np.random.normal(0, 2.0, NUM_SAMPLES_VALIDATION) + y_cls
-    x2 = np.random.normal(-1.0, 1.0, NUM_SAMPLES_VALIDATION) + y_cls
-    x3 = np.random.normal(1.0, 0.5, NUM_SAMPLES_VALIDATION) + y_cls
+    x2 = np.random.normal(-1.0, 0.25, NUM_SAMPLES_VALIDATION) + y_cls
+    x3 = np.random.normal(1.0, 0.1, NUM_SAMPLES_VALIDATION) + y_cls
 
     # z = input 2
     z1 = np.random.normal(0.5, 0.25, NUM_SAMPLES_VALIDATION) + y_cls
@@ -108,8 +108,8 @@ def records_score():
 
     # x = input 1
     x1 = np.random.normal(0, 2.0, NUM_SAMPLES_SCORE) + y_cls
-    x2 = np.random.normal(-1.0, 1.0, NUM_SAMPLES_SCORE) + y_cls
-    x3 = np.random.normal(1.0, 0.5, NUM_SAMPLES_SCORE) + y_cls
+    x2 = np.random.normal(-1.0, 0.25, NUM_SAMPLES_SCORE) + y_cls
+    x3 = np.random.normal(1.0, 0.1, NUM_SAMPLES_SCORE) + y_cls
 
     # z = input 2
     z1 = np.random.normal(0.5, 0.25, NUM_SAMPLES_SCORE) + y_cls
@@ -147,8 +147,8 @@ def net():
     input_x = layers.Input(shape=(3,), name="input_x")
     input_z = layers.Input(shape=(2,), name="input_z")
 
-    dense_1_x = layers.Dense(25, activation="relu")(input_x)
-    dense_1_z = layers.Dense(25, activation="relu")(input_z)
+    dense_1_x = layers.Dense(10, activation="relu")(input_x)
+    dense_1_z = layers.Dense(10, activation="relu")(input_z)
     add = layers.Add()([dense_1_x, dense_1_z])
     dense_2 = layers.Dense(10, activation="relu")(add)
     dense_3 = layers.Dense(10, activation="relu")(dense_2)
@@ -178,6 +178,7 @@ def test_multi_output(artifact_dir, records_train, records_validation, records_s
             "regression_2": regression_2,
         }
     )
-    assert (df_scores["classification"] == records_score["y_cls"]).mean() > 0.4
+
+    assert (df_scores["classification"] == records_score["y_cls"]).mean() > 0.5
     assert abs((df_scores["regression_1"] - records_score["y_reg_1"]).mean()) < 0.5
     assert abs((df_scores["regression_2"] - records_score["y_reg_2"]).mean()) < 0.5

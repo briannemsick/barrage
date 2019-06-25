@@ -15,6 +15,8 @@
 import os
 import sys
 
+import barrage
+
 sys.path.insert(0, os.path.abspath(".."))
 
 # -- Project information -----------------------------------------------------
@@ -24,10 +26,7 @@ copyright = "2019, Brian Nemsick"
 author = "Brian Nemsick"
 
 # The short X.Y version
-version = "v0.1"
-# The full version, including alpha/beta/rc tags
-release = "v0.1.0a2"
-
+version = barrage.__version__
 
 # -- General configuration ---------------------------------------------------
 
@@ -38,7 +37,12 @@ release = "v0.1.0a2"
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ["sphinx.ext.autodoc", "sphinx.ext.napoleon", "sphinx.ext.viewcode"]
+extensions = [
+    "sphinx.ext.autodoc",
+    "sphinx.ext.napoleon",
+    "sphinx_autodoc_typehints",
+    "sphinx.ext.viewcode",
+]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]

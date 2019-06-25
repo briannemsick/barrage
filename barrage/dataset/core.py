@@ -5,19 +5,11 @@ from cytoolz import merge_with
 import numpy as np
 
 
-BatchDataRecordsElement = Dict[str, np.array]
-BatchDataRecords = Union[
-    Tuple[BatchDataRecordsElement],
-    Tuple[BatchDataRecordsElement, BatchDataRecordsElement],
-    Tuple[BatchDataRecordsElement, BatchDataRecordsElement, BatchDataRecordsElement],
-]
-DataRecordElement = Dict[str, Union[np.array, float, int]]
-DataRecord = Union[
-    Tuple[DataRecordElement],
-    Tuple[DataRecordElement, DataRecordElement],
-    Tuple[DataRecordElement, DataRecordElement, DataRecordElement],
-]
-RecordScore = Dict[str, np.array]
+BatchDataRecordsElement = Dict[str, np.ndarray]
+BatchDataRecords = Tuple[BatchDataRecordsElement, ...]
+DataRecordElement = Dict[str, Union[np.ndarray, float]]
+DataRecord = Tuple[DataRecordElement, ...]
+RecordScore = Dict[str, np.ndarray]
 BatchRecordScores = List[RecordScore]
 
 
@@ -52,13 +44,13 @@ def batchify_data_records(data_records: List[DataRecord]) -> BatchDataRecords:
 
 
 def batchify_network_output(
-    network_output: Union[np.array, List[np.array]], output_names: List[str]
+    network_output: Union[np.ndarray, List[np.ndarray]], output_names: List[str]
 ) -> BatchRecordScores:
     """Convert network output scores to BatchRecordScores. This process converts a
     single numpy array or list of numpy arrays into a list of dictionaries. See example.
 
     Args:
-        network_output: union[np.array, list[np.array], network output.
+        network_output: union[np.ndarray, list[np.ndarray], network output.
 
     Returns:
         BatchRecordScores, batch scores.

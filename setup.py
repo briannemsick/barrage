@@ -10,7 +10,7 @@ TensorFlow 2.x library using the Tensorflow.Keras API.
 
 setup(
     name="barrage",
-    version="0.1.0a2",
+    version="0.1.0a3",
     description="A supervised deep learning tool.",
     long_description=long_description,
     author="Brian Nemsick",
@@ -48,5 +48,5 @@ setup(
         "Programming Language :: Python :: 3.7",
     ],
     include_package_data=True,
-    packages=find_packages(exclude=["docs*", "examples*", "test*"]),
+    packages=find_packages(exclude=["docs*", "examples*", "tests*"]),
 )
