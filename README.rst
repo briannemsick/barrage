@@ -34,7 +34,7 @@ complicated models. Barrage is built around a ``JSON`` config and the
 ``TensorFlow 2.x`` library using the ``Tensorflow.Keras`` API.
 
 
-Official documentation can be found at: https://readthedocs.org/projects/barrage/
+Official documentation can be found at: https://barrage.readthedocs.io/en/latest/?badge=latest
 
 ------------------
 Guiding Principles
