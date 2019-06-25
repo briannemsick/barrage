@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 import pandas as pd
 
-from barrage.dataset import DataRecordType, RecordLoader, RecordMode, RecordScoreType
+from barrage.dataset import DataRecord, RecordLoader, RecordMode, RecordScore
 
 
 class RecordTransformer(ABC):
@@ -10,22 +10,6 @@ class RecordTransformer(ABC):
     transform to validation and scoring data records (network input), ability
     to pass computed network params to the function that constructs the network, and
     ability to apply inverse transforms on record scores (network output).
-
-    Examples uses:
-        NLP text classification - fit (vocabulary, max_sequence_length) ->
-            (embedding layer, batch_shape).
-        Time Series regression - fit mean variance normalization on the
-            inputs and outputs, undo normalization on scores.
-
-    Abstract Methods:
-        fit: fit a transform to training records to compute params.
-        transform:  transform a data record.
-        postprocess:  inverse transform on a score.
-        load: load transform.
-        save: save transform.
-
-    Properties:
-        network_params - computed params passed to the network construction
 
     Args:
         mode: RecordMode, transform mode.
@@ -51,27 +35,23 @@ class RecordTransformer(ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    def transform(
-        self, data_record: DataRecordType
-    ) -> DataRecordType:  # pragma: no cover
+    def transform(self, data_record: DataRecord) -> DataRecord:  # pragma: no cover
         """Apply transform to a data record.
 
         Args:
-            data_record: DataRecordType, data record.
+            data_record: DataRecord, data record.
 
         Returns:
-            DataRecordType, data record.
+            DataRecord, data record.
         """
         raise NotImplementedError()
 
     @abstractmethod
-    def postprocess(
-        self, score: RecordScoreType
-    ) -> RecordScoreType:  # pragma: no cover
+    def postprocess(self, score: RecordScore) -> RecordScore:  # pragma: no cover
         """Postprocess score to undo transform.
 
         Args:
-            score: RecordScoreType, record output from net.
+            score: RecordScore, record output from net.
 
         Returns:
             score.
@@ -115,10 +95,10 @@ class IdentityTransformer(RecordTransformer):
     def fit(self, records: pd.DataFrame):
         pass
 
-    def transform(self, data_record: DataRecordType) -> DataRecordType:
+    def transform(self, data_record: DataRecord) -> DataRecord:
         return data_record
 
-    def postprocess(self, score: RecordScoreType) -> RecordScoreType:
+    def postprocess(self, score: RecordScore) -> RecordScore:
         return score
 
     def save(self, path: str):

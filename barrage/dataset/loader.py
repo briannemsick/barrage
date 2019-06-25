@@ -3,15 +3,11 @@ from abc import ABC, abstractmethod
 import numpy as np
 import pandas as pd
 
-from barrage.dataset import core, BatchDataRecordsType, DataRecordType, RecordMode
+from barrage.dataset import core, BatchDataRecords, DataRecord, RecordMode
 
 
 class RecordLoader(ABC):
-    """Class for loading records into DataRecordType.
-
-    Abstract Methods:
-        load: load a record.
-        load_all: load all records.
+    """Class for loading records into DataRecord.
 
     Args:
         mode: RecordMode, load mode.
@@ -22,29 +18,29 @@ class RecordLoader(ABC):
         self.mode = mode
         self.params = params
 
-    def __call__(self, record: pd.Series) -> DataRecordType:
+    def __call__(self, record: pd.Series) -> DataRecord:
         return self.load(record)
 
     @abstractmethod
-    def load(self, record: pd.Series) -> DataRecordType:  # pragma: no cover
-        """Method for loading a record into DataRecordType.
+    def load(self, record: pd.Series) -> DataRecord:  # pragma: no cover
+        """Method for loading a record into DataRecord.
 
         Args:
             record: pd.Series, record.
 
         Returns:
-            DataRecordType, data record.
+            DataRecord, data record.
         """
         raise NotImplementedError()
 
-    def load_all(self, records: pd.DataFrame) -> BatchDataRecordsType:
-        """Method for loading all records into a BatchDataRecordsType.
+    def load_all(self, records: pd.DataFrame) -> BatchDataRecords:
+        """Method for loading all records into a BatchDataRecords.
 
         Args:
             records: pd.DataFrame, records.
 
         Returns:
-            BatchDataRecordsType, all data records.
+            BatchDataRecords, all data records.
         """
         return core.batchify_data_records(
             [self.load(record) for _, record in records.iterrows()]
@@ -52,7 +48,7 @@ class RecordLoader(ABC):
 
 
 class ColumnSelector(RecordLoader):
-    """Record loader for transforming columns from a DataFrame into DataRecordType.
+    """Record loader for transforming columns from a DataFrame into DataRecord.
 
     Args:
         mode: RecordMode, load mode.
@@ -90,14 +86,14 @@ class ColumnSelector(RecordLoader):
         if not (isinstance(self.sample_weights, dict) or self.sample_weights is None):
             raise TypeError("ColumnSelector 'sample_weights' must be typedict or None")
 
-    def load(self, record: pd.Series) -> DataRecordType:
+    def load(self, record: pd.Series) -> DataRecord:
         """Load a record by selecting columns corresponding to inputs and outputs.
 
         Args:
             record: pd.Series, record.
 
         Returns:
-            DataRecordType, data record.
+            DataRecord, data record.
         """
         X = {k: np.array(record[v]) for k, v in self.inputs.items()}
         if self.mode == RecordMode.TRAIN or self.mode == RecordMode.VALIDATION:
@@ -112,11 +108,11 @@ class ColumnSelector(RecordLoader):
 
 
 class IdentityLoader(RecordLoader):
-    """Special loader that delegates pd.Series -> DataRecordType to the transformer.
+    """Special loader that delegates pd.Series -> DataRecord to the transformer.
     """
 
-    def load(self, record: pd.Series) -> DataRecordType:
+    def load(self, record: pd.Series) -> DataRecord:
         return record  # type: ignore
 
-    def load_all(self, records: pd.DataFrame) -> BatchDataRecordsType:
+    def load_all(self, records: pd.DataFrame) -> BatchDataRecords:
         return records  # type: ignore

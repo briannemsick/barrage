@@ -9,11 +9,6 @@ class BarrageModel(object):
     """Class for training the network and scoring records with best performing
     network.
 
-    Methods:
-        train: train network.
-        load: load best network checkpoint.
-        predict: score records.
-
     Args:
         artifact_dir: str, path to artifact directory.
     """
@@ -119,7 +114,7 @@ class BarrageModel(object):
 
     def predict(
         self, records_score: pd.DataFrame, workers: int = 1, max_queue_size: int = 10
-    ) -> dataset.BatchRecordScoresType:
+    ) -> dataset.BatchRecordScores:
         """Score records.
 
         Args:
@@ -128,7 +123,7 @@ class BarrageModel(object):
             max_queue_size: int (OPTIONAL = 10), queue size for the sequence.
 
         Returns:
-            BatchRecordScoresType, scored data records.
+            BatchRecordScores, scored data records.
         """
         if not self._is_loaded:
             self.load()

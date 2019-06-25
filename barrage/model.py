@@ -36,12 +36,7 @@ def build_objective(cfg_model: dict):
         cfg_model: dict, model subsection of config.
 
     Returns:
-        dict, {
-                "loss": {"model_output": loss},
-                "loss_weights": {"model_output": loss_weight},
-                "sample_weight_mode":  {"model_output": sample_weight_mode),
-                "metrics":  {"model_output": metrics}
-              }.
+        dict, objective
     """
     loss = {}
     loss_weights = {}

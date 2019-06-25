@@ -4,7 +4,7 @@ release of ``barrage`` will be after ``TensorFlow 2.0`` is released.
 =======
 Barrage
 =======
-|Version| |Python| |License| |Build| |Coverage| |Black|
+|Version| |Python| |License| |Documentation| |Build| |Coverage| |Black|
 
 .. |Version| image:: https://img.shields.io/pypi/v/barrage.svg
    :target: https://pypi.org/project/barrage
@@ -14,6 +14,10 @@ Barrage
 
 .. |License| image:: https://img.shields.io/badge/license-MIT-green.svg
    :target: https://github.com/briannemsick/barrage/blob/master/LICENSE
+
+.. |Documentation|  image:: https://readthedocs.org/projects/barrage/badge/?version=latest
+   :target: https://barrage.readthedocs.io/en/latest/?badge=latest
+   :alt: Documentation Status
 
 .. |Build| image:: https://travis-ci.com/briannemsick/barrage.svg?branch=master
    :target: https://travis-ci.com/briannemsick/barrage
@@ -28,6 +32,9 @@ Barrage is an opinionated supervised deep learning tool built on top of
 ``TensorFlow 2.x`` designed to standardize and orchestrate the training and scoring of
 complicated models. Barrage is built around a ``JSON`` config and the
 ``TensorFlow 2.x`` library using the ``Tensorflow.Keras`` API.
+
+
+Official documentation can be found at: https://readthedocs.org/projects/barrage/
 
 ------------------
 Guiding Principles

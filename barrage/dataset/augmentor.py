@@ -1,14 +1,11 @@
 from typing import List
 
-from barrage.dataset import DataRecordType
+from barrage.dataset import DataRecord
 from barrage.utils import import_utils
 
 
 class RecordAugmentor(object):
     """Class for applying a list of data augmentation functions to a data record.
-
-    Methods:
-        augment: apply data augmentation to a record.
 
     Args:
         funcs: list[dict], list of augmentation functions
@@ -20,17 +17,17 @@ class RecordAugmentor(object):
             *[import_utils.import_partial_wrap_func(f) for f in reversed(funcs)]
         )
 
-    def __call__(self, data_record: DataRecordType) -> DataRecordType:
+    def __call__(self, data_record: DataRecord) -> DataRecord:
         return self.augment(data_record)
 
-    def augment(self, data_record: DataRecordType) -> DataRecordType:
+    def augment(self, data_record: DataRecord) -> DataRecord:
         """Apply augmentation to a train data record.
 
         Args:
-            data_record: DataRecordType, data record.
+            data_record: DataRecord, data record.
 
         Returns:
-            DataRecordType, augmented data record.
+            DataRecord, augmented data record.
         """
         return self.augment_func(data_record)
 

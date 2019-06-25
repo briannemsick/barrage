@@ -4,10 +4,10 @@ from .core import batchify_data_records, batchify_network_output  # noqa
 # Typing
 from .core import (  # noqa
     RecordMode,
-    DataRecordType,
-    RecordScoreType,
-    BatchDataRecordsType,
-    BatchRecordScoresType,
+    DataRecord,
+    RecordScore,
+    BatchDataRecords,
+    BatchRecordScores,
 )
 
 # Base Classes

@@ -25,9 +25,9 @@ Configs are broken into four distinct sections:
 exactly reproduce the environment used to train the model at scoring time
 (and or deployment time).
 
-------
-Basics
-------
+-------
+Imports
+-------
 
 Before delving into the entire config documentation it is worth mentioning the most
 common reoccurring pattern in the config.
@@ -418,6 +418,7 @@ Breakdown
 ~~~~~~~~~
 
 * ``best_checkpoint``: defines a ``ModelCheckpoint`` callback where ``save_best_only=True``:
+
 .. code-block:: python
 
   from tensorflow.python.keras import callbacks
@@ -426,6 +427,7 @@ Breakdown
   callbacks.ModelCheckpoint(filepath=..., **cfg["services"]["best_checkpoint"], save_best_only=True)
 
 * ``tensorboard``: defines params for a ``TensorBoard`` callback:
+
 .. code-block:: python
 
   from tensorflow.python.keras import callbacks
@@ -434,6 +436,7 @@ Breakdown
   callbacks.TensorBoard(log_dir=..., **cfg["services"]["tensorboard"])
 
 * ``train_early_stopping``: defines params for an ``EarlyStopping`` callback that must monitor a train metric:
+
 .. code-block:: python
 
   from tensorflow.python.keras import callbacks
@@ -442,6 +445,7 @@ Breakdown
   callbacks.EarlyStopping(**cfg["services"]["train_early_stopping"])
 
 * ``validation_early_stopping``: defines params for an ``EarlyStopping`` callback that must monitor a validation metric:
+
 .. code-block:: python
 
   from tensorflow.python.keras import callbacks

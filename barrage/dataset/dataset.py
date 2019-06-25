@@ -8,7 +8,7 @@ from tensorflow.python.keras.utils import Sequence
 from barrage import logger
 from barrage.dataset import (
     core,
-    BatchDataRecordsType,
+    BatchDataRecords,
     RecordAugmentor,
     RecordLoader,
     RecordMode,
@@ -24,10 +24,11 @@ class RecordDataset(Sequence):
     operations, fit & apply transforms, apply data augmentation, and support sampling
     of records.
 
-    Modes:
-        TRAIN:  init->fit transform, batch load->transform->augment.
-        VALIDATION:  batch->load->transform.
-        SCORE: batch->load->transform.
+    At train time: fit transform -> batch -> load -> transform -> augment.
+
+    At validation time: batch -> load -> transform.
+
+    At score time: batch -> load -> transform.
 
     Args:
         artifact_dir: str, path to artifact directory.
@@ -110,14 +111,14 @@ class RecordDataset(Sequence):
         """Number of batches in a sequence."""
         return int(np.ceil(len(self.sample_inds) / float(self.batch_size)))
 
-    def __getitem__(self, ind) -> BatchDataRecordsType:
+    def __getitem__(self, ind) -> BatchDataRecords:
         """Get a batch by index.
 
         Args:
             ind: int, batch index.
 
         Returns:
-            BatchDataRecordsType, batch data records.
+            BatchDataRecords, batch data records.
         """
         batch_inds = self.sample_order[
             ind * self.batch_size : (ind + 1) * self.batch_size

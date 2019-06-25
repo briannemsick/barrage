@@ -1,6 +1,6 @@
-=======
-Barrage
-=======
+==============
+Barrage Basics
+==============
 
 .. contents:: **Table of Contents**:
 

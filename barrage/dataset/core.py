@@ -5,24 +5,20 @@ from cytoolz import merge_with
 import numpy as np
 
 
-BatchDataRecordsElementType = Dict[str, np.array]
-BatchDataRecordsType = Union[
-    Tuple[BatchDataRecordsElementType],
-    Tuple[BatchDataRecordsElementType, BatchDataRecordsElementType],
-    Tuple[
-        BatchDataRecordsElementType,
-        BatchDataRecordsElementType,
-        BatchDataRecordsElementType,
-    ],
+BatchDataRecordsElement = Dict[str, np.array]
+BatchDataRecords = Union[
+    Tuple[BatchDataRecordsElement],
+    Tuple[BatchDataRecordsElement, BatchDataRecordsElement],
+    Tuple[BatchDataRecordsElement, BatchDataRecordsElement, BatchDataRecordsElement],
 ]
-DataRecordElementType = Dict[str, Union[np.array, float, int]]
-DataRecordType = Union[
-    Tuple[DataRecordElementType],
-    Tuple[DataRecordElementType, DataRecordElementType],
-    Tuple[DataRecordElementType, DataRecordElementType, DataRecordElementType],
+DataRecordElement = Dict[str, Union[np.array, float, int]]
+DataRecord = Union[
+    Tuple[DataRecordElement],
+    Tuple[DataRecordElement, DataRecordElement],
+    Tuple[DataRecordElement, DataRecordElement, DataRecordElement],
 ]
-RecordScoreType = Dict[str, np.array]
-BatchRecordScoresType = List[RecordScoreType]
+RecordScore = Dict[str, np.array]
+BatchRecordScores = List[RecordScore]
 
 
 class RecordMode(enum.Enum):
@@ -31,20 +27,21 @@ class RecordMode(enum.Enum):
     SCORE = 2
 
 
-def batchify_data_records(data_records: List[DataRecordType]) -> BatchDataRecordsType:
-    """Stack a list of DataRecordType into BatchRecordType. This process converts a list
+def batchify_data_records(data_records: List[DataRecord]) -> BatchDataRecords:
+    """Stack a list of DataRecord into BatchRecord. This process converts a list
     of tuples comprising of dicts {str: float/array} into tuples of dict {str: array}.
     Float/array is concatenated along the first dimension. See Example.
 
     Args:
-        data_records: list[DataRecordType], list of individual data records.
+        data_records: list[DataRecord], list of individual data records.
 
     Returns:
-        BatchDataRecordsType, batch data records.
+        BatchDataRecords, batch data records.
 
     Example:
+    ::
         data_record_1 = ({"input_1": 1, "input_2": 2}, {"output_1": 3})
-        data_record_1 = ({"input_1": 2, "input_2": 4}, {"output_1": 6})
+        data_record_2 = ({"input_1": 2, "input_2": 4}, {"output_1": 6})
         batch_data_records = (
             {"input_1": arr([1, 2], "input_2": arr([2, 4])},
             {"output_1": arr([3, 6])}
@@ -56,18 +53,20 @@ def batchify_data_records(data_records: List[DataRecordType]) -> BatchDataRecord
 
 def batchify_network_output(
     network_output: Union[np.array, List[np.array]], output_names: List[str]
-) -> BatchRecordScoresType:
-    """Convert network output scores to BatchRecordScoresType. This process converts a
+) -> BatchRecordScores:
+    """Convert network output scores to BatchRecordScores. This process converts a
     single numpy array or list of numpy arrays into a list of dictionaries. See example.
 
     Args:
         network_output: union[np.array, list[np.array], network output.
 
     Returns:
-        BatchRecordScoresType, batch scores.
+        BatchRecordScores, batch scores.
 
     Example:
-        network_output == np.array([[1], [2]]), output_names = ["y"]
+    ::
+        network_output == np.array([[1], [2]])
+        output_names = ["y"]
         batch_scores = [{"y": np.array([1])}, {"y": np.array([2])}]
     """
     # Handle type inconsistency out single output/multi output networks

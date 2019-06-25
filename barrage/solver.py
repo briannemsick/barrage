@@ -16,6 +16,7 @@ def build_optimizer(cfg_solver: dict) -> optimizer_v2.OptimizerV2:
 
     Raises:
         TypeError, optimizer not an OptimizerV2.
+        TypeError, learning rate is not a float or LearningRateSchedule.
     """
     path = cfg_solver["optimizer"]["import"]
     params = cfg_solver["optimizer"].get("params", {})
