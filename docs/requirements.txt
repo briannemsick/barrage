@@ -1,3 +1,4 @@
 sphinx
 sphinx-autodoc-typehints
 sphinx_rtd_theme
+tensorflow==2.0.0b1

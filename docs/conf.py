@@ -39,7 +39,6 @@ release = "v0.1.0a2"
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = ["sphinx.ext.autodoc", "sphinx.ext.napoleon", "sphinx.ext.viewcode"]
-autodoc_mock_imports = ["tensorflow"]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
