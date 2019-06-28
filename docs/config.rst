@@ -100,7 +100,7 @@ adopted (e.g. ``loaders``, ``transformers``, etc..):
 .. code-block:: python
 
   # Search barrage.dataset paths
-  "ColumnSelector" == "barrage.dataset.ColumnSelector"
+  "KeySelector" == "barrage.dataset.KeySelector"
 
 -----------------------
 Config Section: dataset
@@ -162,7 +162,7 @@ Breakdown
 
 * ``augmentor``: list of augmentation functions to import and apply in sequential order.
 
-* ``sample_count``: name of a column that contains integer counts that represent the number of times to
+* ``sample_count``: name of a key that contains integer counts that represent the number of times to
   put a sample in an epoch.
 
 * ``seed``: numpy random seed.

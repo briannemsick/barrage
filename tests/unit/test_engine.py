@@ -15,7 +15,7 @@ def cfg():
     return {
         "dataset": {
             "loader": {
-                "import": "ColumnSelector",
+                "import": "KeySelector",
                 "params": {
                     "inputs": {"input": ["x1", "x2"]},
                     "outputs": {"output": ["y1", "y2"]},

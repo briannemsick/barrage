@@ -76,8 +76,8 @@ def vanilla_iris():
     cfg = {
         "dataset": {
             "loader": {
-                # use built in Column Selector
-                "import": "ColumnSelector",
+                # use built in KeySelector
+                "import": "KeySelector",
                 "params": {
                     "inputs": {
                         # name matches 'inputs' name
@@ -167,7 +167,7 @@ class CustomIrisLoader(RecordLoader):
     def load(self, record):
 
         # The data is stored directly inside the DataFrame - we can directly index.
-        # The column selector is more general in this situation and the prefered way
+        # The KeySelector is more general in this situation and the prefered way
         # to do things. That being said, let's hardcode a loader. For the transformer
         # and augmentation functions we will be more general and could be reused on
         # other datasets.

@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from barrage.dataset import ColumnSelector, IdentityLoader, RecordMode
+from barrage.dataset import KeySelector, IdentityLoader, RecordMode
 
 
 @pytest.fixture
@@ -15,13 +15,13 @@ def records():
     return pd.DataFrame([{"x1": 1, "x2": 2, "y1": 3}, {"x1": 4, "x2": 5, "y1": 6}])
 
 
-def test_column_selector(record):
+def test_key_selector(record):
     params = {
         "inputs": {"x1": ["a", "b"], "x2": ["b", "c"]},
         "outputs": {"y1": ["d"], "y2": ["e", "d"]},
     }
 
-    cs = ColumnSelector(RecordMode.TRAIN, params)
+    cs = KeySelector(RecordMode.TRAIN, params)
     result = cs.load(record)
     assert len(result) == 2
     assert len(result[0]) == 2
@@ -31,7 +31,7 @@ def test_column_selector(record):
     assert result[1]["y1"].tolist() == [4]
     assert result[1]["y2"].tolist() == ["five", 4]
 
-    cs = ColumnSelector(RecordMode.VALIDATION, params)
+    cs = KeySelector(RecordMode.VALIDATION, params)
     result = cs.load(record)
     assert len(result) == 2
     assert len(result[0]) == 2
@@ -41,7 +41,7 @@ def test_column_selector(record):
     assert result[1]["y1"].tolist() == [4]
     assert result[1]["y2"].tolist() == ["five", 4]
 
-    cs = ColumnSelector(RecordMode.SCORE, params)
+    cs = KeySelector(RecordMode.SCORE, params)
     result = cs(record)
     assert len(result) == 1
     assert len(result[0]) == 2
@@ -49,14 +49,14 @@ def test_column_selector(record):
     assert result[0]["x2"].tolist() == [2, "three"]
 
 
-def test_column_selector_sample_weights(record):
+def test_key_selector_sample_weights(record):
     params = {
         "inputs": {"x1": ["a", "b"], "x2": ["b", "c"]},
         "outputs": {"y1": ["d"], "y2": ["e", "d"]},
         "sample_weights": {"y1": "a", "y2": "b"},
     }
 
-    cs = ColumnSelector(RecordMode.TRAIN, params)
+    cs = KeySelector(RecordMode.TRAIN, params)
     result = cs.load(record)
     assert len(result) == 3
     assert len(result[0]) == 2
@@ -69,7 +69,7 @@ def test_column_selector_sample_weights(record):
     assert result[2]["y1"].tolist() == 1
     assert result[2]["y2"].tolist() == 2
 
-    cs = ColumnSelector(RecordMode.VALIDATION, params)
+    cs = KeySelector(RecordMode.VALIDATION, params)
     result = cs.load(record)
     assert len(result) == 3
     assert len(result[0]) == 2
@@ -82,7 +82,7 @@ def test_column_selector_sample_weights(record):
     assert result[2]["y1"].tolist() == 1
     assert result[2]["y2"].tolist() == 2
 
-    cs = ColumnSelector(RecordMode.SCORE, params)
+    cs = KeySelector(RecordMode.SCORE, params)
     result = cs(record)
     assert len(result) == 1
     assert len(result[0]) == 2
@@ -101,10 +101,10 @@ def test_column_selector_sample_weights(record):
         ({"x": ["x"]}, {"y": ["y"]}, 15, TypeError),
     ],
 )
-def test_column_selector_invalid_values(mode, inputs, outputs, sample_weights, err):
+def test_key_selector_invalid_values(mode, inputs, outputs, sample_weights, err):
     params = {"inputs": inputs, "outputs": outputs, "sample_weights": sample_weights}
     with pytest.raises(err):
-        ColumnSelector(mode, params)
+        KeySelector(mode, params)
 
 
 @pytest.mark.parametrize(
@@ -113,14 +113,14 @@ def test_column_selector_invalid_values(mode, inputs, outputs, sample_weights, e
 @pytest.mark.parametrize(
     "params",
     [
-        {"inputs": {"x": ["x"]}, "outputs": {"y": ["y"]}, "new_column": "z"},
+        {"inputs": {"x": ["x"]}, "outputs": {"y": ["y"]}, "new_key": "z"},
         {"inputs": {"x": ["x"]}},
         {"outputs": {"y": ["y"]}},
     ],
 )
-def test_column_selector_invalid_keys(mode, params):
+def test_key_selector_invalid_keys(mode, params):
     with pytest.raises(KeyError):
-        ColumnSelector(mode, params)
+        KeySelector(mode, params)
 
 
 def _assert_batch_equal(b1, b2):
@@ -137,7 +137,7 @@ def _assert_batch_equal(b1, b2):
 )
 def test_load_all(mode, records):
     params = {"inputs": {"x": ["x1", "x2"]}, "outputs": {"y": ["y1"]}}
-    cs = ColumnSelector(mode, params)
+    cs = KeySelector(mode, params)
 
     expected = ({"x": np.array([[1, 2], [4, 5]])}, {"y": np.array([[3], [6]])})
     if mode == RecordMode.SCORE:

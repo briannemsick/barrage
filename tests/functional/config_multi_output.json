@@ -1,7 +1,7 @@
 {
   "dataset": {
     "loader": {
-      "import": "ColumnSelector",
+      "import": "KeySelector",
       "params": {
         "inputs": {
           "input_x": ["x1", "x2", "x3"],

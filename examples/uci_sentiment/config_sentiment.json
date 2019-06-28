@@ -1,7 +1,7 @@
 {
   "dataset": {
     "loader": {
-      "import": "ColumnSelector",
+      "import": "KeySelector",
       "params": {
         "inputs": {
           "sequence": ["sentence"]

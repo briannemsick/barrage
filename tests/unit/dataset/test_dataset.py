@@ -33,7 +33,7 @@ def records():
 def base_cfg_dataset():
     return {
         "loader": {
-            "import": "ColumnSelector",
+            "import": "KeySelector",
             "params": {
                 "inputs": {"input_1": ["x1", "x2"]},
                 "outputs": {"output_1": ["y1"]},
@@ -205,7 +205,7 @@ class SimpleTransformer(RecordTransformer):
 def transformer_cfg_dataset():
     return {
         "loader": {
-            "import": "ColumnSelector",
+            "import": "KeySelector",
             "params": {
                 "inputs": {"input_1": ["x1", "x2"]},
                 "outputs": {"output_1": ["y1"], "output_2": ["y2"]},

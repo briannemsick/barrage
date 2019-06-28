@@ -47,15 +47,15 @@ class RecordLoader(ABC):
         )
 
 
-class ColumnSelector(RecordLoader):
-    """Record loader for transforming columns from a DataFrame into DataRecord.
+class KeySelector(RecordLoader):
+    """Record loader for transforming keys from a DataFrame into DataRecord.
 
     Args:
         mode: RecordMode, load mode.
         params: dict,
-            inputs: dict, {input: [columns], ...}
-            outputs: dict, {output: [columns], ...}
-            sample_weights: dict or None (OPTIONAL), {output: column}
+            inputs: dict, {input: [keys], ...}
+            outputs: dict, {output: [keys], ...}
+            sample_weights: dict or None (OPTIONAL), {output: key}
 
     Raises:
         KeyError/TypeError, illegal params.
@@ -70,24 +70,25 @@ class ColumnSelector(RecordLoader):
                 f"Column selector accepts the following params: {valid_keys}"
             )
         if "inputs" not in params:
-            raise KeyError("ColumnSelector required param 'inputs' missing")
+            raise KeyError("KeySelector required param 'inputs' missing")
         if "outputs" not in params:
-            raise KeyError("ColumnSelector required param 'outputs' missing")
+            raise KeyError("KeySelector required param 'outputs' missing")
 
         self.inputs = params["inputs"]
         self.outputs = params["outputs"]
         self.sample_weights = params.get("sample_weights", None)
 
         if not isinstance(self.inputs, dict):
-            raise TypeError("ColumnSelector param 'inputs' must be type dict")
+            raise TypeError("KeySelector param 'inputs' must be type dict")
         if not isinstance(self.outputs, dict):
-            raise TypeError("ColumnSelector param 'outputs' must be type dict")
+            raise TypeError("KeySelector param 'outputs' must be type dict")
 
         if not (isinstance(self.sample_weights, dict) or self.sample_weights is None):
-            raise TypeError("ColumnSelector 'sample_weights' must be typedict or None")
+            raise TypeError("KeySelector 'sample_weights' must be type dict or None")
 
     def load(self, record: pd.Series) -> DataRecord:
-        """Load a record by selecting columns corresponding to inputs and outputs.
+        """Load a record by selecting keys corresponding to inputs, outputs, and
+        maybe sample weights.
 
         Args:
             record: pd.Series, record.
