@@ -1,14 +1,5 @@
 # Helpers
-from .core import batchify_data_records, batchify_network_output  # noqa
-
-# Typing
-from .core import (  # noqa
-    RecordMode,
-    DataRecord,
-    RecordScore,
-    BatchDataRecords,
-    BatchRecordScores,
-)
+from .core import batchify_data_records, batchify_network_output, RecordMode  # noqa
 
 # Base Classes
 from .augmentor import RecordAugmentor  # noqa
@@ -18,4 +9,6 @@ from .transformer import RecordTransformer  # noqa
 # Implementations
 from .loader import KeySelector  # noqa
 from .transformer import IdentityTransformer  # noqa
+
+# Dataset
 from .dataset import RecordDataset  # noqa

@@ -1,19 +1,16 @@
+import copy
 import os
-from typing import List
+from typing import List, Union
 
 import numpy as np
 import pandas as pd
 from tensorflow.python.keras.utils import Sequence
 
 from barrage import logger
-from barrage.dataset import (
-    core,
-    BatchDataRecords,
-    RecordAugmentor,
-    RecordLoader,
-    RecordMode,
-    RecordTransformer,
-)
+from barrage.dataset import core
+from barrage.dataset.augmentor import RecordAugmentor
+from barrage.dataset.loader import RecordLoader
+from barrage.dataset.transformer import RecordTransformer
 from barrage.utils import import_utils
 
 SEARCH_MODULES = ["barrage.dataset"]
@@ -33,7 +30,7 @@ class RecordDataset(Sequence):
     Args:
         artifact_dir: str, path to artifact directory.
         cfg_dataset: dict, dataset subsection of config.
-        records: pd.DataFrame, data records.
+        records: Union[pd.DataFrame, Records], data records.
         mode: RecordMode, transform mode.
         batch_size: int, batch size.
     """
@@ -42,19 +39,24 @@ class RecordDataset(Sequence):
         self,
         artifact_dir: str,
         cfg_dataset: dict,
-        records: pd.DataFrame,
-        mode: RecordMode,
+        records: Union[pd.DataFrame, core.Records],
+        mode: core.RecordMode,
         batch_size: int,
     ):
-        if not isinstance(records, pd.DataFrame):
-            raise TypeError("records must be type pd.DataFrame")
-        records.reset_index(drop=True, inplace=True)
-        if not isinstance(mode, RecordMode):
+
+        if not isinstance(mode, core.RecordMode):
             raise TypeError("mode must be type RecordMode")
+
+        if isinstance(records, pd.DataFrame):
+            records.reset_index(drop=True, inplace=True)
+            self.records = records.to_dict(orient="records")
+        elif all(isinstance(record, dict) for record in records):
+            self.records = records
+        else:
+            raise TypeError("record must be a list of dicts or pandas DataFrame")
 
         self.num_records = len(records)
         logger.info(f"Building {mode} dataset with {self.num_records} records")
-        self.records = records
         self.mode = mode
         self.batch_size = batch_size
 
@@ -62,8 +64,10 @@ class RecordDataset(Sequence):
         np.random.seed(self.seed)
 
         sample_count = cfg_dataset.get("sample_count")
-        if self.mode == RecordMode.TRAIN and sample_count is not None:
-            self._sample_inds = convert_sample_count_to_inds(records[sample_count])
+        if self.mode == core.RecordMode.TRAIN and sample_count is not None:
+            self._sample_inds = convert_sample_count_to_inds(
+                [record[sample_count] for record in self.records]
+            )
         else:
             self._sample_inds = list(range(self.num_records))
         self.shuffle()
@@ -93,17 +97,17 @@ class RecordDataset(Sequence):
             )
 
         dataset_dir = os.path.join(artifact_dir, "dataset")
-        if self.mode == RecordMode.TRAIN:
+        if self.mode == core.RecordMode.TRAIN:
             logger.info("Creating record augmentor")
             self.augmentor = RecordAugmentor(cfg_dataset["augmentor"])
             logger.info(f"Fitting transform: {self.transformer.__class__.__name__}")
-            self.transformer.fit(self.records.copy(deep=True))
+            self.transformer.fit(copy.deepcopy(self.records))
             logger.info(
                 f"Transformer network params: {self.transformer.network_params}"
             )
             logger.info("Saving transformer")
             self.transformer.save(dataset_dir)
-        elif self.mode == RecordMode.VALIDATION or self.mode == RecordMode.SCORE:
+        else:
             logger.info(f"Loading transform: {self.transformer.__class__.__name__}")
             self.transformer.load(dataset_dir)
 
@@ -111,7 +115,7 @@ class RecordDataset(Sequence):
         """Number of batches in a sequence."""
         return int(np.ceil(len(self.sample_inds) / float(self.batch_size)))
 
-    def __getitem__(self, ind) -> BatchDataRecords:
+    def __getitem__(self, ind) -> core.BatchDataRecords:
         """Get a batch by index.
 
         Args:
@@ -123,17 +127,17 @@ class RecordDataset(Sequence):
         batch_inds = self.sample_order[
             ind * self.batch_size : (ind + 1) * self.batch_size
         ]
-        batch_records = self.records.iloc[batch_inds].copy(deep=True)
+        batch_records = copy.deepcopy([self.records[bi] for bi in batch_inds])
 
-        if self.mode == RecordMode.TRAIN:
+        if self.mode == core.RecordMode.TRAIN:
             lst_data_records = [
                 self.augmentor(self.transformer.transform(self.loader(record)))
-                for _, record in batch_records.iterrows()
+                for record in batch_records
             ]
         else:
             lst_data_records = [
                 self.transformer.transform(self.loader(record))
-                for _, record in batch_records.iterrows()
+                for record in batch_records
             ]
 
         return core.batchify_data_records(lst_data_records)
@@ -155,26 +159,26 @@ class RecordDataset(Sequence):
 
     def shuffle(self):
         """Shuffle sample_inds to compute sample_order."""
-        if self.mode == RecordMode.TRAIN or self.mode == RecordMode.VALIDATION:
+        if (
+            self.mode == core.RecordMode.TRAIN
+            or self.mode == core.RecordMode.VALIDATION
+        ):
             self.sample_order = self.sample_inds
             np.random.shuffle(self.sample_order)
         else:
             self.sample_order = self.sample_inds
 
 
-def convert_sample_count_to_inds(sample_count: pd.Series) -> List[int]:
-    """Convert a series of sample counts to a list of sample inds.
+def convert_sample_count_to_inds(sample_count: List[int]) -> List[int]:
+    """Convert a list of sample counts to a list of sample inds.
 
     Args:
-        sample_count: pd.Series, integer series of sample counts.
+        sample_count: list[int], integer list of sample counts.
 
     Returns:
         list[int], sample inds.
-
-    Raises:
-        TypeError, non-integer pd.Series.
     """
-    sample_count = sample_count.apply(lambda x: max(1, x)).astype(int)
-    sample_lsts = [[ind] * val for ind, val in sample_count.iteritems()]
+    sample_count = [max(1, int(sc)) for sc in sample_count]
+    sample_lsts = [[ind] * val for ind, val in enumerate(sample_count)]
     sample_inds = [item for li in sample_lsts for item in li]
     return sample_inds

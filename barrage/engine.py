@@ -1,3 +1,5 @@
+from typing import Union
+
 import pandas as pd
 import tensorflow as tf
 
@@ -20,8 +22,8 @@ class BarrageModel(object):
     def train(
         self,
         cfg: dict,
-        records_train: pd.DataFrame,
-        records_validation: pd.DataFrame,
+        records_train: Union[pd.DataFrame, dataset.core.Records],
+        records_validation: Union[pd.DataFrame, dataset.core.Records],
         workers: int = 10,
         max_queue_size: int = 10,
     ) -> tf.keras.Model:
@@ -29,9 +31,9 @@ class BarrageModel(object):
 
         Args:
             cfg: dict, config.
-            records_train: pd.DataFrame, training records.
-            records_validation: pd.DataFrame, validation records.
-            workers: int (OPTIONAL = 1), number of process threads for the sequence.
+            records_train: Union[pd.DataFrame, Records], training records.
+            records_validation: Union[pd.DataFrame, Records], validation records.
+            workers: int (OPTIONAL = 10), number of process threads for the sequence.
             max_queue_size: int (OPTIONAL = 10), queue size for the sequence.
 
         Returns:
@@ -113,13 +115,16 @@ class BarrageModel(object):
         return net
 
     def predict(
-        self, records_score: pd.DataFrame, workers: int = 10, max_queue_size: int = 10
-    ) -> dataset.BatchRecordScores:
+        self,
+        records_score: Union[pd.DataFrame, dataset.core.Records],
+        workers: int = 10,
+        max_queue_size: int = 10,
+    ) -> dataset.core.BatchRecordScores:
         """Score records.
 
         Args:
-            records_score: pd.DataFrame, scoring records.
-            workers: int (OPTIONAL = 1), number of process threads for the sequence.
+            records_score: Union[pd.DataFrame, Records], scoring records.
+            workers: int (OPTIONAL = 10), number of process threads for the sequence.
             max_queue_size: int (OPTIONAL = 10), queue size for the sequence.
 
         Returns:

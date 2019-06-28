@@ -82,7 +82,7 @@ class CustomKerasTokenizerWrapper(RecordTransformer):
         # Generator over the text: input data - 0, key - dict key, 0 - remove from array
         def _text_generator(records):
             for ii in range(len(records)):
-                yield self.loader.load(records.iloc[ii])[0][self.in_key][0]
+                yield self.loader.load(records[ii])[0][self.in_key][0]
 
         # Use the generator API
         # Note because we yield a generator over the loader, the data could have

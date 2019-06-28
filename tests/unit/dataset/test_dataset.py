@@ -59,7 +59,7 @@ def test_dataset_init_basics(dataset_dir, base_cfg_dataset, records, mode):
     )
 
     assert ds.num_records == len(records)
-    assert ds.records.equals(records)
+    assert ds.records == records.to_dict(orient="records")
     assert ds.mode == mode
     assert ds.batch_size == batch_size
     assert hasattr(ds, "loader")
@@ -164,7 +164,7 @@ def test_dataset_sample_order(
 class SimpleTransformer(RecordTransformer):
     def fit(self, records):
         num_records = len(records)
-        data_record = self.loader(records.iloc[0])
+        data_record = self.loader(records[0])
         network_params = {
             "num_inputs": len(data_record[0]),
             "num_outputs": len(data_record[1]),
@@ -174,7 +174,7 @@ class SimpleTransformer(RecordTransformer):
         sum_output = np.zeros_like(data_record[1][self.params["output_key"]])
 
         for ind in range(num_records):
-            data_record = self.loader.load(records.iloc[ind])
+            data_record = self.loader.load(records[ind])
             sum_input += data_record[0][self.params["input_key"]]
             sum_output += data_record[1][self.params["output_key"]]
 
@@ -288,16 +288,21 @@ def _assert_batch_equal(b1, b2):
             np.testing.assert_array_equal(b1[ii][key], b2[ii][key])
 
 
+def _to_list(r, b):
+    return r.copy(deep=True).to_dict(orient="records") if b else r.copy(deep=True)
+
+
+@pytest.mark.parametrize("as_list", [False, True])
 @pytest.mark.parametrize("sample_count", [None, "sample_count"])
 @pytest.mark.parametrize("batch_size", [1, 13, 32, 128, 269])
 def test_dataset_train(
-    dataset_dir, transformer_cfg_dataset, records, batch_size, sample_count
+    dataset_dir, transformer_cfg_dataset, records, batch_size, sample_count, as_list
 ):
     transformer_cfg_dataset["sample_count"] = sample_count
     ds_train = RecordDataset(
         artifact_dir=dataset_dir,
         cfg_dataset=transformer_cfg_dataset,
-        records=records,
+        records=_to_list(records, as_list),
         mode=RecordMode.TRAIN,
         batch_size=batch_size,
     )
@@ -320,13 +325,17 @@ def test_dataset_train(
         _assert_batch_equal(result, expected)
 
 
+@pytest.mark.parametrize("as_list", [False, True])
 @pytest.mark.parametrize("batch_size", [1, 13, 32, 128, 269])
-def test_dataset_validation(dataset_dir, transformer_cfg_dataset, records, batch_size):
+def test_dataset_validation(
+    dataset_dir, transformer_cfg_dataset, records, batch_size, as_list
+):
+
     # Fit training dataset
     RecordDataset(
         artifact_dir=dataset_dir,
         cfg_dataset=transformer_cfg_dataset,
-        records=records,
+        records=_to_list(records, as_list),
         mode=RecordMode.TRAIN,
         batch_size=batch_size,
     )
@@ -334,7 +343,7 @@ def test_dataset_validation(dataset_dir, transformer_cfg_dataset, records, batch
     ds_val = RecordDataset(
         artifact_dir=dataset_dir,
         cfg_dataset=transformer_cfg_dataset,
-        records=records,
+        records=_to_list(records, as_list),
         mode=RecordMode.VALIDATION,
         batch_size=batch_size,
     )
@@ -355,13 +364,16 @@ def test_dataset_validation(dataset_dir, transformer_cfg_dataset, records, batch
         _assert_batch_equal(result, expected)
 
 
+@pytest.mark.parametrize("as_list", [False, True])
 @pytest.mark.parametrize("batch_size", [1, 13, 32, 128, 269])
-def test_dataset_score(dataset_dir, transformer_cfg_dataset, records, batch_size):
+def test_dataset_score(
+    dataset_dir, transformer_cfg_dataset, records, batch_size, as_list
+):
     # Fit training dataset
     RecordDataset(
         artifact_dir=dataset_dir,
         cfg_dataset=transformer_cfg_dataset,
-        records=records,
+        records=_to_list(records, as_list),
         mode=RecordMode.TRAIN,
         batch_size=batch_size,
     )
@@ -369,7 +381,7 @@ def test_dataset_score(dataset_dir, transformer_cfg_dataset, records, batch_size
     ds_score = RecordDataset(
         artifact_dir=dataset_dir,
         cfg_dataset=transformer_cfg_dataset,
-        records=records,
+        records=_to_list(records, as_list),
         mode=RecordMode.SCORE,
         batch_size=batch_size,
     )
@@ -390,11 +402,7 @@ def test_dataset_score(dataset_dir, transformer_cfg_dataset, records, batch_size
 
 @pytest.mark.parametrize(
     "s,result",
-    [
-        (pd.Series([1, 4, 2]), [0, 1, 1, 1, 1, 2, 2]),
-        (pd.Series([2, 1, 1, 3]), [0, 0, 1, 2, 3, 3, 3]),
-        (pd.Series([-1, None, 2.0, 1]), [0, 1, 2, 2, 3]),
-    ],
+    [([1, 4, 2], [0, 1, 1, 1, 1, 2, 2]), ([2, 1, 1, 3], [0, 0, 1, 2, 3, 3, 3])],
 )
 def test_convert_sample_count_to_inds(s, result):
     assert convert_sample_count_to_inds(s) == result

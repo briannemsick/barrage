@@ -1,5 +1,4 @@
 import numpy as np
-import pandas as pd
 import pytest
 
 from barrage.dataset import KeySelector, RecordMode
@@ -7,26 +6,26 @@ from barrage.dataset import KeySelector, RecordMode
 
 @pytest.fixture
 def record():
-    return pd.Series({"a": 1, "b": 2, "c": "three", "d": 4, "e": "five"})
+    return {"a": 1, "b": 2, "c": "three", "d": 4, "e": "five"}
 
 
 @pytest.fixture
 def records():
-    return pd.DataFrame([{"x1": 1, "x2": 2, "y1": 3}, {"x1": 4, "x2": 5, "y1": 6}])
+    return [{"x1": 1, "x2": 2, "y1": 3}, {"x1": 4, "x2": 5, "y1": 6}]
 
 
 @pytest.mark.parametrize(
     "mode", [RecordMode.TRAIN, RecordMode.VALIDATION, RecordMode.SCORE]
 )
 def test_key_selector(mode, record, records):
-    # load
+    # no sample weights
     params = {
         "inputs": {"x1": ["a", "b"], "x2": ["c"]},
         "outputs": {"y1": ["d"], "y2": ["e"]},
     }
-    cs = KeySelector(mode, params)
+    ks = KeySelector(mode, params)
 
-    result = cs.load(record)
+    result = ks.load(record)
     expected = (
         {"x1": np.array([1, 2]), "x2": np.array(["three"])},
         {"y1": np.array([4]), "y2": np.array(["five"])},
@@ -35,33 +34,19 @@ def test_key_selector(mode, record, records):
         expected = (expected[0],)
     _assert_batch_equal(result, expected)
 
-    # load all
-    params = {"inputs": {"x": ["x1", "x2"]}, "outputs": {"y": ["y1"]}}
-    cs = KeySelector(mode, params)
-
-    result = cs.load_all(records)
-    expected = ({"x": np.array([[1, 2], [4, 5]])}, {"y": np.array([[3], [6]])})
-    if mode == RecordMode.SCORE:
-        expected = (expected[0],)
-    _assert_batch_equal(result, expected)
-
-
-@pytest.mark.parametrize(
-    "mode", [RecordMode.TRAIN, RecordMode.VALIDATION, RecordMode.SCORE]
-)
-def test_key_selector_sample_weights(mode, record):
+    # sample weights
     params = {
         "inputs": {"x1": ["a", "b"], "x2": ["c"]},
         "outputs": {"y1": ["d"], "y2": ["e"]},
         "sample_weights": {"y1": "a", "y2": "b"},
     }
-    cs = KeySelector(mode, params)
+    ks = KeySelector(mode, params)
 
-    result = cs.load(record)
+    result = ks(record)
     expected = (
         {"x1": np.array([1, 2]), "x2": np.array(["three"])},
         {"y1": np.array([4]), "y2": np.array(["five"])},
-        {"y1": 1, "y2": 2}
+        {"y1": 1, "y2": 2},
     )
     if mode == RecordMode.SCORE:
         expected = (expected[0],)

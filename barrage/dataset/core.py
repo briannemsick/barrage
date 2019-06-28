@@ -1,14 +1,15 @@
 import enum
-from typing import Dict, List, Tuple, Union
+from typing import Any, Dict, List, Tuple, Union
 
 from cytoolz import merge_with
 import numpy as np
 
+Record = Dict[str, Any]
+Records = List[Record]
 
-BatchDataRecordsElement = Dict[str, np.ndarray]
-BatchDataRecords = Tuple[BatchDataRecordsElement, ...]
-DataRecordElement = Dict[str, Union[np.ndarray, float]]
-DataRecord = Tuple[DataRecordElement, ...]
+DataRecord = Tuple[Dict[str, Union[np.ndarray, float]], ...]
+BatchDataRecords = Tuple[Dict[str, np.ndarray], ...]
+
 RecordScore = Dict[str, np.ndarray]
 BatchRecordScores = List[RecordScore]
 

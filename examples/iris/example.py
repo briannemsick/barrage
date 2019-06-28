@@ -173,7 +173,8 @@ class CustomIrisLoader(RecordLoader):
         # other datasets.
 
         # Note: if the data was a filepath we could load the file here instead.
-        X = {"iris": np.array(record[["i1", "i2", "i3", "i4"]])}
+        keys = ["i1", "i2", "i3", "i4"]
+        X = {"iris": np.array([record[k] for k in keys])}
         if self.mode == RecordMode.TRAIN or self.mode == RecordMode.VALIDATION:
             y = {"flower": np.array(record["label"])}
             return (X, y)
@@ -189,7 +190,7 @@ class CustomInputMeanVarTransformer(RecordTransformer):
         key = self.params["key"]
 
         # We will use Var(X - K) = Var(X) in computation
-        data_record_0 = self.loader.load(records.iloc[0])
+        data_record_0 = self.loader.load(records[0])
 
         # Reminder data record is (X, y) or (X, y, w)
         K = data_record_0[0][key]
@@ -203,7 +204,7 @@ class CustomInputMeanVarTransformer(RecordTransformer):
         # Iterate over records
         for ii in range(len(records)):
             # Load record
-            dr = self.loader.load(records.iloc[ii])
+            dr = self.loader.load(records[ii])
             X = dr[0][key]
 
             mean += X

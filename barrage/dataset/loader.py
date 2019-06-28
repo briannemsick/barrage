@@ -1,9 +1,8 @@
 from abc import ABC, abstractmethod
 
 import numpy as np
-import pandas as pd
 
-from barrage.dataset import core, BatchDataRecords, DataRecord, RecordMode
+from barrage.dataset import core
 
 
 class RecordLoader(ABC):
@@ -14,37 +13,24 @@ class RecordLoader(ABC):
         params: dict.
     """
 
-    def __init__(self, mode: RecordMode, params: dict):  # pragma: no cover
+    def __init__(self, mode: core.RecordMode, params: dict):  # pragma: no cover
         self.mode = mode
         self.params = params
 
-    def __call__(self, record: pd.Series) -> DataRecord:
+    def __call__(self, record: core.Record) -> core.DataRecord:
         return self.load(record)
 
     @abstractmethod
-    def load(self, record: pd.Series) -> DataRecord:  # pragma: no cover
+    def load(self, record: core.Record) -> core.DataRecord:  # pragma: no cover
         """Method for loading a record into DataRecord.
 
         Args:
-            record: pd.Series, record.
+            record: Record, record.
 
         Returns:
             DataRecord, data record.
         """
         raise NotImplementedError()
-
-    def load_all(self, records: pd.DataFrame) -> BatchDataRecords:
-        """Method for loading all records into a BatchDataRecords.
-
-        Args:
-            records: pd.DataFrame, records.
-
-        Returns:
-            BatchDataRecords, all data records.
-        """
-        return core.batchify_data_records(
-            [self.load(record) for _, record in records.iterrows()]
-        )
 
 
 class KeySelector(RecordLoader):
@@ -61,7 +47,7 @@ class KeySelector(RecordLoader):
         KeyError/TypeError, illegal params.
     """
 
-    def __init__(self, mode: RecordMode, params: dict):
+    def __init__(self, mode: core.RecordMode, params: dict):
         super().__init__(mode, params)
 
         valid_keys = {"inputs", "outputs", "sample_weights"}
@@ -86,19 +72,26 @@ class KeySelector(RecordLoader):
         if not (isinstance(self.sample_weights, dict) or self.sample_weights is None):
             raise TypeError("KeySelector 'sample_weights' must be type dict or None")
 
-    def load(self, record: pd.Series) -> DataRecord:
+    def load(self, record: core.Record) -> core.DataRecord:
         """Load a record by selecting keys corresponding to inputs, outputs, and
         maybe sample weights.
 
         Args:
-            record: pd.Series, record.
+            record: Record, record.
 
         Returns:
             DataRecord, data record.
         """
-        X = {k: np.array(record[v]) for k, v in self.inputs.items()}
-        if self.mode == RecordMode.TRAIN or self.mode == RecordMode.VALIDATION:
-            y = {k: np.array(record[v]) for k, v in self.outputs.items()}
+
+        def _index_dict_to_arr(d, lst):
+            return np.array([d[v] for v in lst])
+
+        X = {k: _index_dict_to_arr(record, v) for k, v in self.inputs.items()}
+        if (
+            self.mode == core.RecordMode.TRAIN
+            or self.mode == core.RecordMode.VALIDATION
+        ):
+            y = {k: _index_dict_to_arr(record, v) for k, v in self.outputs.items()}
             if self.sample_weights is not None:
                 w = {k: np.array(record[v]) for k, v in self.sample_weights.items()}
                 return (X, y, w)

@@ -21,6 +21,8 @@ The Barrage ``python`` API is concise and simple:
 
   # Train a model
   config = {...}
+  training_dataframe = ...  # pd.DataFrame or list of dicts
+  validation_dataframe = ... # pd.DataFrame or list of dicts
   bm = BarrageModel(artifact_directory)
   bm.train(config, training_dataframe, validation_dataframe)
 

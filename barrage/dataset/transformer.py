@@ -1,8 +1,7 @@
 from abc import ABC, abstractmethod
 
-import pandas as pd
-
-from barrage.dataset import DataRecord, RecordLoader, RecordMode, RecordScore
+from barrage.dataset import core
+from barrage.dataset.loader import RecordLoader
 
 
 class RecordTransformer(ABC):
@@ -18,7 +17,7 @@ class RecordTransformer(ABC):
     """
 
     def __init__(
-        self, mode: RecordMode, loader: RecordLoader, params: dict
+        self, mode: core.RecordMode, loader: RecordLoader, params: dict
     ):  # pragma: no cover
         self.mode = mode
         self.loader = loader
@@ -26,16 +25,18 @@ class RecordTransformer(ABC):
         self._network_params = {}  # type: dict
 
     @abstractmethod
-    def fit(self, records: pd.DataFrame):  # pragma: no cover
+    def fit(self, records: core.Records):  # pragma: no cover
         """Fit transform to records.
 
         Args:
-            records: pd.DataFrame, data records.
+            records: Records, records.
         """
         raise NotImplementedError()
 
     @abstractmethod
-    def transform(self, data_record: DataRecord) -> DataRecord:  # pragma: no cover
+    def transform(
+        self, data_record: core.DataRecord
+    ) -> core.DataRecord:  # pragma: no cover
         """Apply transform to a data record.
 
         Args:
@@ -47,7 +48,9 @@ class RecordTransformer(ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    def postprocess(self, score: RecordScore) -> RecordScore:  # pragma: no cover
+    def postprocess(
+        self, score: core.RecordScore
+    ) -> core.RecordScore:  # pragma: no cover
         """Postprocess score to undo transform.
 
         Args:
@@ -92,13 +95,13 @@ class IdentityTransformer(RecordTransformer):
     every dataset has a transformer.
     """
 
-    def fit(self, records: pd.DataFrame):
+    def fit(self, records: core.Records):
         pass
 
-    def transform(self, data_record: DataRecord) -> DataRecord:
+    def transform(self, data_record: core.DataRecord) -> core.DataRecord:
         return data_record
 
-    def postprocess(self, score: RecordScore) -> RecordScore:
+    def postprocess(self, score: core.RecordScore) -> core.RecordScore:
         return score
 
     def save(self, path: str):

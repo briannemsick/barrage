@@ -4,10 +4,10 @@ Barrage Dataset
 
 .. contents:: **Table of Contents**:
 
-
-Barrage datasets are built around ``pandas.DataFrame``  and are designed to be flexible, performant,
-and powerful data iterators. The underlying data in a Barrage dataset can either be stored as filepaths
-or directly inside columns a convenient property for both small and large datasets.
+Barrage datasets are flexible, performant, and powerful data iterators built around
+``list of dictionaries`` -> **DataFrame-like**. The underlying data can be conveniently
+stored directly inside the DataFrame for small datasets or as filepaths inside the
+DataFrame for large datasets.
 
 Datasets are comprised of three components:
 
@@ -71,6 +71,26 @@ Data Types
 
 Data types are critical at each hand-off between components. Here is a summary of the data types:
 
+``Record``: a dictionary that can be loaded into a ``Data Record``.
+
+.. code-block:: python
+
+  # Example: in memory
+  record = {"x1": 1, "x2": 2, "y": 0}
+
+  # Example: on disk
+  record = {"filepath": "/tmp/bear.jpg", "label": "bear"}
+
+``Records``: are a list of dictionaries that can each be loaded into a ``Data Record``.
+
+.. code-block:: python
+
+  # Example: in memory
+  records = [{"x1": 1, "x2": 2, "y": 0}, {"x1": 2, "x2": 1, "y": 1}]
+
+  # Example: on disk
+  records = [{"filepath": "/tmp/cat.jpg", "label": "cat"}, {"filepath": "/tmp/dog.jpg", "label": "dog"}]
+
 ``Data Record``: a tuple of dictionaries of arrays comprising a single element of a
 ``TensorFlow.Keras`` batch.
 
@@ -130,15 +150,15 @@ predict.
 +------------------------------+-----------------+------------------+
 | Component Action             | Input Data Type | Output Data Type |
 +==============================+=================+==================+
-| loader.__call__(...)         | pd.Series       | Data Record      |
+| loader.load(...)             | Record          | Data Record      |
 +------------------------------+-----------------+------------------+
-| transformer.fit(...)         | pd.DataFrame    | None             |
+| transformer.fit(...)         | Records         | None             |
 +------------------------------+-----------------+------------------+
 | transformer.score(...)       | Data Record     | Data Record      |
 +------------------------------+-----------------+------------------+
 | transformer.postprocess(...) | Record Score    | Record Score     |
 +------------------------------+-----------------+------------------+
-| augmentor.__call__(...)      | Data Record     | Data Record      |
+| augmentor.augment(...)       | Data Record     | Data Record      |
 +------------------------------+-----------------+------------------+
 
 **Note**: the underlying dataset implementation stacks ``Data Records`` into
@@ -148,8 +168,8 @@ predict.
 
 #. Loader:
 
-   #. Input Data - load a text file or select text column key.
-   #. Output Data - select label column key.
+   #. Input Data - load a text file or select text key.
+   #. Output Data - select label key.
 
 #. Transformer:
 
@@ -161,8 +181,8 @@ predict.
 
 #. Loader:
 
-   #. Input Data - load input stream(s) file(s) or select column(s) key(s).
-   #. Output Data - load output stream(s) file(s) or select column(s) key(s).
+   #. Input Data - load input stream(s) file(s) or select key(s).
+   #. Output Data - load output stream(s) file(s) or select key(s).
 
 #. Transformer:
 
@@ -181,8 +201,8 @@ predict.
 Loader
 ------
 
-The loader takes a record (``pd.Series``) and transforms it into a ``Data Record``. This could be
-as simple as directly indexing the ``pd.Series`` or loading a filepath stored in the ``pd.Series``.
+The loader takes a record (``Record``) and transforms it into a ``Data Record``. This could be
+as simple as directly indexing the key's of the ``Record`` or loading a filepath stored in the ``Record``.
 
 ~~~~~~~~~~
 Base Class
@@ -198,10 +218,11 @@ To write a new ``RecordLoader`` implement the abstract ``load`` method:
 .. code-block:: python
 
   @abstractmethod
-  def load(self, record: pd.Series) -> DataRecord:  # pragma: no cover
+  def load(self, record: core.Record) -> core.DataRecord:  # pragma: no cover
       """Method for loading a record into DataRecord.
+
       Args:
-          record: pd.Series, record.
+          record: Record, record.
 
       Returns:
           DataRecord, data record.
@@ -209,23 +230,20 @@ To write a new ``RecordLoader`` implement the abstract ``load`` method:
       raise NotImplementedError()
 
 
-**Note**: ``RecordLoader`` has a special ``load_all`` method that can be used in fitting the
-``transformer``. ``loader.load_all(dataframe)`` returns ``Batch Data Records``.
+~~~~~~~~~~~
+KeySelector
+~~~~~~~~~~~
 
-~~~~~~~~~~~~~~
-ColumnSelector
-~~~~~~~~~~~~~~
-
-Barrage has a single built-in ``loader``: ``ColumnSelector``.
+Barrage has a single built-in ``loader``: ``KeySelector``.
 
 Params:
 
 .. code:: javascript
 
   {
-    "inputs": {input_layer_name: [columns], ...}
-    "outputs": {output_layer_names: [columns], ...}
-    "sample_weights": {output_layer_name: column, ...} or None
+    "inputs": {input_layer_name: [keys], ...}
+    "outputs": {output_layer_names: [keys], ...}
+    "sample_weights": {output_layer_name: key, ...} or None
   }
 
 -----------
@@ -252,18 +270,18 @@ the data was stored by the user. To write a new ``RecordTransformer`` implement 
 .. code-block:: python
 
   @abstractmethod
-  def fit(self, records: pd.DataFrame):  # pragma: no cover
+  def fit(self, records: core.Records):  # pragma: no cover
       """Fit transform to records.
 
       Args:
-          records: pd.DataFrame, data records.
+          records: Records, records.
       """
       raise NotImplementedError()
 
   @abstractmethod
   def transform(
-      self, data_record: DataRecord
-  ) -> DataRecord:  # pragma: no cover
+      self, data_record: core.DataRecord
+  ) -> core.DataRecord:  # pragma: no cover
       """Apply transform to a data record.
 
       Args:
@@ -276,8 +294,8 @@ the data was stored by the user. To write a new ``RecordTransformer`` implement 
 
   @abstractmethod
   def postprocess(
-      self, score: RecordScore
-  ) -> RecordScore:  # pragma: no cover
+      self, score: core.RecordScore
+  ) -> core.RecordScore:  # pragma: no cover
       """Postprocess score to undo transform.
 
       Args:

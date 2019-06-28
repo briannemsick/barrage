@@ -22,17 +22,17 @@ def gen_records(num_samples):
     x4 = np.random.normal(0.5, 0.25, num_samples) + y
     df = pd.DataFrame({"x1": x1, "x2": x2, "x3": x3, "x4": x4, "y": y})
     df["label"] = df["y"].map({0: "class_0", 1: "class_1", 2: "class_2"})
-    return df
+    return df.to_dict(orient="records")
 
 
 class Transformer(RecordTransformer):
     def __init__(self, mode, loader, params):
         super().__init__(mode, loader, params)
-        self.output_column = list(self.loader.params["outputs"].values())[0][0]
+        self.output_key = list(self.loader.params["outputs"].values())[0][0]
         self.output_name = list(self.loader.params["outputs"].keys())[0]
 
     def fit(self, records):
-        class_names = records[self.output_column].unique()
+        class_names = list({record[self.output_key] for record in records})
         self.class_map = {ii: class_names[ii] for ii in range(len(class_names))}
         self.inverse_class_map = dict(map(reversed, self.class_map.items()))
 
@@ -84,4 +84,5 @@ def test_simple_output(artifact_dir):
     scores = bm.predict(records_score)
 
     df_scores = pd.DataFrame(scores)
+    records_score = pd.DataFrame(records_score)
     assert (df_scores["softmax"] == records_score["label"]).mean() >= 0.90

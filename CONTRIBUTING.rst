@@ -1,5 +1,5 @@
 ===============================
-Github Issues and Pull Requests
+GitHub Issues and Pull Requests
 ===============================
 
 Contributions are both welcome and encouraged. With that in mind here are some
@@ -72,6 +72,14 @@ Please run ``lint``, ``mypy``, and ``pytest`` before raising the pull request.
 
   python -m pytest --cov=barrage --cov-config=setup.cfg --cov-report html:cov_html tests/
 
+To build the ``Read the Docs`` locally:
+
+::
+
+  cd docs
+  pip install -r requirements.txt
+  sphinx-apidoc -f -o source ../barrage
+  make html
 
 ~~~~~~~~~~~~~~~~~~~~~~
 Raising a Pull Request

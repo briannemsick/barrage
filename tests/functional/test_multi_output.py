@@ -28,9 +28,7 @@ def gen_records(num_samples):
     z2 = np.random.randint(-1, 2, num_samples).astype(np.float32)
 
     # Regression output and temporal weights
-    y_reg_1 = (
-        -0.2 * x1 + 0.3 * x2 + 0.4 * x3 + np.random.normal(0, 0.01, num_samples)
-    )
+    y_reg_1 = -0.2 * x1 + 0.3 * x2 + 0.4 * x3 + np.random.normal(0, 0.01, num_samples)
     y_reg_2 = -0.5 * x3 + 0.5 * z1 * z2 + np.random.normal(0, 0.01, num_samples)
     w_reg = np.maximum(y_reg_1, 2)
 
