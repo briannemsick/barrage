@@ -39,8 +39,8 @@ class KeySelector(RecordLoader):
     Args:
         mode: RecordMode, load mode.
         params: dict,
-            inputs: dict, {input: [keys], ...}
-            outputs: dict, {output: [keys], ...}
+            inputs: dict, {input: key or [keys], ...}
+            outputs: dict, {output: key or [keys], ...}
             sample_weights: dict or None (OPTIONAL), {output: key, ...}
 
     Raises:
@@ -83,8 +83,11 @@ class KeySelector(RecordLoader):
             DataRecord, data record.
         """
 
-        def _index_dict_to_arr(d, lst):
-            return np.array([d[v] for v in lst])
+        def _index_dict_to_arr(d, keys):
+            if isinstance(keys, list):
+                return np.array([d[k] for k in keys])
+            else:
+                return np.array(d[keys])
 
         X = {k: _index_dict_to_arr(record, v) for k, v in self.inputs.items()}
         if (

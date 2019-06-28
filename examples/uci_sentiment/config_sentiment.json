@@ -39,8 +39,7 @@
       "loss": {
         "import": "binary_crossentropy"
       },
-      "metrics": [
-        {
+      "metrics": [{
           "import": "accuracy"
         },
         {

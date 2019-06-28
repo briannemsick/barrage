@@ -110,7 +110,7 @@ def vanilla_iris():
     }
 
     # Train the model
-    BarrageModel("vanilla").train(cfg, records_train, records_val)
+    BarrageModel("artifacts_vanilla").train(cfg, records_train, records_val)
 
 
 def overkill_iris():
@@ -160,7 +160,7 @@ def overkill_iris():
     }
 
     # Train the model
-    BarrageModel("overkill").train(cfg, records_train, records_val)
+    BarrageModel("artifacts_overkill").train(cfg, records_train, records_val)
 
 
 class CustomIrisLoader(RecordLoader):

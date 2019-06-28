@@ -241,8 +241,8 @@ Params:
 .. code:: javascript
 
   {
-    "inputs": {input_layer_name: [keys], ...}
-    "outputs": {output_layer_names: [keys], ...}
+    "inputs": {input_layer_name: key or [keys], ...}
+    "outputs": {output_layer_names: key or [keys], ...}
     "sample_weights": {output_layer_name: key, ...} or None
   }
 

@@ -1,5 +1,5 @@
 """
-UCI Sentiment Labelled Sentences dataset example
+UCI Sentiment Labelled Sentences dataset example.
 
 This examples demonstrates the following:
 

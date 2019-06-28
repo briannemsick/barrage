@@ -10,14 +10,14 @@ def record():
 
 
 @pytest.fixture
-def records():
-    return [{"x1": 1, "x2": 2, "y1": 3}, {"x1": 4, "x2": 5, "y1": 6}]
+def record_arr():
+    return {"x": np.zeros((28, 28, 1)), "y": 7}
 
 
 @pytest.mark.parametrize(
     "mode", [RecordMode.TRAIN, RecordMode.VALIDATION, RecordMode.SCORE]
 )
-def test_key_selector(mode, record, records):
+def test_key_selector(mode, record):
     # no sample weights
     params = {
         "inputs": {"x1": ["a", "b"], "x2": ["c"]},
@@ -47,6 +47,26 @@ def test_key_selector(mode, record, records):
         {"x1": np.array([1, 2]), "x2": np.array(["three"])},
         {"y1": np.array([4]), "y2": np.array(["five"])},
         {"y1": 1, "y2": 2},
+    )
+    if mode == RecordMode.SCORE:
+        expected = (expected[0],)
+    _assert_batch_equal(result, expected)
+
+
+@pytest.mark.parametrize(
+    "mode", [RecordMode.TRAIN, RecordMode.VALIDATION, RecordMode.SCORE]
+)
+def test_key_selector_arr(mode, record_arr):
+    params = {
+        "inputs": {"img": "x"},
+        "outputs": {"label": "y"}
+    }
+    ks = KeySelector(mode, params)
+
+    result = ks.load(record_arr)
+    expected = (
+        {"img": np.zeros((28, 28, 1))},
+        {"label": np.array([7])},
     )
     if mode == RecordMode.SCORE:
         expected = (expected[0],)
