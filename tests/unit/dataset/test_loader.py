@@ -57,17 +57,11 @@ def test_key_selector(mode, record):
     "mode", [RecordMode.TRAIN, RecordMode.VALIDATION, RecordMode.SCORE]
 )
 def test_key_selector_arr(mode, record_arr):
-    params = {
-        "inputs": {"img": "x"},
-        "outputs": {"label": "y"}
-    }
+    params = {"inputs": {"img": "x"}, "outputs": {"label": "y"}}
     ks = KeySelector(mode, params)
 
     result = ks.load(record_arr)
-    expected = (
-        {"img": np.zeros((28, 28, 1))},
-        {"label": np.array([7])},
-    )
+    expected = ({"img": np.zeros((28, 28, 1))}, {"label": np.array([7])})
     if mode == RecordMode.SCORE:
         expected = (expected[0],)
     _assert_batch_equal(result, expected)
