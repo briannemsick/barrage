@@ -55,7 +55,7 @@ class KeySelector(RecordLoader):
         params: dict,
             inputs: dict, {input: [keys], ...}
             outputs: dict, {output: [keys], ...}
-            sample_weights: dict or None (OPTIONAL), {output: key}
+            sample_weights: dict or None (OPTIONAL), {output: key, ...}
 
     Raises:
         KeyError/TypeError, illegal params.
@@ -106,14 +106,3 @@ class KeySelector(RecordLoader):
                 return (X, y)
         else:
             return (X,)
-
-
-class IdentityLoader(RecordLoader):
-    """Special loader that delegates pd.Series -> DataRecord to the transformer.
-    """
-
-    def load(self, record: pd.Series) -> DataRecord:
-        return record  # type: ignore
-
-    def load_all(self, records: pd.DataFrame) -> BatchDataRecords:
-        return records  # type: ignore

@@ -16,6 +16,6 @@ from .loader import RecordLoader  # noqa
 from .transformer import RecordTransformer  # noqa
 
 # Implementations
-from .loader import KeySelector, IdentityLoader  # noqa
+from .loader import KeySelector  # noqa
 from .transformer import IdentityTransformer  # noqa
 from .dataset import RecordDataset  # noqa

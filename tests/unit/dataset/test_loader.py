@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from barrage.dataset import KeySelector, IdentityLoader, RecordMode
+from barrage.dataset import KeySelector, RecordMode
 
 
 @pytest.fixture
@@ -135,7 +135,7 @@ def _assert_batch_equal(b1, b2):
 @pytest.mark.parametrize(
     "mode", [RecordMode.TRAIN, RecordMode.VALIDATION, RecordMode.SCORE]
 )
-def test_load_all(mode, records):
+def test_key_selector_load_all(mode, records):
     params = {"inputs": {"x": ["x1", "x2"]}, "outputs": {"y": ["y1"]}}
     cs = KeySelector(mode, params)
 
@@ -143,12 +143,3 @@ def test_load_all(mode, records):
     if mode == RecordMode.SCORE:
         expected = (expected[0],)
     _assert_batch_equal(cs.load_all(records), expected)
-
-
-@pytest.mark.parametrize(
-    "mode", [RecordMode.TRAIN, RecordMode.VALIDATION, RecordMode.SCORE]
-)
-def test_identity_loader(mode, record, records):
-    il = IdentityLoader(mode, {})
-    assert il(record).equals(record)
-    assert il.load_all(records).equals(records)
