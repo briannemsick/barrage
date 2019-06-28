@@ -2,7 +2,6 @@ import os
 
 import numpy as np
 import pandas as pd
-import pytest
 from tensorflow.python.keras import layers
 from tensorflow.python.keras.models import Model
 
@@ -14,30 +13,29 @@ NUM_SAMPLES_VALIDATION = 216
 NUM_SAMPLES_SCORE = 297
 
 
-@pytest.fixture
-def records_train():
+def gen_records(num_samples):
     # Classification output and weight
-    y_cls = np.random.randint(0, 3, NUM_SAMPLES_TRAIN).astype(np.float32)
+    y_cls = np.random.randint(0, 3, num_samples).astype(np.float32)
     w_cls = y_cls * 0.1 + 1
 
     # x = input 1
-    x1 = np.random.normal(0, 2.0, NUM_SAMPLES_TRAIN) + y_cls
-    x2 = np.random.normal(-1.0, 0.25, NUM_SAMPLES_TRAIN) + y_cls
-    x3 = np.random.normal(1.0, 0.1, NUM_SAMPLES_TRAIN) + y_cls
+    x1 = np.random.normal(0, 2.0, num_samples) + y_cls
+    x2 = np.random.normal(-1.0, 0.25, num_samples) + y_cls
+    x3 = np.random.normal(1.0, 0.1, num_samples) + y_cls
 
     # z = input 2
-    z1 = np.random.normal(0.5, 0.25, NUM_SAMPLES_TRAIN) + y_cls
-    z2 = np.random.randint(-1, 2, NUM_SAMPLES_TRAIN).astype(np.float32)
+    z1 = np.random.normal(0.5, 0.25, num_samples) + y_cls
+    z2 = np.random.randint(-1, 2, num_samples).astype(np.float32)
 
     # Regression output and temporal weights
     y_reg_1 = (
-        -0.2 * x1 + 0.3 * x2 + 0.4 * x3 + np.random.normal(0, 0.01, NUM_SAMPLES_TRAIN)
+        -0.2 * x1 + 0.3 * x2 + 0.4 * x3 + np.random.normal(0, 0.01, num_samples)
     )
-    y_reg_2 = -0.5 * x3 + 0.5 * z1 * z2 + np.random.normal(0, 0.01, NUM_SAMPLES_TRAIN)
+    y_reg_2 = -0.5 * x3 + 0.5 * z1 * z2 + np.random.normal(0, 0.01, num_samples)
     w_reg = np.maximum(y_reg_1, 2)
 
     # Sample
-    s = np.random.randint(1, 5, NUM_SAMPLES_TRAIN).astype(np.float32)
+    s = np.random.randint(1, 5, num_samples).astype(np.float32)
 
     df = pd.DataFrame(
         {
@@ -52,85 +50,6 @@ def records_train():
             "w_cls": w_cls,
             "w_reg": w_reg,
             "sample": s,
-        }
-    )
-    return df
-
-
-@pytest.fixture
-def records_validation():
-    # Classification output and weight
-    y_cls = np.random.randint(0, 3, NUM_SAMPLES_VALIDATION).astype(np.float32)
-    w_cls = y_cls * 0.1 + 1
-
-    # x = input 1
-    x1 = np.random.normal(0, 2.0, NUM_SAMPLES_VALIDATION) + y_cls
-    x2 = np.random.normal(-1.0, 0.25, NUM_SAMPLES_VALIDATION) + y_cls
-    x3 = np.random.normal(1.0, 0.1, NUM_SAMPLES_VALIDATION) + y_cls
-
-    # z = input 2
-    z1 = np.random.normal(0.5, 0.25, NUM_SAMPLES_VALIDATION) + y_cls
-    z2 = np.random.randint(-1, 2, NUM_SAMPLES_VALIDATION).astype(np.float32)
-
-    # Regression output and temporal weights
-    y_reg_1 = (
-        -0.2 * x1
-        + 0.3 * x2
-        + 0.4 * x3
-        + np.random.normal(0, 0.01, NUM_SAMPLES_VALIDATION)
-    )
-    y_reg_2 = (
-        -0.5 * x3 + 0.5 * z1 * z2 + np.random.normal(0, 0.01, NUM_SAMPLES_VALIDATION)
-    )
-    w_reg = np.maximum(y_reg_1, 2)
-
-    df = pd.DataFrame(
-        {
-            "x1": x1,
-            "x2": x2,
-            "x3": x3,
-            "z1": z1,
-            "z2": z2,
-            "y_cls": y_cls,
-            "y_reg_1": y_reg_1,
-            "y_reg_2": y_reg_2,
-            "w_cls": w_cls,
-            "w_reg": w_reg,
-        }
-    )
-    return df
-
-
-@pytest.fixture
-def records_score():
-    # Classification output
-    y_cls = np.random.randint(0, 3, NUM_SAMPLES_SCORE).astype(np.float32)
-
-    # x = input 1
-    x1 = np.random.normal(0, 2.0, NUM_SAMPLES_SCORE) + y_cls
-    x2 = np.random.normal(-1.0, 0.25, NUM_SAMPLES_SCORE) + y_cls
-    x3 = np.random.normal(1.0, 0.1, NUM_SAMPLES_SCORE) + y_cls
-
-    # z = input 2
-    z1 = np.random.normal(0.5, 0.25, NUM_SAMPLES_SCORE) + y_cls
-    z2 = np.random.randint(-1, 2, NUM_SAMPLES_SCORE).astype(np.float32)
-
-    # Regression output
-    y_reg_1 = (
-        -0.2 * x1 + 0.3 * x2 + 0.4 * x3 + np.random.normal(0, 0.01, NUM_SAMPLES_SCORE)
-    )
-    y_reg_2 = -0.5 * x3 + 0.5 * z1 * z2 + np.random.normal(0, 0.01, NUM_SAMPLES_SCORE)
-
-    df = pd.DataFrame(
-        {
-            "x1": x1,
-            "x2": x2,
-            "x3": x3,
-            "z1": z1,
-            "z2": z2,
-            "y_cls": y_cls,
-            "y_reg_1": y_reg_1,
-            "y_reg_2": y_reg_2,
         }
     )
     return df
@@ -159,7 +78,11 @@ def net():
     return Model(inputs=[input_x, input_z], outputs=[output_reg, output_cls])
 
 
-def test_multi_output(artifact_dir, records_train, records_validation, records_score):
+def test_multi_output(artifact_dir):
+    records_train = gen_records(NUM_SAMPLES_TRAIN)
+    records_validation = gen_records(NUM_SAMPLES_VALIDATION)
+    records_score = gen_records(NUM_SAMPLES_SCORE)
+
     loc = os.path.abspath(os.path.dirname(__file__))
     cfg = io_utils.load_json("config_multi_output.json", loc)
 

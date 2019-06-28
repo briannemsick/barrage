@@ -15,6 +15,11 @@ def artifact_path(tmpdir):
     return str(tmpdir)
 
 
+@pytest.fixture(scope="module")
+def shared_artifact_dir(tmpdir_factory):
+    return os.path.join(tmpdir_factory.mktemp("shared"), "artifacts")
+
+
 @pytest.fixture(autouse=True)
 def clear_session():
     tf.keras.backend.clear_session()

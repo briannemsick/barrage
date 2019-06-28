@@ -80,33 +80,16 @@ def cfg():
     }
 
 
-@pytest.fixture(scope="module")
-def shared_artifact_dir(tmpdir_factory):
-    return os.path.join(tmpdir_factory.mktemp("shared"), "artifacts")
-
-
-@pytest.fixture
-def records_train():
-    y = np.random.rand(NUM_SAMPLES, 2) + 100
+def gen_records(num_samples):
+    y = np.random.rand(num_samples, 2) + 100
     x = y + 50
     return pd.DataFrame({"x1": x[:, 0], "x2": x[:, 1], "y1": y[:, 0], "y2": y[:, 1]})
 
 
-@pytest.fixture
-def records_validation():
-    y = np.random.rand(NUM_SAMPLES, 2) + 100
-    x = y + 50
-    return pd.DataFrame({"x1": x[:, 0], "x2": x[:, 1], "y1": y[:, 0], "y2": y[:, 1]})
+def test_train(shared_artifact_dir, cfg):
+    records_train = gen_records(NUM_SAMPLES)
+    records_validation = gen_records(NUM_SAMPLES)
 
-
-@pytest.fixture
-def records_score():
-    y = np.random.rand(NUM_SAMPLES, 2) + 100
-    x = y + 50
-    return pd.DataFrame({"x1": x[:, 0], "x2": x[:, 1], "y1": y[:, 0], "y2": y[:, 1]})
-
-
-def test_train(shared_artifact_dir, cfg, records_train, records_validation):
     bm = engine.BarrageModel(shared_artifact_dir)
     net = bm.train(cfg, records_train, records_validation)
     assert isinstance(net, tf.keras.models.Model)
@@ -137,7 +120,9 @@ def test_train(shared_artifact_dir, cfg, records_train, records_validation):
     )
 
 
-def test_predict(shared_artifact_dir, records_score):
+def test_predict(shared_artifact_dir):
+    records_score = gen_records(NUM_SAMPLES)
+
     bm = engine.BarrageModel(shared_artifact_dir)
     bm.load()
     scores = bm.predict(records_score)

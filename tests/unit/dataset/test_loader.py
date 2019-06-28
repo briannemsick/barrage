@@ -15,79 +15,57 @@ def records():
     return pd.DataFrame([{"x1": 1, "x2": 2, "y1": 3}, {"x1": 4, "x2": 5, "y1": 6}])
 
 
-def test_key_selector(record):
+@pytest.mark.parametrize(
+    "mode", [RecordMode.TRAIN, RecordMode.VALIDATION, RecordMode.SCORE]
+)
+def test_key_selector(mode, record, records):
+    # load
     params = {
-        "inputs": {"x1": ["a", "b"], "x2": ["b", "c"]},
-        "outputs": {"y1": ["d"], "y2": ["e", "d"]},
+        "inputs": {"x1": ["a", "b"], "x2": ["c"]},
+        "outputs": {"y1": ["d"], "y2": ["e"]},
     }
+    cs = KeySelector(mode, params)
 
-    cs = KeySelector(RecordMode.TRAIN, params)
     result = cs.load(record)
-    assert len(result) == 2
-    assert len(result[0]) == 2
-    assert result[0]["x1"].tolist() == [1, 2]
-    assert result[0]["x2"].tolist() == [2, "three"]
-    assert len(result[1]) == 2
-    assert result[1]["y1"].tolist() == [4]
-    assert result[1]["y2"].tolist() == ["five", 4]
+    expected = (
+        {"x1": np.array([1, 2]), "x2": np.array(["three"])},
+        {"y1": np.array([4]), "y2": np.array(["five"])},
+    )
+    if mode == RecordMode.SCORE:
+        expected = (expected[0],)
+    _assert_batch_equal(result, expected)
 
-    cs = KeySelector(RecordMode.VALIDATION, params)
-    result = cs.load(record)
-    assert len(result) == 2
-    assert len(result[0]) == 2
-    assert result[0]["x1"].tolist() == [1, 2]
-    assert result[0]["x2"].tolist() == [2, "three"]
-    assert len(result[1]) == 2
-    assert result[1]["y1"].tolist() == [4]
-    assert result[1]["y2"].tolist() == ["five", 4]
+    # load all
+    params = {"inputs": {"x": ["x1", "x2"]}, "outputs": {"y": ["y1"]}}
+    cs = KeySelector(mode, params)
 
-    cs = KeySelector(RecordMode.SCORE, params)
-    result = cs(record)
-    assert len(result) == 1
-    assert len(result[0]) == 2
-    assert result[0]["x1"].tolist() == [1, 2]
-    assert result[0]["x2"].tolist() == [2, "three"]
+    result = cs.load_all(records)
+    expected = ({"x": np.array([[1, 2], [4, 5]])}, {"y": np.array([[3], [6]])})
+    if mode == RecordMode.SCORE:
+        expected = (expected[0],)
+    _assert_batch_equal(result, expected)
 
 
-def test_key_selector_sample_weights(record):
+@pytest.mark.parametrize(
+    "mode", [RecordMode.TRAIN, RecordMode.VALIDATION, RecordMode.SCORE]
+)
+def test_key_selector_sample_weights(mode, record):
     params = {
-        "inputs": {"x1": ["a", "b"], "x2": ["b", "c"]},
-        "outputs": {"y1": ["d"], "y2": ["e", "d"]},
+        "inputs": {"x1": ["a", "b"], "x2": ["c"]},
+        "outputs": {"y1": ["d"], "y2": ["e"]},
         "sample_weights": {"y1": "a", "y2": "b"},
     }
+    cs = KeySelector(mode, params)
 
-    cs = KeySelector(RecordMode.TRAIN, params)
     result = cs.load(record)
-    assert len(result) == 3
-    assert len(result[0]) == 2
-    assert result[0]["x1"].tolist() == [1, 2]
-    assert result[0]["x2"].tolist() == [2, "three"]
-    assert len(result[1]) == 2
-    assert result[1]["y1"].tolist() == [4]
-    assert result[1]["y2"].tolist() == ["five", 4]
-    assert len(result[2]) == 2
-    assert result[2]["y1"].tolist() == 1
-    assert result[2]["y2"].tolist() == 2
-
-    cs = KeySelector(RecordMode.VALIDATION, params)
-    result = cs.load(record)
-    assert len(result) == 3
-    assert len(result[0]) == 2
-    assert result[0]["x1"].tolist() == [1, 2]
-    assert result[0]["x2"].tolist() == [2, "three"]
-    assert len(result[1]) == 2
-    assert result[1]["y1"].tolist() == [4]
-    assert result[1]["y2"].tolist() == ["five", 4]
-    assert len(result[2]) == 2
-    assert result[2]["y1"].tolist() == 1
-    assert result[2]["y2"].tolist() == 2
-
-    cs = KeySelector(RecordMode.SCORE, params)
-    result = cs(record)
-    assert len(result) == 1
-    assert len(result[0]) == 2
-    assert result[0]["x1"].tolist() == [1, 2]
-    assert result[0]["x2"].tolist() == [2, "three"]
+    expected = (
+        {"x1": np.array([1, 2]), "x2": np.array(["three"])},
+        {"y1": np.array([4]), "y2": np.array(["five"])},
+        {"y1": 1, "y2": 2}
+    )
+    if mode == RecordMode.SCORE:
+        expected = (expected[0],)
+    _assert_batch_equal(result, expected)
 
 
 @pytest.mark.parametrize(
@@ -130,16 +108,3 @@ def _assert_batch_equal(b1, b2):
         assert set(b1[ii].keys()) == set(b2[ii].keys())
         for key in b1[ii].keys():
             np.testing.assert_array_equal(b1[ii][key], b2[ii][key])
-
-
-@pytest.mark.parametrize(
-    "mode", [RecordMode.TRAIN, RecordMode.VALIDATION, RecordMode.SCORE]
-)
-def test_key_selector_load_all(mode, records):
-    params = {"inputs": {"x": ["x1", "x2"]}, "outputs": {"y": ["y1"]}}
-    cs = KeySelector(mode, params)
-
-    expected = ({"x": np.array([[1, 2], [4, 5]])}, {"y": np.array([[3], [6]])})
-    if mode == RecordMode.SCORE:
-        expected = (expected[0],)
-    _assert_batch_equal(cs.load_all(records), expected)

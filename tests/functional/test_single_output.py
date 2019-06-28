@@ -2,7 +2,6 @@ import os
 
 import numpy as np
 import pandas as pd
-import pytest
 from tensorflow.python.keras import layers
 from tensorflow.python.keras.models import Model
 
@@ -15,37 +14,12 @@ NUM_SAMPLES_VALIDATION = 193
 NUM_SAMPLES_SCORE = 122
 
 
-@pytest.fixture
-def records_train():
-    y = np.random.randint(0, 3, NUM_SAMPLES_TRAIN).astype(np.float32)
-    x1 = np.random.normal(0, 2.0, NUM_SAMPLES_TRAIN) + y
-    x2 = np.random.normal(-1.0, 1.0, NUM_SAMPLES_TRAIN) + y
-    x3 = np.random.normal(1.0, 0.5, NUM_SAMPLES_TRAIN) + y
-    x4 = np.random.normal(0.5, 0.25, NUM_SAMPLES_TRAIN) + y
-    df = pd.DataFrame({"x1": x1, "x2": x2, "x3": x3, "x4": x4, "y": y})
-    df["label"] = df["y"].map({0: "class_0", 1: "class_1", 2: "class_2"})
-    return df
-
-
-@pytest.fixture
-def records_validation():
-    y = np.random.randint(0, 3, NUM_SAMPLES_VALIDATION).astype(np.float32)
-    x1 = np.random.normal(0, 2.0, NUM_SAMPLES_VALIDATION) + y
-    x2 = np.random.normal(-1.0, 1.0, NUM_SAMPLES_VALIDATION) + y
-    x3 = np.random.normal(1.0, 0.5, NUM_SAMPLES_VALIDATION) + y
-    x4 = np.random.normal(0.5, 0.25, NUM_SAMPLES_VALIDATION) + y
-    df = pd.DataFrame({"x1": x1, "x2": x2, "x3": x3, "x4": x4, "y": y})
-    df["label"] = df["y"].map({0: "class_0", 1: "class_1", 2: "class_2"})
-    return df
-
-
-@pytest.fixture
-def records_score():
-    y = np.random.randint(0, 3, NUM_SAMPLES_SCORE).astype(np.float32)
-    x1 = np.random.normal(0, 2.0, NUM_SAMPLES_SCORE) + y
-    x2 = np.random.normal(-1.0, 1.0, NUM_SAMPLES_SCORE) + y
-    x3 = np.random.normal(1.0, 0.5, NUM_SAMPLES_SCORE) + y
-    x4 = np.random.normal(0.5, 0.25, NUM_SAMPLES_SCORE) + y
+def gen_records(num_samples):
+    y = np.random.randint(0, 3, num_samples).astype(np.float32)
+    x1 = np.random.normal(0, 2.0, num_samples) + y
+    x2 = np.random.normal(-1.0, 1.0, num_samples) + y
+    x3 = np.random.normal(1.0, 0.5, num_samples) + y
+    x4 = np.random.normal(0.5, 0.25, num_samples) + y
     df = pd.DataFrame({"x1": x1, "x2": x2, "x3": x3, "x4": x4, "y": y})
     df["label"] = df["y"].map({0: "class_0", 1: "class_1", 2: "class_2"})
     return df
@@ -97,7 +71,11 @@ def net(input_dim, dense_dim, num_dense, num_classes):
     return Model(inputs=inputs, outputs=outputs)
 
 
-def test_simple_output(artifact_dir, records_train, records_validation, records_score):
+def test_simple_output(artifact_dir):
+    records_train = gen_records(NUM_SAMPLES_TRAIN)
+    records_validation = gen_records(NUM_SAMPLES_VALIDATION)
+    records_score = gen_records(NUM_SAMPLES_SCORE)
+
     loc = os.path.abspath(os.path.dirname(__file__))
     cfg = io_utils.load_json("config_single_output.json", loc)
 
