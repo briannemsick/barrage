@@ -3,6 +3,7 @@ import os
 import pickle
 
 import numpy as np
+import pandas as pd
 
 
 def load_json(filename: str, path: str = ""):
@@ -64,3 +65,26 @@ def save_pickle(obj, filename: str, path: str = ""):
     """
     with open(os.path.join(path, filename), "wb") as fn:
         pickle.dump(obj, fn)
+
+
+def load_data(filename: str, path: str = "") -> pd.DataFrame:
+    """Load a file into a pandas DataFrame.
+
+    Args:
+        filename: str.
+        path: str.
+
+    Returns:
+        pd.DataFrame.
+    """
+    filepath = os.path.join(path, filename)
+    if not os.path.isfile(filepath):
+        raise FileNotFoundError(f"filepath: {filepath} does not exist")
+
+    ext = os.path.splitext(filepath)[1].lower()
+    if ext == ".json":
+        return pd.read_json(filepath)
+    elif ext == ".csv":
+        return pd.read_csv(filepath)
+    else:
+        raise ValueError("Unsupported extension: {ext}")

@@ -30,7 +30,7 @@ def net():
     """MNIST CNN."""
     inputs = layers.Input(shape=(28, 28, 1), name="img")
     conv_1 = layers.Conv2D(32, (3, 3), activation="relu")(inputs)
-    conv_2 = layers.Conv2D(32, (3, 3), activation="relu")(conv_1)
+    conv_2 = layers.Conv2D(64, (3, 3), activation="relu")(conv_1)
     mp = layers.MaxPooling2D(pool_size=(2, 2))(conv_2)
     flatten = layers.Flatten()(mp)
     dense = layers.Dense(128, activation="relu")(flatten)

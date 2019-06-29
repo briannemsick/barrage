@@ -13,6 +13,7 @@ Welcome to barrage's documentation!
    basics
    config
    dataset
+   cli
    modules
 
 

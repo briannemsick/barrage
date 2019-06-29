@@ -3,6 +3,7 @@ import os
 import pickle
 
 import numpy as np
+import pandas as pd
 import pytest
 
 from barrage.utils import io_utils
@@ -62,3 +63,22 @@ def test_load_pickle(artifact_path, sample_dict):
 
     obj = io_utils.load_pickle(filename, artifact_path)
     assert obj == sample_dict
+
+
+def test_load_data(artifact_path, sample_dict):
+    expected = pd.DataFrame([sample_dict])
+
+    expected.to_json(os.path.join(artifact_path, "unit_test.json"))
+    result = io_utils.load_data("unit_test.json", artifact_path)
+    assert result.equals(expected)
+
+    expected.to_csv(os.path.join(artifact_path, "unit_test.csv"), index=False)
+    result = io_utils.load_data("unit_test.csv", artifact_path)
+    assert result.equals(expected)
+
+    with pytest.raises(FileNotFoundError):
+        io_utils.load_data("test_unit.42", artifact_path)
+
+    expected.to_json(os.path.join(artifact_path, "unit_test.foo"))
+    with pytest.raises(ValueError):
+        io_utils.load_data("unit_test.foo", artifact_path)
