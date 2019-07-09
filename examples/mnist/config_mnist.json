@@ -22,8 +22,8 @@
         "import": "sparse_categorical_crossentropy"
       },
       "metrics": [{
-          "import": "accuracy"
-        }]
+        "import": "accuracy"
+      }]
     }]
   },
   "solver": {

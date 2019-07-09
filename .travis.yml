@@ -9,6 +9,7 @@ install:
   - pip install -e .[tensorflow]
 script:
   - flake8
+  - black . --check
   - find . -name "*.py" | xargs mypy
   - pytest -vv --cov=barrage
 after_success:

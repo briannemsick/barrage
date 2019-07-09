@@ -21,7 +21,7 @@ def get_data():
     records_train = [
         {"x": X_train[ii, ...], "y": y_train[ii]} for ii in range(samples_train)
     ]
-    samples_val = X_val.shape[-0]
+    samples_val = X_val.shape[0]
     records_val = [{"x": X_val[ii, ...], "y": y_val[ii]} for ii in range(samples_val)]
     return records_train, records_val
 

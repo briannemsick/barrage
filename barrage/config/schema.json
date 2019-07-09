@@ -92,9 +92,13 @@
               "type": "string"
             },
             "learning_rate": {
-              "anyOf": [
-                {"type": "number", "exclusiveMinimum": 0},
-                {"$ref": "#/definitions/import_block"}
+              "anyOf": [{
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                {
+                  "$ref": "#/definitions/import_block"
+                }
               ]
             },
             "params": {
@@ -118,25 +122,25 @@
           "minimum": 1
         },
         "learning_rate_reducer": {
-        "type": "object",
-        "properties": {
-          "monitor": {
-            "type": "string"
+          "type": "object",
+          "properties": {
+            "monitor": {
+              "type": "string"
+            },
+            "mode": {
+              "type": "string",
+              "enum": ["min", "max"]
+            },
+            "patience": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "factor": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
           },
-          "mode": {
-            "type": "string",
-            "enum": ["min", "max"]
-          },
-          "patience": {
-            "type": "integer",
-            "minimum": 1
-          },
-          "factor": {
-            "type": "number",
-            "exclusiveMinimum": 0
-          }
-        },
-        "required": ["monitor", "mode", "patience", "factor"]
+          "required": ["monitor", "mode", "patience", "factor"]
         }
       },
       "required": ["optimizer", "batch_size", "epochs"],

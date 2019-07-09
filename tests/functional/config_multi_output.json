@@ -17,8 +17,7 @@
         }
       }
     },
-    "augmentor": [
-      {
+    "augmentor": [{
         "import": "tests.functional.test_multi_output.add_noise",
         "params": {
           "ind": 0,
