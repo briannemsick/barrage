@@ -11,7 +11,9 @@
           "type": "object"
         }
       },
-      "required": ["import"],
+      "required": [
+        "import"
+      ],
       "additionalProperties": false
     }
   },
@@ -39,7 +41,11 @@
           "minimum": 0
         }
       },
-      "required": ["loader", "transformer", "augmentor"],
+      "required": [
+        "loader",
+        "transformer",
+        "augmentor"
+      ],
       "additionalProperties": false
     },
     "model": {
@@ -73,13 +79,19 @@
                 "type": "string"
               }
             },
-            "required": ["name", "loss"],
+            "required": [
+              "name",
+              "loss"
+            ],
             "additionalProperties": false
           },
           "minItems": 1
         }
       },
-      "required": ["network", "outputs"],
+      "required": [
+        "network",
+        "outputs"
+      ],
       "additionalProperties": false
     },
     "solver": {
@@ -92,7 +104,8 @@
               "type": "string"
             },
             "learning_rate": {
-              "anyOf": [{
+              "anyOf": [
+                {
                   "type": "number",
                   "exclusiveMinimum": 0
                 },
@@ -105,7 +118,10 @@
               "type": "object"
             }
           },
-          "required": ["import", "learning_rate"],
+          "required": [
+            "import",
+            "learning_rate"
+          ],
           "additionalProperties": false
         },
         "batch_size": {
@@ -129,7 +145,10 @@
             },
             "mode": {
               "type": "string",
-              "enum": ["min", "max"]
+              "enum": [
+                "min",
+                "max"
+              ]
             },
             "patience": {
               "type": "integer",
@@ -140,10 +159,19 @@
               "exclusiveMinimum": 0
             }
           },
-          "required": ["monitor", "mode", "patience", "factor"]
+          "required": [
+            "monitor",
+            "mode",
+            "patience",
+            "factor"
+          ]
         }
       },
-      "required": ["optimizer", "batch_size", "epochs"],
+      "required": [
+        "optimizer",
+        "batch_size",
+        "epochs"
+      ],
       "additionalProperties": false
     },
     "services": {
@@ -157,10 +185,16 @@
             },
             "mode": {
               "type": "string",
-              "enum": ["min", "max"]
+              "enum": [
+                "min",
+                "max"
+              ]
             }
           },
-          "required": ["monitor", "mode"],
+          "required": [
+            "monitor",
+            "mode"
+          ],
           "additionalProperties": false
         },
         "tensorboard": {
@@ -174,7 +208,10 @@
             },
             "mode": {
               "type": "string",
-              "enum": ["min", "max"]
+              "enum": [
+                "min",
+                "max"
+              ]
             },
             "patience": {
               "type": "integer",
@@ -185,7 +222,12 @@
               "minimum": 0
             }
           },
-          "required": ["monitor", "mode", "patience", "min_delta"]
+          "required": [
+            "monitor",
+            "mode",
+            "patience",
+            "min_delta"
+          ]
         },
         "validation_early_stopping": {
           "type": "object",
@@ -195,7 +237,10 @@
             },
             "mode": {
               "type": "string",
-              "enum": ["min", "max"]
+              "enum": [
+                "min",
+                "max"
+              ]
             },
             "patience": {
               "type": "integer",
@@ -206,7 +251,12 @@
               "minimum": 0
             }
           },
-          "required": ["monitor", "mode", "patience", "min_delta"]
+          "required": [
+            "monitor",
+            "mode",
+            "patience",
+            "min_delta"
+          ]
         }
       },
       "required": [
@@ -218,6 +268,11 @@
       "additionalProperties": false
     }
   },
-  "required": ["dataset", "model", "solver", "services"],
+  "required": [
+    "dataset",
+    "model",
+    "solver",
+    "services"
+  ],
   "additionalProperties": false
 }

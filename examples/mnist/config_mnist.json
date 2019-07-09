@@ -16,20 +16,24 @@
     "network": {
       "import": "example.net"
     },
-    "outputs": [{
-      "name": "target",
-      "loss": {
-        "import": "sparse_categorical_crossentropy"
-      },
-      "metrics": [{
-        "import": "accuracy"
-      }]
-    }]
+    "outputs": [
+      {
+        "name": "target",
+        "loss": {
+          "import": "sparse_categorical_crossentropy"
+        },
+        "metrics": [
+          {
+            "import": "accuracy"
+          }
+        ]
+      }
+    ]
   },
   "solver": {
     "optimizer": {
       "import": "Adam",
-      "learning_rate": 1e-4
+      "learning_rate": 0.0001
     },
     "epochs": 5,
     "batch_size": 128

@@ -17,7 +17,7 @@ setup(
     author_email="brian.nemsick@gmail.com",
     url="https://github.com/briannemsick/barrage/",
     license="MIT",
-    python_requires=">=3.6, <3.8",
+    python_requires=">=3.6",
     install_requires=[
         "Click>=7.0, <8.0",
         "cytoolz>=0.9.0.1, <1.0",
@@ -34,6 +34,7 @@ setup(
             "flake8",
             "mypy",
             "pre-commit",
+            "pre-commit-hooks",
             "pytest",
             "pytest-cov",
         ],

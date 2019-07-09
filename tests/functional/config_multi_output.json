@@ -4,12 +4,24 @@
       "import": "KeySelector",
       "params": {
         "inputs": {
-          "input_x": ["x1", "x2", "x3"],
-          "input_z": ["z1", "z2"]
+          "input_x": [
+            "x1",
+            "x2",
+            "x3"
+          ],
+          "input_z": [
+            "z1",
+            "z2"
+          ]
         },
         "outputs": {
-          "classification": ["y_cls"],
-          "regression": ["y_reg_1", "y_reg_2"]
+          "classification": [
+            "y_cls"
+          ],
+          "regression": [
+            "y_reg_1",
+            "y_reg_2"
+          ]
         },
         "sample_weights": {
           "classification": "w_cls",
@@ -17,7 +29,8 @@
         }
       }
     },
-    "augmentor": [{
+    "augmentor": [
+      {
         "import": "tests.functional.test_multi_output.add_noise",
         "params": {
           "ind": 0,
@@ -40,15 +53,18 @@
     "network": {
       "import": "tests.functional.test_multi_output.net"
     },
-    "outputs": [{
+    "outputs": [
+      {
         "name": "classification",
         "loss": {
           "import": "sparse_categorical_crossentropy"
         },
         "loss_weight": 1.0,
-        "metrics": [{
-          "import": "accuracy"
-        }]
+        "metrics": [
+          {
+            "import": "accuracy"
+          }
+        ]
       },
       {
         "name": "regression",
@@ -56,9 +72,11 @@
           "import": "mse"
         },
         "loss_weight": 0.75,
-        "metrics": [{
-          "import": "mae"
-        }]
+        "metrics": [
+          {
+            "import": "mae"
+          }
+        ]
       }
     ]
   },
@@ -68,7 +86,7 @@
       "learning_rate": {
         "import": "ExponentialDecay",
         "params": {
-          "initial_learning_rate": 1e-3,
+          "initial_learning_rate": 0.001,
           "decay_steps": 100,
           "decay_rate": 0.99
         }
@@ -87,13 +105,13 @@
       "monitor": "loss",
       "mode": "min",
       "patience": 10,
-      "min_delta": 1e-2
+      "min_delta": 0.01
     },
     "validation_early_stopping": {
       "monitor": "val_loss",
       "mode": "min",
       "patience": 10,
-      "min_delta": 1e-2
+      "min_delta": 0.01
     }
   }
 }

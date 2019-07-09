@@ -47,7 +47,7 @@ Please setup your development environment with the following steps:
   # Install the test requiremeents
   pip install -e .[tests]
 
-  # Setup Black
+  # Setup pre-commit hooks
   pre-commit install
 
 

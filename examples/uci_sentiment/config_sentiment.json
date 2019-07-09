@@ -4,10 +4,14 @@
       "import": "KeySelector",
       "params": {
         "inputs": {
-          "sequence": ["sentence"]
+          "sequence": [
+            "sentence"
+          ]
         },
         "outputs": {
-          "target": ["label"]
+          "target": [
+            "label"
+          ]
         }
       }
     },
@@ -34,24 +38,27 @@
         "num_classes": 2
       }
     },
-    "outputs": [{
-      "name": "target",
-      "loss": {
-        "import": "binary_crossentropy"
-      },
-      "metrics": [{
-          "import": "accuracy"
+    "outputs": [
+      {
+        "name": "target",
+        "loss": {
+          "import": "binary_crossentropy"
         },
-        {
-          "import": "AUC"
-        }
-      ]
-    }]
+        "metrics": [
+          {
+            "import": "accuracy"
+          },
+          {
+            "import": "AUC"
+          }
+        ]
+      }
+    ]
   },
   "solver": {
     "optimizer": {
       "import": "Adam",
-      "learning_rate": 1e-3
+      "learning_rate": 0.001
     },
     "batch_size": 32,
     "epochs": 10

@@ -4,10 +4,17 @@
       "import": "KeySelector",
       "params": {
         "inputs": {
-          "input": ["x1", "x2", "x3", "x4"]
+          "input": [
+            "x1",
+            "x2",
+            "x3",
+            "x4"
+          ]
         },
         "outputs": {
-          "softmax": ["label"]
+          "softmax": [
+            "label"
+          ]
         }
       }
     },
@@ -23,20 +30,24 @@
         "dense_dim": 10
       }
     },
-    "outputs": [{
-      "name": "softmax",
-      "loss": {
-        "import": "sparse_categorical_crossentropy"
-      },
-      "metrics": [{
-        "import": "accuracy"
-      }]
-    }]
+    "outputs": [
+      {
+        "name": "softmax",
+        "loss": {
+          "import": "sparse_categorical_crossentropy"
+        },
+        "metrics": [
+          {
+            "import": "accuracy"
+          }
+        ]
+      }
+    ]
   },
   "solver": {
     "optimizer": {
       "import": "Adam",
-      "learning_rate": 1e-2
+      "learning_rate": 0.01
     },
     "learning_rate_reducer": {
       "monitor": "val_loss",
@@ -57,13 +68,13 @@
       "monitor": "loss",
       "mode": "min",
       "patience": 10,
-      "min_delta": 1e-2
+      "min_delta": 0.01
     },
     "validation_early_stopping": {
       "monitor": "val_loss",
       "mode": "min",
       "patience": 10,
-      "min_delta": 1e-2
+      "min_delta": 0.01
     }
   }
 }
