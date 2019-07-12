@@ -57,7 +57,7 @@ class RecordTransformer(ABC):
             score: RecordScore, record output from net.
 
         Returns:
-            score.
+            RecordScore, postprocessed record output from net.
         """
         raise NotImplementedError()
 

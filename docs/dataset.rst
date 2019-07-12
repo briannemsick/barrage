@@ -162,7 +162,7 @@ predict.
 +------------------------------+-----------------+------------------+
 
 **Note**: the underlying dataset implementation stacks ``Data Records`` into
-``Batch Data Records`` and ``Record Score`` into ``Batch Record Score`` automatically.
+``Batch Data Records`` and ``Record Score`` into ``Batch Record Scores`` automatically.
 
 **Example Text Classification**:
 
@@ -302,7 +302,7 @@ the data was stored by the user. To write a new ``RecordTransformer`` implement 
           score: RecordScore, record output from net.
 
       Returns:
-          score.
+          RecordScore, postprocessed record output from net.
       """
       raise NotImplementedError()
 
@@ -324,7 +324,7 @@ the data was stored by the user. To write a new ``RecordTransformer`` implement 
       """
       raise NotImplementedError()
 
-Setting ``self.network_params = dict(...)`` passes the ``network_params`` to the
+Setting ``self.network_params = dict`` passes the ``network_params`` to the
 ``network builder`` in addition to the params from the config.
 
 For example:
@@ -344,7 +344,7 @@ For example:
 
 .. code-block:: python
 
-  # all params = {"num_dense": 7, "dense_dim": 200} + network_params
+  # all params = {"num_dense": 7, "dense_dim": 200} & network_params
   network = model.build_network(cfg["model"], transformer.network_params)
 
 ~~~~~~~~~~~~~~~~~~~~

@@ -7,10 +7,12 @@ install:
   - pip install -e .
   - pip install -e .[tests]
   - pip install -e .[tensorflow]
+  - pip install -r docs/requirements.txt
 script:
   - flake8
   - black . --check
   - find . -name "*.py" | xargs mypy
   - pytest -vv --cov=barrage
+  - cd docs && make html
 after_success:
-  - coveralls
+  - coverall

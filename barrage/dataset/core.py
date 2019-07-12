@@ -33,6 +33,7 @@ def batchify_data_records(data_records: List[DataRecord]) -> BatchDataRecords:
 
     Example:
     ::
+
         data_record_1 = ({"input_1": 1, "input_2": 2}, {"output_1": 3})
         data_record_2 = ({"input_1": 2, "input_2": 4}, {"output_1": 6})
         batch_data_records = (
@@ -58,6 +59,7 @@ def batchify_network_output(
 
     Example:
     ::
+
         network_output == np.array([[1], [2]])
         output_names = ["y"]
         batch_scores = [{"y": np.array([1])}, {"y": np.array([2])}]

@@ -135,8 +135,8 @@ Schema
         "params": dict  // optional
       }
     ],
-    sample_count: string,  //optional
-    seed: int  // optional
+    "sample_count": string,  //optional
+    "seed": int  // optional
   }
 
 ~~~~~~~~
