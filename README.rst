@@ -89,7 +89,7 @@ Installation
 
 **pip**:
 
-::
+.. code-block:: bash
 
     # TensorFlow CPU
     pip install barrage[tensorflow]
@@ -100,7 +100,7 @@ Installation
 
 **GitHub source**:
 
-::
+.. code-block:: bash
 
     git clone https://github.com/briannemsick/barrage
     cd barrage
