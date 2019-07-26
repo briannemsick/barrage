@@ -23,7 +23,7 @@ setup(
         "cytoolz>=0.9.0.1, <1.0",
         "jsonschema>=3.0.0, <4.0",
         "numpy>=1.16.0, <2.0",
-        "pandas>=0.24.0, <1.0",
+        "pandas",
     ],
     extras_require={
         "tensorflow": ["tensorflow==2.0.0b1"],
