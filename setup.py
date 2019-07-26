@@ -36,7 +36,6 @@ setup(
             "pre-commit",
             "pre-commit-hooks",
             "pytest",
-            "pytest-cov",
         ],
     },
     classifiers=[
