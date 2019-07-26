@@ -2,7 +2,7 @@ import os
 
 import jsonschema
 
-from barrage.config import defaults as d
+from barrage import defaults as d
 from barrage.utils import io_utils
 
 
@@ -74,7 +74,7 @@ def _validate_schema(cfg: dict):
         jsonschema.ValidationError: invalid config params.
     """
     schema = io_utils.load_json(
-        "schema.json", os.path.abspath(os.path.dirname(__file__))
+        "config_schema.json", os.path.abspath(os.path.dirname(__file__))
     )
     try:
         jsonschema.validate(cfg, schema)

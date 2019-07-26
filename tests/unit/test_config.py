@@ -1,8 +1,8 @@
 import jsonschema
 import pytest
 
-from barrage.config import config
-from barrage.config import defaults as d
+from barrage import config
+from barrage import defaults as d
 
 
 def test_merge_defaults_dataset():

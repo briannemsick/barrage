@@ -6,12 +6,35 @@ Subpackages
 
 .. toctree::
 
-    barrage.config
     barrage.dataset
     barrage.utils
 
 Submodules
 ----------
+
+barrage.config module
+---------------------
+
+.. automodule:: barrage.config
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+barrage.console module
+----------------------
+
+.. automodule:: barrage.console
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+barrage.defaults module
+-----------------------
+
+.. automodule:: barrage.defaults
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
 barrage.engine module
 ---------------------
