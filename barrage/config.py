@@ -74,7 +74,7 @@ def _validate_schema(cfg: dict):
         jsonschema.ValidationError: invalid config params.
     """
     schema = io_utils.load_json(
-        "config_schema.json", os.path.abspath(os.path.dirname(__file__))
+        "schema.json", os.path.abspath(os.path.dirname(__file__))
     )
     try:
         jsonschema.validate(cfg, schema)
