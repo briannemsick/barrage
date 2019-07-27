@@ -10,7 +10,7 @@ script:
   - flake8
   - black . --check
   - find . -name "*.py" | xargs mypy
-  - pytest -vv
-  - cd docs && make html
+  - python -m pytest --cov=barrage --cov-config=setup.cfg tests/
+  - pushd docs && make html && popd
 after_success:
-  - coverall
+  - coveralls

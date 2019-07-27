@@ -38,7 +38,8 @@ Development Setup
 
 Please setup your development environment with the following steps:
 
-::
+
+.. code-block:: bash
 
   # Clone the repository
   git https://github.com/briannemsick/barrage
@@ -51,36 +52,42 @@ Please setup your development environment with the following steps:
   pre-commit install
 
 
-Please run ``lint``, ``mypy``, and ``pytest`` before raising the pull request.
+Please run ``lint``, ``mypy``, and ``pytest`` before raising a pull request.
 
 ``lint``:
 
-::
+.. code-block:: bash
 
   flake8
 
 ``mypy``:
 
-::
+.. code-block:: bash
 
   find . -name "*.py" | xargs mypy
 
-
 ``pytest``:
 
-::
+.. code-block:: bash
 
   python -m pytest --cov=barrage --cov-config=setup.cfg tests/
 
 To build the ``Read the Docs`` locally:
 
-::
+.. code-block:: bash
 
   cd docs
   pip install -r requirements.txt
   rm barrage.*
   sphinx-apidoc -f -o . ../barrage
   make html
+
+Upload to PyPi (project owner only):
+
+.. code-block:: bash
+
+  python setup.py sdist bdist_wheel
+  python -m twine upload dist/*
 
 ~~~~~~~~~~~~~~~~~~~~~~
 Raising a Pull Request
