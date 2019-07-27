@@ -4,8 +4,8 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from barrage.dataset import RecordDataset, RecordMode, RecordTransformer
-from barrage.dataset.dataset import convert_sample_count_to_inds
+from barrage.api import RecordMode, RecordTransformer
+from barrage.dataset import RecordDataset
 from barrage.utils import io_utils
 
 
@@ -113,7 +113,9 @@ def test_dataset_sample_inds(
     )
 
     if mode == RecordMode.TRAIN and sample_count is not None:
-        assert ds.sample_inds == convert_sample_count_to_inds(records[sample_count])
+        assert ds.sample_inds == RecordDataset.convert_sample_count_to_inds(
+            records[sample_count]
+        )
     else:
         assert ds.sample_inds == list(range(len(records)))
 
@@ -405,4 +407,4 @@ def test_dataset_score(
     [([1, 4, 2], [0, 1, 1, 1, 1, 2, 2]), ([2, 1, 1, 3], [0, 0, 1, 2, 3, 3, 3])],
 )
 def test_convert_sample_count_to_inds(s, result):
-    assert convert_sample_count_to_inds(s) == result
+    assert RecordDataset.convert_sample_count_to_inds(s) == result

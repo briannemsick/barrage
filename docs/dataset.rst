@@ -48,7 +48,7 @@ Barrage supports 3 modes of data:
 
 .. code-block:: python
 
-  from barrage.dataset import RecordMode
+  from barrage.api import RecordMode
 
 
   RecordMode.TRAIN
@@ -188,12 +188,12 @@ predict.
 
    #. Fit - mean variance normalization to all training records, iterating over records.
    #. Score - mean variance normalize to record.
-   #. Postprocess - undo mean variance normalization to record score.
+   #. Postprocess - undo mean variance normalization to records.
 
 #. Augmentor:
 
-   #. Add Gaussian noise
-   #. Phase shift
+   #. Add Gaussian noise.
+   #. Phase shift.
    #. etc...
 
 
@@ -210,15 +210,15 @@ Base Class
 
 .. code-block:: python
 
-  from barrage.dataset import RecordLoader
+  from barrage.api import RecordLoader
 
 ``RecordLoader`` is an abstract base class with properties ``self.mode`` (``RecordMode``) and ``self.params`` from the config.
 To write a new ``RecordLoader`` implement the abstract ``load`` method:
 
 .. code-block:: python
 
-  @abstractmethod
-  def load(self, record: core.Record) -> core.DataRecord:  # pragma: no cover
+  @abc.abstractmethod
+  def load(self, record: Record) -> DataRecord:  # pragma: no cover
       """Method for loading a record into DataRecord.
 
       Args:
@@ -259,7 +259,7 @@ Base Class
 
 .. code-block:: python
 
-  from barrage.dataset import RecordTransformer
+  from barrage.api import RecordTransformer
 
 
 ``RecordTransformer`` is an abstract base class with properties ``self.mode`` (``RecordMode``) and ``self.params`` from the config.
@@ -269,8 +269,8 @@ the data was stored by the user. To write a new ``RecordTransformer`` implement 
 
 .. code-block:: python
 
-  @abstractmethod
-  def fit(self, records: core.Records):  # pragma: no cover
+  @abc.abstractmethod
+  def fit(self, records: Records):  # pragma: no cover
       """Fit transform to records.
 
       Args:
@@ -278,10 +278,8 @@ the data was stored by the user. To write a new ``RecordTransformer`` implement 
       """
       raise NotImplementedError()
 
-  @abstractmethod
-  def transform(
-      self, data_record: core.DataRecord
-  ) -> core.DataRecord:  # pragma: no cover
+  @abc.abstractmethod
+  def transform(self, data_record: DataRecord) -> DataRecord:  # pragma: no cover
       """Apply transform to a data record.
 
       Args:
@@ -292,10 +290,8 @@ the data was stored by the user. To write a new ``RecordTransformer`` implement 
       """
       raise NotImplementedError()
 
-  @abstractmethod
-  def postprocess(
-      self, score: core.RecordScore
-  ) -> core.RecordScore:  # pragma: no cover
+  @abc.abstractmethod
+  def postprocess(self, score: RecordScore) -> RecordScore:  # pragma: no cover
       """Postprocess score to undo transform.
 
       Args:
@@ -306,7 +302,7 @@ the data was stored by the user. To write a new ``RecordTransformer`` implement 
       """
       raise NotImplementedError()
 
-  @abstractmethod
+  @abc.abstractmethod
   def load(self, path: str):  # pragma: no cover
       """Load transformer.
 
@@ -315,7 +311,7 @@ the data was stored by the user. To write a new ``RecordTransformer`` implement 
       """
       raise NotImplementedError()
 
-  @abstractmethod
+  @abc.abstractmethod
   def save(self, path: str):  # pragma: no cover
       """Save transformer.
 

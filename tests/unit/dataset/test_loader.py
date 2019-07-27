@@ -1,7 +1,8 @@
 import numpy as np
 import pytest
 
-from barrage.dataset import KeySelector, RecordMode
+from barrage.api import RecordMode
+from barrage.dataset import KeySelector
 
 
 @pytest.fixture

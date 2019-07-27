@@ -12,6 +12,14 @@ Subpackages
 Submodules
 ----------
 
+barrage.api module
+------------------
+
+.. automodule:: barrage.api
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 barrage.config module
 ---------------------
 

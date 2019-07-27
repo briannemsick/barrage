@@ -21,7 +21,7 @@ from sklearn.model_selection import train_test_split
 from tensorflow.keras import layers, models
 
 from barrage import BarrageModel
-from barrage.dataset import RecordTransformer
+from barrage.api import RecordTransformer
 from barrage.utils import io_utils
 
 

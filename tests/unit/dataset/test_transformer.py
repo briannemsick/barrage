@@ -2,7 +2,8 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from barrage.dataset import IdentityTransformer, RecordMode
+from barrage.api import RecordMode
+from barrage.dataset import IdentityTransformer
 
 
 @pytest.mark.parametrize(

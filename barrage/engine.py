@@ -3,7 +3,7 @@ from typing import Union
 import pandas as pd
 import tensorflow as tf
 
-from barrage import config, dataset, logger, model, services, solver
+from barrage import api, config, dataset, logger, model, services, solver
 from barrage.utils import io_utils, tf_utils
 
 
@@ -22,8 +22,8 @@ class BarrageModel(object):
     def train(
         self,
         cfg: dict,
-        records_train: Union[pd.DataFrame, dataset.core.Records],
-        records_validation: Union[pd.DataFrame, dataset.core.Records],
+        records_train: Union[pd.DataFrame, api.Records],
+        records_validation: Union[pd.DataFrame, api.Records],
         workers: int = 10,
         max_queue_size: int = 10,
     ) -> tf.keras.Model:
@@ -57,14 +57,14 @@ class BarrageModel(object):
             artifact_dir=self._artifact_dir,
             cfg_dataset=cfg["dataset"],
             records=records_train,
-            mode=dataset.RecordMode.TRAIN,
+            mode=api.RecordMode.TRAIN,
             batch_size=cfg["solver"]["batch_size"],
         )
         ds_validation = dataset.RecordDataset(
             artifact_dir=self._artifact_dir,
             cfg_dataset=cfg["dataset"],
             records=records_validation,
-            mode=dataset.RecordMode.VALIDATION,
+            mode=api.RecordMode.VALIDATION,
             batch_size=cfg["solver"]["batch_size"],
         )
         network_params = ds_train.transformer.network_params
@@ -116,10 +116,10 @@ class BarrageModel(object):
 
     def predict(
         self,
-        records_score: Union[pd.DataFrame, dataset.core.Records],
+        records_score: Union[pd.DataFrame, api.Records],
         workers: int = 10,
         max_queue_size: int = 10,
-    ) -> dataset.core.BatchRecordScores:
+    ) -> api.BatchRecordScores:
         """Score records.
 
         Args:
@@ -137,7 +137,7 @@ class BarrageModel(object):
             artifact_dir=self._artifact_dir,
             cfg_dataset=self.cfg["dataset"],
             records=records_score,
-            mode=dataset.RecordMode.SCORE,
+            mode=api.RecordMode.SCORE,
             batch_size=self.cfg["solver"]["batch_size"],
         )
 

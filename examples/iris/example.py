@@ -17,7 +17,7 @@ from sklearn.preprocessing import StandardScaler
 from tensorflow.python.keras import layers, models
 
 from barrage import BarrageModel
-from barrage.dataset import RecordMode, RecordLoader, RecordTransformer
+from barrage.api import RecordMode, RecordLoader, RecordTransformer
 from barrage.utils import io_utils
 
 

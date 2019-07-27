@@ -5,8 +5,7 @@ import pandas as pd
 from tensorflow.python.keras import layers
 from tensorflow.python.keras.models import Model
 
-from barrage import BarrageModel
-from barrage.dataset import RecordMode, RecordTransformer
+from barrage import api, BarrageModel
 from barrage.utils import io_utils
 
 NUM_SAMPLES_TRAIN = 407
@@ -25,7 +24,7 @@ def gen_records(num_samples):
     return df.to_dict(orient="records")
 
 
-class Transformer(RecordTransformer):
+class Transformer(api.RecordTransformer):
     def __init__(self, mode, loader, params):
         super().__init__(mode, loader, params)
         self.output_key = list(self.loader.params["outputs"].values())[0][0]
@@ -42,7 +41,7 @@ class Transformer(RecordTransformer):
         }
 
     def transform(self, record):
-        if self.mode == RecordMode.TRAIN or self.mode == RecordMode.VALIDATION:
+        if self.mode == api.RecordMode.TRAIN or self.mode == api.RecordMode.VALIDATION:
             val = self.inverse_class_map[record[1][self.output_name][0]]
             record[1][self.output_name] = np.array(val)
 

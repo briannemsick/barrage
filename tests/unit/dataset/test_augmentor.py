@@ -1,5 +1,4 @@
 from barrage.dataset import RecordAugmentor
-from barrage.dataset.augmentor import reduce_compose
 
 
 def augment_add(data_record, ind, input_key, value=0):
@@ -63,14 +62,14 @@ def test_reduce_compose():
     def mult2(x):
         return x * 2
 
-    func = reduce_compose(mult2, add1)
+    func = RecordAugmentor.reduce_compose(mult2, add1)
     assert func(1) == 4
     assert func(2) == 6
     assert func(13) == 28
 
 
 def test_reduce_compose_no_funcs():
-    func = reduce_compose()
+    func = RecordAugmentor.reduce_compose()
     assert func(1) == 1
     assert func(2) == 2
     assert func(13) == 13

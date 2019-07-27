@@ -78,7 +78,8 @@ To build the ``Read the Docs`` locally:
 
   cd docs
   pip install -r requirements.txt
-  sphinx-apidoc -f -o source ../barrage
+  rm barrage.*
+  sphinx-apidoc -f -o . ../barrage
   make html
 
 ~~~~~~~~~~~~~~~~~~~~~~
