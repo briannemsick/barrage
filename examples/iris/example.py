@@ -14,7 +14,6 @@ import pandas as pd
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-from tensorflow.python.keras import layers, models
 
 from barrage import BarrageModel
 from barrage.api import RecordMode, RecordLoader, RecordTransformer
@@ -36,22 +35,6 @@ def get_data():
     records_val["label"] = y_val
 
     return records_train, records_val
-
-
-def net(num_dense=2, dim_dense=10):
-    """Simple dense network."""
-
-    # Take note of the input name for the config
-    inputs = layers.Input(shape=(4,), name="iris")
-    dense = inputs
-
-    for _ in range(num_dense):
-        dense = layers.Dense(dim_dense, activation="relu")(dense)
-
-    # Take note of the output name for the config
-    outputs = layers.Dense(3, activation="softmax", name="flower")(dense)
-
-    return models.Model(inputs=inputs, outputs=outputs)
 
 
 def vanilla_iris():
@@ -92,10 +75,34 @@ def vanilla_iris():
             "seed": 42,
         },
         "model": {
-            # use the net we defined
+            # use sequential_from_config
             "network": {
-                "import": "example.net",
-                "params": {"num_dense": 4, "dim_dense": 25},
+                "import": "barrage.model.sequential_from_config",
+                "params": {
+                    "layers": [
+                        {"import": "Input", "params": {"shape": 4, "name": "iris"}},
+                        {
+                            "import": "Dense",
+                            "params": {"units": 25, "activation": "relu"},
+                        },
+                        {
+                            "import": "Dense",
+                            "params": {"units": 25, "activation": "relu"},
+                        },
+                        {
+                            "import": "Dense",
+                            "params": {"units": 25, "activation": "relu"},
+                        },
+                        {
+                            "import": "Dense",
+                            "params": {
+                                "units": 3,
+                                "activation": "softmax",
+                                "name": "flower",
+                            },
+                        },
+                    ]
+                },
             },
             "outputs": [
                 {
@@ -138,8 +145,32 @@ def overkill_iris():
         },
         "model": {
             "network": {
-                "import": "example.net",
-                "params": {"num_dense": 4, "dim_dense": 25},
+                "import": "barrage.model.sequential_from_config",
+                "params": {
+                    "layers": [
+                        {"import": "Input", "params": {"shape": 4, "name": "iris"}},
+                        {
+                            "import": "Dense",
+                            "params": {"units": 25, "activation": "relu"},
+                        },
+                        {
+                            "import": "Dense",
+                            "params": {"units": 25, "activation": "relu"},
+                        },
+                        {
+                            "import": "Dense",
+                            "params": {"units": 25, "activation": "relu"},
+                        },
+                        {
+                            "import": "Dense",
+                            "params": {
+                                "units": 3,
+                                "activation": "softmax",
+                                "name": "flower",
+                            },
+                        },
+                    ]
+                },
             },
             "outputs": [
                 {

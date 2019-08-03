@@ -78,3 +78,31 @@ def check_output_names(cfg_model: dict, net: tf.keras.Model):
             f"mismatch actual model outputs: {actual_net_outputs} - "
             "order and names must exactly match"
         )
+
+
+def sequential_from_config(layers, **kwargs) -> tf.keras.Model:
+    """Build a sequential model from a list of layer specifications.
+
+    Args:
+        layers: list[dict], layer imports.
+
+    Returns:
+        tf.keras.Model, network.
+    """
+    network = tf.keras.models.Sequential()
+
+    for layer in layers:
+
+        if "import" not in layer:
+            raise KeyError(f"layer {layer} missing 'import' key")
+        if not layer.keys() <= {"import", "params"}:
+            unexpected_keys = set(layer.keys()).difference({"import", "params"})
+            raise KeyError(f"layer {layer} unexpected key(s): {unexpected_keys}")
+
+        layer_cls = import_utils.import_obj_with_search_modules(
+            layer["import"], search_modules=["tensorflow.keras.layers"]
+        )
+        layer_params = layer.get("params", {})
+        network.add(layer_cls(**layer_params))
+
+    return network

@@ -28,8 +28,24 @@ def cfg():
         },
         "model": {
             "network": {
-                "import": "tests.unit.test_model.simple_net",
-                "params": {"dense_dim": 25, "input_dim": 2, "output_dim": 2},
+                "import": "barrage.model.sequential_from_config",
+                "params": {
+                    "layers": [
+                        {"import": "Input", "params": {"shape": 2, "name": "input"}},
+                        {
+                            "import": "Dense",
+                            "params": {"units": 25, "activation": "relu"},
+                        },
+                        {
+                            "import": "Dense",
+                            "params": {
+                                "units": 2,
+                                "name": "output",
+                                "activation": "linear",
+                            },
+                        },
+                    ]
+                },
             },
             "outputs": [
                 {

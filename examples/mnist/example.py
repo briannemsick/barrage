@@ -27,7 +27,10 @@ def get_data():
 
 
 def net():
-    """MNIST CNN."""
+    """Simple MNIST CNN.
+
+    Note: we could have used barrage.model.sequential_from_config.
+    """
     inputs = layers.Input(shape=(28, 28, 1), name="img")
     conv_1 = layers.Conv2D(32, (3, 3), activation="relu")(inputs)
     conv_2 = layers.Conv2D(64, (3, 3), activation="relu")(conv_1)

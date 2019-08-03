@@ -7,10 +7,15 @@ install:
   - pip install .[tensorflow,tests]
   - pip install -r docs/requirements.txt
 script:
-  - flake8
+  # format, lint, mypy
   - black . --check
+  - flake8
   - find . -name "*.py" | xargs mypy
+  # tests
   - python -m pytest --cov=barrage --cov-config=setup.cfg tests/
-  - pushd docs && make html && popd
+  # doc tests
+  - cd docs
+  - make html
+  - cd ..
 after_success:
   - coveralls

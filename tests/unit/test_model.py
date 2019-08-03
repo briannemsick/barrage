@@ -6,10 +6,12 @@ from barrage import model
 
 
 def simple_net(dense_dim=5, input_dim=4, output_dim=3, **params):
-    inputs = layers.Input(shape=(input_dim,), name="input")
-    dense_1 = layers.Dense(dense_dim, activation="relu")(inputs)
-    outputs = layers.Dense(output_dim, activation="linear", name="output")(dense_1)
-    net = models.Model(inputs=inputs, outputs=outputs)
+    net = models.Sequential()
+
+    net.add(layers.Input(shape=(input_dim,), name="input"))
+    net.add(layers.Dense(dense_dim, activation="relu"))
+    net.add(layers.Dense(output_dim, activation="linear", name="output"))
+
     return net
 
 
@@ -43,6 +45,61 @@ def test_build_network():
     cfg_model = {"network": {"import": "tests.unit.models.net_bear"}}
     with pytest.raises(ImportError):
         model.build_network(cfg_model, {})
+
+
+def test_sequential_from_config():
+    cfg_model = {
+        "network": {
+            "import": "barrage.model.sequential_from_config",
+            "params": {
+                "layers": [
+                    {"import": "Input", "params": {"shape": 6, "name": "input"}},
+                    {"import": "Dense", "params": {"units": 5, "activation": "relu"}},
+                    {
+                        "import": "Dense",
+                        "params": {
+                            "units": 4,
+                            "name": "output",
+                            "activation": "linear",
+                        },
+                    },
+                ]
+            },
+        }
+    }
+
+    with tf.name_scope("result1"):
+        net = model.build_network(cfg_model, {})
+        result1 = net.get_config()
+
+    # TODO remove
+    tf.keras.backend.reset_uids()
+
+    with tf.name_scope("result2"):
+        net = model.sequential_from_config(cfg_model["network"]["params"]["layers"])
+        result2 = net.get_config()
+
+    # TODO remove
+    tf.keras.backend.reset_uids()
+
+    with tf.name_scope("expected"):
+        expected = simple_net(output_dim=4, dense_dim=5, input_dim=6).get_config()
+
+    assert result1 == expected
+    assert result2 == expected
+
+    with pytest.raises(KeyError):
+        invalid_layers = [{"params": {"shape": 6, "name": "input"}}]
+        model.sequential_from_config(invalid_layers)
+    with pytest.raises(KeyError):
+        invalid_layers = [
+            {
+                "import": "Input",
+                "extra_param": 1,
+                "params": {"shape": 6, "name": "input"},
+            }
+        ]
+        model.sequential_from_config(invalid_layers)
 
 
 def test_build_objective():

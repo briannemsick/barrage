@@ -17,7 +17,6 @@ Barrage
 
 .. |Documentation|  image:: https://readthedocs.org/projects/barrage/badge/?version=latest
    :target: https://barrage.readthedocs.io/en/latest/?badge=latest
-   :alt: Documentation Status
 
 .. |Build| image:: https://travis-ci.com/briannemsick/barrage.svg?branch=master
    :target: https://travis-ci.com/briannemsick/barrage
@@ -26,7 +25,7 @@ Barrage
    :target: https://coveralls.io/github/briannemsick/barrage?branch=master
 
 .. |Black| image:: https://img.shields.io/badge/code%20style-black-000000.svg
-   :target: https://github.com/python/black
+   :target: https://github.com/psf/black
 
 Barrage is an opinionated supervised deep learning tool built on top of
 ``TensorFlow 2.x`` designed to standardize and orchestrate the training and scoring of
