@@ -1,6 +1,5 @@
 from setuptools import find_packages, setup
 
-
 long_description = """
 Barrage is an opinionated supervised deep learning tool built on top of
 TensorFlow 2.x designed to standardize and orchestrate the training and scoring of
@@ -32,6 +31,7 @@ setup(
             "black",
             "coveralls",
             "flake8",
+            "isort",
             "mypy",
             "pre-commit",
             "pre-commit-hooks",

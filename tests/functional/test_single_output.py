@@ -5,7 +5,7 @@ import pandas as pd
 from tensorflow.python.keras import layers
 from tensorflow.python.keras.models import Model
 
-from barrage import api, BarrageModel
+from barrage import BarrageModel, api
 from barrage.utils import io_utils
 
 NUM_SAMPLES_TRAIN = 407

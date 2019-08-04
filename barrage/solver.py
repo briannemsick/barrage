@@ -1,7 +1,8 @@
 from typing import List
 
 from tensorflow.python.keras import callbacks
-from tensorflow.python.keras.optimizer_v2 import optimizer_v2, learning_rate_schedule
+from tensorflow.python.keras.optimizer_v2 import learning_rate_schedule, optimizer_v2
+
 from barrage.utils import import_utils
 
 

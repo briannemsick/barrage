@@ -16,7 +16,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
 from barrage import BarrageModel
-from barrage.api import RecordMode, RecordLoader, RecordTransformer
+from barrage.api import RecordLoader, RecordMode, RecordTransformer
 from barrage.utils import io_utils
 
 

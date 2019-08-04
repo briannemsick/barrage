@@ -1,11 +1,21 @@
 repos:
--   repo: https://github.com/python/black
+  - repo: https://github.com/psf/black
     rev: stable
     hooks:
     - id: black
       language_version: python3
-      entry: black
--   repo: https://github.com/pre-commit/pre-commit-hooks
+  - repo: https://gitlab.com/pycqa/flake8
+    rev: 3.7.7
+    hooks:
+      - id: flake8
+        language: python
+  - repo: https://github.com/pre-commit/mirrors-isort
+    rev: v4.3.21
+    hooks:
+    - id: isort
+      language: python
+      exclude: __init__.py
+  - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v2.2.3
     hooks:
     - id: pretty-format-json

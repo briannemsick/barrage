@@ -52,21 +52,23 @@ Please setup your development environment with the following steps:
   pre-commit install
 
 
-Please run ``lint``, ``mypy``, and ``pytest`` before raising a pull request.
+Please run ``lint``, ``type hint``, and ``test`` before raising a pull request.
 
 ``lint``:
 
 .. code-block:: bash
 
+  black . --check
   flake8
+  isort --check
 
-``mypy``:
+``type hint``:
 
 .. code-block:: bash
 
   find . -name "*.py" | xargs mypy
 
-``pytest``:
+``test``:
 
 .. code-block:: bash
 

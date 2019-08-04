@@ -1,6 +1,5 @@
 import logging
 
-
 # TODO: https://github.com/tensorflow/tensorflow/issues/26691#issuecomment-500369493
 try:
     import absl.logging

@@ -7,9 +7,10 @@ install:
   - pip install .[tensorflow,tests]
   - pip install -r docs/requirements.txt
 script:
-  # format, lint, mypy
+  # format, lint, imports, mypy
   - black . --check
   - flake8
+  - isort --check
   - find . -name "*.py" | xargs mypy
   # tests
   - python -m pytest --cov=barrage --cov-config=setup.cfg tests/

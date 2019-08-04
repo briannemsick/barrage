@@ -2,7 +2,7 @@
 MNIST dataset example
 """
 import numpy as np
-from tensorflow.keras import layers, models
+from tensorflow.keras import datasets, layers, models
 
 from barrage import BarrageModel
 from barrage.utils import io_utils
@@ -10,9 +10,7 @@ from barrage.utils import io_utils
 
 def get_data():
     """Load MNIST dataset."""
-    from keras.datasets import mnist
-
-    (X_train, y_train), (X_val, y_val) = mnist.load_data()
+    (X_train, y_train), (X_val, y_val) = datasets.mnist.load_data()
     X_train = X_train[:, ..., np.newaxis]  # need image shape (28, 28, 1) not (28, 28)
     X_val = X_val[:, ..., np.newaxis]  # need image shape (28, 28, 1) not (28, 28)
 
