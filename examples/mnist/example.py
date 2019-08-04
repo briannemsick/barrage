@@ -27,7 +27,8 @@ def get_data():
 def net():
     """Simple MNIST CNN.
 
-    Note: we could have used barrage.model.sequential_from_config.
+    Note: we could have used barrage.model.sequential_from_config to specify this same
+    network without code (see config_mnist_2.json).
     """
     inputs = layers.Input(shape=(28, 28, 1), name="img")
     conv_1 = layers.Conv2D(32, (3, 3), activation="relu")(inputs)
@@ -42,5 +43,5 @@ def net():
 if __name__ == "__main__":
     records_train, records_val = get_data()
     # Train
-    cfg = io_utils.load_json("config_mnist.json")
+    cfg = io_utils.load_json("config_mnist.json")  # or config_mnist_2.json
     BarrageModel("artifacts").train(cfg, records_train, records_val)

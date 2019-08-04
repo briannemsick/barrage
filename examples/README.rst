@@ -2,9 +2,9 @@
 Examples
 ========
 
-#. ``mnist``: single input, single output, classification.
+#. ``mnist``: single input, single output, classification. Introduces ``sequential_from_config``.
 
-#. ``iris``: single input, single output, classification. Introduces ``sequential_from_config``. Introduces ``loader``, ``transformer``, and ``augmentor`` (overkill for ``iris`` - purely for example purposes).
+#. ``iris``: single input, single output, classification. Introduces ``loader``, ``transformer``, and ``augmentor`` (overkill for ``iris`` - purely for example purposes).
 
 #. ``UCI Sentiment Labelled Sentences``: single input, single output, text classification. Introduces a text-based ``transformer``.
 

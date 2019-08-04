@@ -18,11 +18,13 @@ The Barrage ``python`` API is concise and simple:
 
   from barrage import BarrageModel
 
+  # Data
+  training_dataframe = ...    # pd.DataFrame or list of dicts
+  validation_dataframe = ...  # pd.DataFrame or list of dicts
+  testing_dataframe = ...     # pd.DataFrame or list of dicts
 
   # Train a model
   config = {...}
-  training_dataframe = ...  # pd.DataFrame or list of dicts
-  validation_dataframe = ... # pd.DataFrame or list of dicts
   bm = BarrageModel(artifact_directory)
   bm.train(config, training_dataframe, validation_dataframe)
 
@@ -30,7 +32,7 @@ The Barrage ``python`` API is concise and simple:
   bm = BarrageModel(artifact_directory).load()
 
   # Score a model
-  scores = bm.predict(test_dataframe)
+  scores = bm.predict(testing_dataframe)
 
 in both ``BarrageModel.train`` and ``BarrageModel.predict`` the number of ``workers``
 and ``max_queue_size`` can be specified for the dataset iterators:
