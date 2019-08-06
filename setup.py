@@ -29,7 +29,7 @@ setup(
         "tensorflow-gpu": ["tensorflow-gpu==2.0.0b1"],
         "tests": [
             "black",
-            "coveralls",
+            "codecov",
             "flake8",
             "isort",
             "mypy",

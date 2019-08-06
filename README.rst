@@ -15,14 +15,14 @@ Barrage
 .. |License| image:: https://img.shields.io/badge/license-MIT-green.svg
    :target: https://github.com/briannemsick/barrage/blob/master/LICENSE
 
-.. |Documentation|  image:: https://readthedocs.org/projects/barrage/badge/?version=latest
-   :target: https://barrage.readthedocs.io/en/latest/?badge=latest
-
 .. |Build| image:: https://travis-ci.com/briannemsick/barrage.svg?branch=master
    :target: https://travis-ci.com/briannemsick/barrage
 
-.. |Coverage| image:: https://coveralls.io/repos/github/briannemsick/barrage/badge.svg?branch=master
-   :target: https://coveralls.io/github/briannemsick/barrage?branch=master
+.. |Coverage| image:: https://codecov.io/gh/briannemsick/barrage/branch/master/graph/badge.svg
+   :target: https://codecov.io/gh/briannemsick/barrage
+
+.. |Documentation|  image:: https://readthedocs.org/projects/barrage/badge/?version=latest
+   :target: https://barrage.readthedocs.io/
 
 .. |Black| image:: https://img.shields.io/badge/code%20style-black-000000.svg
    :target: https://github.com/psf/black
