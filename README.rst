@@ -38,6 +38,7 @@ Official documentation can be found at: https://barrage.readthedocs.io/
 |Barrage Logo|
 
 .. |Barrage Logo| image:: docs/resources/barrage_logo_small.png
+   :target: https://barrage.readthedocs.io/
 
 ------------------
 Guiding Principles
