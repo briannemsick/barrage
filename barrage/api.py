@@ -28,7 +28,7 @@ class RecordLoader(abc.ABC):
         params: dict.
     """
 
-    def __init__(self, mode: RecordMode, params: dict):  # pragma: no cover
+    def __init__(self, mode: RecordMode, params: dict):
         self.mode = mode
         self.params = params
 
@@ -60,9 +60,7 @@ class RecordTransformer(abc.ABC):
         params: dict.
     """
 
-    def __init__(
-        self, mode: RecordMode, loader: RecordLoader, params: dict
-    ):  # pragma: no cover
+    def __init__(self, mode: RecordMode, loader: RecordLoader, params: dict):
         self.mode = mode
         self.loader = loader
         self.params = params
