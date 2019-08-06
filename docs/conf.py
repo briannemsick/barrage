@@ -33,3 +33,4 @@ pygments_style = None
 
 # -- Options for HTML output -------------------------------------------------
 html_theme = "sphinx_rtd_theme"
+html_logo = "resources/barrage_logo_small.png"

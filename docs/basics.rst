@@ -9,6 +9,10 @@ instead of code and or learning the fundamental dataset classes in the short ter
 however, the standardization, repeatability, and code reuse should  pay dividends in
 the long term.
 
+|Barrage Logo|
+
+.. |Barrage Logo| image:: resources/barrage_logo_small.png
+
 ----------
 Python API
 ----------
