@@ -61,6 +61,9 @@ def _merge_defaults(cfg: dict) -> dict:
         "validation_early_stopping", d.VALIDATION_EARLY_STOPPING
     )
 
+    # Prevent defaults from being changed
+    cfg = cfg.copy()
+
     return cfg
 
 
