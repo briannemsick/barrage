@@ -9,7 +9,6 @@ import barrage
 sys.path.insert(0, os.path.abspath(".."))
 
 # -- Project information -----------------------------------------------------
-
 project = "barrage"
 copyright = "2019, Brian Nemsick"
 author = "Brian Nemsick"
@@ -23,8 +22,6 @@ extensions = [
     "sphinx.ext.viewcode",
     "sphinx_click.ext",
 ]
-
-templates_path = ["_templates"]
 source_suffix = ".rst"
 master_doc = "index"
 language = None
