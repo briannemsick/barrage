@@ -28,13 +28,7 @@ def import_obj_with_search_modules(
     Raises:
         ImportError, object not found.
     """
-    if python_path.startswith("tf.keras"):
-        python_path = python_path.replace("tf.keras", "tensorflow.keras")
-        logger.warning(
-            f"fixing import {python_path} - replacing tf.keras "
-            "with tensorflow.python.keras"
-        )
-
+    python_path = _maybe_fix_tensorflow_python_path(python_path)
     try:
         module_path, obj_name = python_path.rsplit(".", 1)
     except ValueError:
@@ -49,22 +43,16 @@ def import_obj_with_search_modules(
             )
         return getattr(module, obj_name)
     else:
-        if search_both_cases:
-            # First search original casing
-            if _capitalize(obj_name) == obj_name:
-                obj_names = [_capitalize(obj_name), _uncapitalize(obj_name)]
-            else:
-                obj_names = [_uncapitalize(obj_name), _capitalize(obj_name)]
-        else:
-            obj_names = [obj_name]
-
         if search_modules is None:
             raise ImportError(f"object: {obj_name} not found, no module provided.")
+
+        obj_names = _make_both_cases(obj_name) if search_both_cases else [obj_name]
         for search_module_path in search_modules:
             module = importlib.import_module(search_module_path)
             for name in obj_names:
                 if hasattr(module, name):
                     return getattr(module, name)
+
         raise ImportError(
             f"object: {obj_name} was not found in the searched "
             f"modules {search_modules}"
@@ -84,13 +72,7 @@ def import_or_alias(python_path: str) -> Union[Callable, str]:
     Raises:
         ImportError, object not found.
     """
-    if python_path.startswith("tf.keras"):
-        python_path = python_path.replace("tf.keras", "tensorflow.keras")
-        logger.warning(
-            f"fixing import {python_path} - replacing tf.keras "
-            "with tensorflow.python.keras"
-        )
-
+    python_path = _maybe_fix_tensorflow_python_path(python_path)
     try:
         module_path, obj_name = python_path.rsplit(".", 1)
     except ValueError:
@@ -180,31 +162,39 @@ def import_metric(import_block: dict) -> Union[metrics.Metric, losses.Loss, str]
         return metric
 
 
-def _capitalize(s: str) -> str:
-    """Capitalize the first letter of a string.
+def _maybe_fix_tensorflow_python_path(python_path: str) -> str:
+    """Fix a common mistake python path mistake tf.keras vs tensorflow.keras.
+
+    Args:
+        python_path: str, python path.
+
+    Returns:
+        str, python path.
+    """
+    if python_path.startswith("tf.keras"):
+        python_path = python_path.replace("tf.keras", "tensorflow.keras")
+        logger.warning(
+            f"fixing import {python_path} - replacing tf.keras "
+            "with tensorflow.python.keras"
+        )
+    return python_path
+
+
+def _make_both_cases(s: str) -> List[str]:
+    """Capitalize and uncapitalize first letter of string. Original case first.
 
     Args:
         s, str.
 
     Return:
-        s, str.
+        list[str], capitalized and uncapitalized version of string.
     """
     if s:
-        return s[:1].upper() + s[1:]
+        upper = s[:1].upper() + s[1:]
+        lower = s[:1].lower() + s[1:]
+        if upper == s:
+            return [upper, lower]
+        else:
+            return [lower, upper]
     else:
-        return ""
-
-
-def _uncapitalize(s: str) -> str:
-    """Uncapitalize the first letter of a string.
-
-    Args:
-        s, str.
-
-    Return:
-        s, str.
-    """
-    if s:
-        return s[:1].lower() + s[1:]
-    else:
-        return ""
+        return [""]

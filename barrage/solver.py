@@ -25,7 +25,8 @@ def build_optimizer(cfg_solver: dict) -> optimizer_v2.OptimizerV2:
 
     if isinstance(learning_rate, dict):
         lr_cls = import_utils.import_obj_with_search_modules(
-            learning_rate["import"], ["tensorflow.keras.optimizers.schedules"]
+            learning_rate["import"],
+            search_modules=["tensorflow.keras.optimizers.schedules"],
         )
         lr = lr_cls(**learning_rate["params"])
         if not isinstance(lr, learning_rate_schedule.LearningRateSchedule):
@@ -34,7 +35,7 @@ def build_optimizer(cfg_solver: dict) -> optimizer_v2.OptimizerV2:
         lr = learning_rate
 
     opt_cls = import_utils.import_obj_with_search_modules(
-        path, ["tensorflow.keras.optimizers"], True
+        path, search_modules=["tensorflow.keras.optimizers"], search_both_cases=True
     )
     opt = opt_cls(learning_rate=lr, **params)
 

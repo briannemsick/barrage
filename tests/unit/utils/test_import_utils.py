@@ -36,13 +36,13 @@ def test_import_obj_with_search_modules(
 ):
     if expected:
         obj = import_utils.import_obj_with_search_modules(
-            python_path, search_modules, both_cases
+            python_path, search_modules=search_modules, search_both_cases=both_cases
         )
         assert obj() == "test"
     else:
         with pytest.raises(ImportError):
             import_utils.import_obj_with_search_modules(
-                python_path, search_modules, both_cases
+                python_path, search_modules=search_modules, search_both_cases=both_cases
             )
 
 
