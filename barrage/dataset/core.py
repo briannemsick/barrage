@@ -265,7 +265,7 @@ def batchify_network_output(
         output_names = ["y"]
         batch_scores = [{"y": np.array([1])}, {"y": np.array([2])}]
     """
-    # Handle type inconsistency out single output/multi output networks
+    # Handle type inconsistency between outputs of single output/multi networks
     if isinstance(network_output, np.ndarray):
         dict_output = {output_names[0]: network_output}
         num_scores = len(network_output)

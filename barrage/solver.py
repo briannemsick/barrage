@@ -62,6 +62,7 @@ def create_learning_rate_reducer(
     """
     monitor = cfg_solver["learning_rate_reducer"]["monitor"]
     val_metrics_names = [f"val_{mm}" for mm in metrics_names]
+
     if (monitor not in metrics_names) and (monitor not in val_metrics_names):
         raise ValueError(
             f"monitor: {monitor} not found in model metrics names: "
@@ -69,4 +70,5 @@ def create_learning_rate_reducer(
         )
     params = cfg_solver["learning_rate_reducer"]
     params["verbose"] = 1
+
     return callbacks.ReduceLROnPlateau(**params)

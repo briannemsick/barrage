@@ -28,7 +28,7 @@ def build_network(cfg_model: dict, transform_params: dict) -> tf.keras.Model:
     return net
 
 
-def build_objective(cfg_model: dict):
+def build_objective(cfg_model: dict) -> dict:
     """Build objective (loss, loss_weights, metrics, and sample_weight_mode)
     for each model output.
 
@@ -70,7 +70,7 @@ def check_output_names(cfg_model: dict, net: tf.keras.Model):
     Raises:
         ValueError, mismatch between config and net.
     """
-    config_net_outputs = set(o["name"] for o in cfg_model["outputs"])
+    config_net_outputs = {o["name"] for o in cfg_model["outputs"]}
     actual_net_outputs = set(net.output_names)
     if config_net_outputs != actual_net_outputs:
         raise ValueError(

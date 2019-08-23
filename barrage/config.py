@@ -84,7 +84,7 @@ def _validate_schema(cfg: dict):
 
     # Check model outputs have unique names
     num_outputs = len(cfg["model"]["outputs"])
-    num_unique_names = len(set([o["name"] for o in cfg["model"]["outputs"]]))
+    num_unique_names = len({o["name"] for o in cfg["model"]["outputs"]})
     if num_outputs != num_unique_names:
         raise jsonschema.ValidationError(f"'outputs' names are not unique")
 

@@ -31,6 +31,8 @@ setup(
             "black",
             "codecov",
             "flake8",
+            "flake8-print",
+            "flake8-comprehensions",
             "isort",
             "mypy",
             "pre-commit",
