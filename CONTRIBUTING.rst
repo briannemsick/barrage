@@ -72,7 +72,7 @@ Please run ``lint``, ``type hint``, and ``test`` before raising a pull request.
 
 .. code-block:: bash
 
-  python -m pytest --cov=barrage --cov-config=setup.cfg tests/
+  pytest --cov=barrage --cov-config=setup.cfg tests/
 
 To build the ``Read the Docs`` locally:
 
@@ -84,7 +84,7 @@ To build the ``Read the Docs`` locally:
   sphinx-apidoc -f -o . ../barrage
   make html
 
-Upload to PyPi (project owner only):
+Upload to ``PyPi`` (**project owner only**):
 
 .. code-block:: bash
 

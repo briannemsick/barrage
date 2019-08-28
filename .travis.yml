@@ -13,10 +13,8 @@ script:
   - isort --check
   - find . -name "*.py" | xargs mypy
   # tests
-  - python -m pytest --cov=barrage --cov-config=setup.cfg tests/
+  - pytest --cov=barrage --cov-config=setup.cfg tests/
   # doc tests
-  - cd docs
-  - make html
-  - cd ..
+  - cd docs && make html && cd ..
 after_success:
   - codecov

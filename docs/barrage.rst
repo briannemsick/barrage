@@ -52,6 +52,14 @@ barrage.engine module
     :undoc-members:
     :show-inheritance:
 
+barrage.log module
+------------------
+
+.. automodule:: barrage.log
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 barrage.model module
 --------------------
 

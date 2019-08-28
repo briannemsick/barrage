@@ -69,7 +69,6 @@ class RecordDataset(tf.keras.utils.Sequence):
             self._sample_inds = list(range(self.num_records))
         self.shuffle()
 
-        logger.info(f"Creating record loader")
         loader_cls = import_utils.import_obj_with_search_modules(
             cfg_dataset["loader"]["import"], search_modules=SEARCH_MODULES
         )
@@ -79,7 +78,6 @@ class RecordDataset(tf.keras.utils.Sequence):
         if not isinstance(self.loader, api.RecordLoader):
             raise TypeError(f"loader {self.loader} is not of type RecordLoader")
 
-        logger.info(f"Creating record transformer")
         transformer_cls = import_utils.import_obj_with_search_modules(
             cfg_dataset["transformer"]["import"], search_modules=SEARCH_MODULES
         )
@@ -95,17 +93,14 @@ class RecordDataset(tf.keras.utils.Sequence):
 
         dataset_dir = os.path.join(artifact_dir, "dataset")
         if self.mode == api.RecordMode.TRAIN:
-            logger.info("Creating record augmentor")
             self.augmentor = RecordAugmentor(cfg_dataset["augmentor"])
             logger.info(f"Fitting transform: {self.transformer.__class__.__name__}")
             self.transformer.fit(copy.deepcopy(self.records))
             logger.info(
                 f"Transformer network params: {self.transformer.network_params}"
             )
-            logger.info("Saving transformer")
             self.transformer.save(dataset_dir)
         else:
-            logger.info(f"Loading transform: {self.transformer.__class__.__name__}")
             self.transformer.load(dataset_dir)
 
     def __len__(self):

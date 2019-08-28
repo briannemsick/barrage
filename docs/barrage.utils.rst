@@ -20,14 +20,6 @@ barrage.utils.io\_utils module
     :undoc-members:
     :show-inheritance:
 
-barrage.utils.logging\_utils module
------------------------------------
-
-.. automodule:: barrage.utils.logging_utils
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 barrage.utils.tf\_utils module
 ------------------------------
 

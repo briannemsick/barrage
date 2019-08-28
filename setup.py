@@ -18,6 +18,7 @@ setup(
     license="MIT",
     python_requires=">=3.6",
     install_requires=[
+        "absl-py>=0.8.0",
         "Click>=7.0, <8.0",
         "cytoolz>=0.9.0.1, <1.0",
         "jsonschema>=3.0.0, <4.0",

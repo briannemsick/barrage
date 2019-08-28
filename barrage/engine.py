@@ -41,18 +41,14 @@ class BarrageModel(object):
         """
         logger.info("Starting training")
         tf_utils.reset()
-
-        logger.info("Validating config schema and applying defaults")
         cfg = config.prepare_config(cfg)
 
-        logger.info(f"Making artifact directory: {self._artifact_dir}")
+        logger.info(f"Creating artifact directory: {self._artifact_dir}")
         services.make_artifact_dir(self._artifact_dir)
-
-        logger.info("Saving config")
         io_utils.save_json(cfg, "config.json", self._artifact_dir)
         io_utils.save_pickle(cfg, "config.pkl", self._artifact_dir)
 
-        logger.info("Building datasets")
+        logger.info("Creating datasets")
         ds_train = dataset.RecordDataset(
             artifact_dir=self._artifact_dir,
             cfg_dataset=cfg["dataset"],
@@ -73,17 +69,11 @@ class BarrageModel(object):
 
         logger.info("Building network")
         net = model.build_network(cfg["model"], network_params)
-
-        logger.info("Checking network output names match config output names")
         model.check_output_names(cfg["model"], net)
 
-        logger.info("Building optimizer")
-        opt = solver.build_optimizer(cfg["solver"])
-
-        logger.info("Building objective")
-        objective = model.build_objective(cfg["model"])
-
         logger.info("Compiling network")
+        opt = solver.build_optimizer(cfg["solver"])
+        objective = model.build_objective(cfg["model"])
         net.compile(optimizer=opt, **objective)
         metrics_names = net.metrics_names
 

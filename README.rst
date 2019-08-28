@@ -4,7 +4,7 @@ release of ``barrage`` will be after ``TensorFlow 2.0`` is released.
 =======
 Barrage
 =======
-|Version| |Python| |License| |Build| |Coverage| |Documentation| |Black|
+|Version| |Python| |License| |Build| |Documentation| |Coverage| |Black|
 
 .. |Version| image:: https://img.shields.io/pypi/v/barrage.svg
    :target: https://pypi.org/project/barrage
@@ -12,17 +12,17 @@ Barrage
 .. |Python| image:: https://img.shields.io/pypi/pyversions/barrage.svg
    :target: https://www.python.org/downloads/
 
-.. |License| image:: https://img.shields.io/badge/license-MIT-green.svg
+.. |License| image:: https://img.shields.io/badge/license-MIT-blue.svg
    :target: https://github.com/briannemsick/barrage/blob/master/LICENSE
 
 .. |Build| image:: https://travis-ci.com/briannemsick/barrage.svg?branch=master
    :target: https://travis-ci.com/briannemsick/barrage
 
-.. |Coverage| image:: https://codecov.io/gh/briannemsick/barrage/branch/master/graph/badge.svg
-   :target: https://codecov.io/gh/briannemsick/barrage
-
 .. |Documentation|  image:: https://readthedocs.org/projects/barrage/badge/?version=latest
    :target: https://barrage.readthedocs.io/
+
+.. |Coverage| image:: https://codecov.io/gh/briannemsick/barrage/branch/master/graph/badge.svg
+   :target: https://codecov.io/gh/briannemsick/barrage
 
 .. |Black| image:: https://img.shields.io/badge/code%20style-black-000000.svg
    :target: https://github.com/psf/black
