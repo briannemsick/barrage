@@ -84,8 +84,7 @@ Select Feature Highlights
 
 #. **Sampling**: change the number of times a sample is selected in an epoch.
 
-As well as standard ``TensorFlow.Keras`` features such as learning rate scheduling,
-sample weights, etc...
+As well as standard ``TensorFlow.Keras`` features such as metrics, sample weights, etc...
 
 ------------
 Installation
