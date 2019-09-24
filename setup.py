@@ -26,8 +26,8 @@ setup(
         "pandas",
     ],
     extras_require={
-        "tensorflow": ["tensorflow==2.0.0rc1"],
-        "tensorflow-gpu": ["tensorflow-gpu==2.0.0rc1"],
+        "tensorflow": ["tensorflow==2.0.0rc2"],
+        "tensorflow-gpu": ["tensorflow-gpu==2.0.0rc2"],
         "tests": [
             "black",
             "codecov",
