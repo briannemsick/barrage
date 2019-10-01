@@ -29,9 +29,6 @@ exactly reproduce the environment used to train the model at scoring time
 Imports
 -------
 
-Before delving into the entire config documentation it is worth mentioning the most
-common reoccurring pattern in the config.
-
 Components are imported via their ``python paths`` in the config.
 
 An ``import block`` in the config is defined as such:
@@ -39,7 +36,7 @@ An ``import block`` in the config is defined as such:
 .. code:: javascript
 
   {
-    "import": str (requred python path),
+    "import": str (required python path),
     "params": dict (optional params)
   }
 
@@ -92,7 +89,7 @@ The following import shorthands are adopt for all ``TensorFlow`` imports
   "categorical_crossentropy" == "tensorflow.keras.losses.CategoricalCrossentropy"
 
   # Search TensorFlow paths automatically
-  "Adam" = "tensorflow.python.keras.optimizer_v2.adam.Adam" == "tensorflow.keras.optimizers.Adam"
+  "Adam" == "tensorflow.python.keras.optimizer_v2.adam.Adam" == "tensorflow.keras.optimizers.Adam"
 
 In addition in the ``dataset`` section of the config, the following import shorthands are
 adopted (e.g. ``loaders``, ``transformers``, etc..):

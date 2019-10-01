@@ -1,6 +1,3 @@
-**Warning**: ``TensorFlow 2.0`` is not officially released yet, the first official
-release of ``barrage`` will be after ``TensorFlow 2.0`` is released.
-
 =======
 Barrage
 =======

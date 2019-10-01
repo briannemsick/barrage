@@ -19,20 +19,20 @@ The Barrage ``python`` Model API is concise and simple:
   from barrage import BarrageModel
 
   # Data
-  training_dataframe = ...    # pd.DataFrame or list of dicts
-  validation_dataframe = ...  # pd.DataFrame or list of dicts
-  testing_dataframe = ...     # pd.DataFrame or list of dicts
+  training_records = ...    # list of dicts or pandas DataFrame
+  validation_records = ...  # list of dicts or pandas DataFrame
+  testing_records = ...     # list of dicts or pandas DataFrame
 
   # Train a model
   config = {...}
   bm = BarrageModel(artifact_directory)
-  bm.train(config, training_dataframe, validation_dataframe)
+  bm.train(config, training_records, validation_records)
 
   # Load a model
   bm = BarrageModel(artifact_directory).load()
 
   # Score a model
-  scores = bm.predict(testing_dataframe)
+  scores = bm.predict(testing_records)
 
 in both ``BarrageModel.train`` and ``BarrageModel.predict`` the number of ``workers``
 and ``max_queue_size`` can be specified for the dataset iterators:
@@ -40,8 +40,8 @@ and ``max_queue_size`` can be specified for the dataset iterators:
 .. code-block:: python
 
   # To disable multiprocessing: workers = 1
-  bm.train(config, training_dataframe, validation_dataframe, workers=10, max_queue_size=20)
-  bm.score(test_dataframe, workers=10, max_queue_size=20)
+  bm.train(config, training_records, validation_records, workers=10, max_queue_size=20)
+  bm.score(test_records, workers=10, max_queue_size=20)
 
 
 ---------------------
