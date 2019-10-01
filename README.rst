@@ -15,7 +15,7 @@ Barrage
 .. |Build| image:: https://travis-ci.com/briannemsick/barrage.svg?branch=master
    :target: https://travis-ci.com/briannemsick/barrage
 
-.. |Documentation|  image:: https://readthedocs.org/projects/barrage/badge/?version=latest
+.. |Documentation|  image:: https://readthedocs.org/projects/barrage/badge/?version=stable
    :target: https://barrage.readthedocs.io/
 
 .. |Coverage| image:: https://codecov.io/gh/briannemsick/barrage/branch/master/graph/badge.svg
