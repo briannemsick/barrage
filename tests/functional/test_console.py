@@ -20,9 +20,10 @@ def data(tmpdir):
     return path
 
 
-@pytest.mark.parametrize("command", [None, "train", "predict"])
-def test_help(runner, command):
-    cmd = [command, "--help"] if command else ["--help"]
+@pytest.mark.parametrize(
+    "cmd", [["--help"], ["help"], ["train", "--help"], ["predict", "--help"]]
+)
+def test_help(runner, cmd):
     result = runner.invoke(barrage_cli, cmd)
     assert result.exit_code == 0
 

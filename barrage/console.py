@@ -9,6 +9,12 @@ def cli():
     pass
 
 
+@cli.command()
+@click.pass_context
+def help(context):
+    click.echo(context.parent.get_help())
+
+
 @cli.command("train")
 @click.argument("config", type=click.Path(exists=True))
 @click.argument("train-data", type=click.Path(exists=True))
