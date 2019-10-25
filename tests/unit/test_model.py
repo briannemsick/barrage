@@ -102,6 +102,55 @@ def test_sequential_from_config():
         model.sequential_from_config(invalid_layers)
 
 
+def test_sequential_from_config_render_params():
+    cfg_model = {
+        "network": {
+            "import": "barrage.model.sequential_from_config",
+            "params": {
+                "layers": [
+                    {
+                        "import": "Input",
+                        "params": {"shape": "{{input_shape}}", "name": "input"},
+                    },
+                    {"import": "Dense", "params": {"units": 5, "activation": "relu"}},
+                    {
+                        "import": "Dense",
+                        "params": {
+                            "units": "{{num_classes}}",
+                            "name": "output",
+                            "activation": "linear",
+                        },
+                    },
+                ]
+            },
+        }
+    }
+
+    network_params = {"num_classes": 4, "input_shape": 6}
+
+    with tf.name_scope("result1"):
+        net = model.build_network(cfg_model, network_params)
+        result1 = net.get_config()
+
+    # TODO remove
+    tf.keras.backend.reset_uids()
+
+    with tf.name_scope("result2"):
+        net = model.sequential_from_config(
+            cfg_model["network"]["params"]["layers"], **network_params
+        )
+        result2 = net.get_config()
+
+    # TODO remove
+    tf.keras.backend.reset_uids()
+
+    with tf.name_scope("expected"):
+        expected = simple_net(output_dim=4, dense_dim=5, input_dim=6).get_config()
+
+    assert result1 == expected
+    assert result2 == expected
+
+
 def test_build_objective():
     cfg_model = {
         "outputs": [

@@ -24,10 +24,60 @@
   },
   "model": {
     "network": {
-      "import": "tests.functional.test_single_output.net",
+      "import": "barrage.model.sequential_from_config",
       "params": {
-        "num_dense": 5,
-        "dense_dim": 10
+        "layers": [
+          {
+            "import": "Input",
+            "params": {
+              "shape": "{{input_dim}}",
+              "name": "input"
+            }
+          },
+          {
+            "import": "Dense",
+            "params": {
+              "units": 10,
+              "activation": "relu"
+            }
+          },
+          {
+            "import": "Dense",
+            "params": {
+              "units": 10,
+              "activation": "relu"
+            }
+          },
+          {
+            "import": "Dense",
+            "params": {
+              "units": 10,
+              "activation": "relu"
+            }
+          },
+          {
+            "import": "Dense",
+            "params": {
+              "units": 10,
+              "activation": "relu"
+            }
+          },
+          {
+            "import": "Dense",
+            "params": {
+              "units": 10,
+              "activation": "relu"
+            }
+          },
+          {
+            "import": "Dense",
+            "params": {
+              "units": "{{num_classes}}",
+              "name": "softmax",
+              "activation": "softmax"
+            }
+          }
+        ]
       }
     },
     "outputs": [

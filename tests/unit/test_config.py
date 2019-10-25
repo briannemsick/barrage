@@ -370,3 +370,31 @@ def test_validate_schema_solver(base_cfg, lst, val, result):
 def test_validate_schema_services(base_cfg, lst, val, result):
     base_cfg["services"] = set_nested(base_cfg["services"], lst, val)
     _test_validate_schema_pass_fail(base_cfg, result)
+
+
+def test_render_params():
+    cfg = {
+        "hello": "{{param_1}}",
+        "fizz": {"buzz": "{{param_2}}", "life": "{{param_3}}"},
+        "count": "{{param_4}}",
+        "unit": "{{param_5}}",
+    }
+    params = {
+        "param_1": "world",
+        "param_2": "fizzbuzz",
+        "param_3": 42,
+        "param_4": [1, 2, 3],
+        "extra": 7,
+    }
+    expected = {
+        "hello": "world",
+        "fizz": {"buzz": "fizzbuzz", "life": 42},
+        "unit": "{{param_5}}",
+        "count": [1, 2, 3],
+    }
+    assert config._render_params(cfg, params) == expected
+
+    cfg = {"hello": "world"}
+    params = {"param_1": "world", "param_2": "fizzbuzz", "param_3": 42}
+    expected = {"hello": "world"}
+    assert config._render_params(cfg, params) == expected

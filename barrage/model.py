@@ -1,5 +1,6 @@
 import tensorflow as tf
 
+from barrage import config
 from barrage.utils import import_utils
 
 
@@ -89,8 +90,8 @@ def sequential_from_config(layers, **kwargs) -> tf.keras.Model:
     Returns:
         tf.keras.Model, network.
     """
+    layers = config._render_params(layers, kwargs)
     network = tf.keras.models.Sequential()
-
     for layer in layers:
 
         if "import" not in layer:

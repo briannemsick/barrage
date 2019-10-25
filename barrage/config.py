@@ -97,3 +97,39 @@ def _validate_schema(cfg: dict):
                 "invalid barrage config: each output in 'outputs' requires a "
                 "'loss_weight' for multi output networks"
             )
+
+
+def _render_params(cfg: dict, params: dict) -> dict:  # noqa C:901
+    """Render a config or config section with params jinja style.
+
+    Args:
+        cfg: dict, config.
+        params: dict, render params.
+
+    Returns:
+        dict, rendered config.
+    """
+
+    def _replace_item(obj, old, new):
+
+        if isinstance(obj, dict):
+            for k, v in obj.items():
+                if isinstance(v, (list, dict)):
+                    obj[k] = _replace_item(v, old, new)
+                elif isinstance(v, str) and obj[k] == old:
+                    obj[k] = new
+        elif isinstance(obj, list):
+            for k, v in enumerate(obj):
+                if isinstance(v, (list, dict)):
+                    obj[k] = _replace_item(v, old, new)
+                elif isinstance(v, str) and obj[k] == old:
+                    obj[k] = new
+
+        return obj
+
+    for k, v in params.items():
+        # jinja style
+        jk = "{{" + k + "}}"
+        cfg = _replace_item(cfg, jk, v)
+
+    return cfg

@@ -2,8 +2,6 @@ import os
 
 import numpy as np
 import pandas as pd
-from tensorflow.python.keras import layers
-from tensorflow.python.keras.models import Model
 
 from barrage import BarrageModel, api
 from barrage.utils import io_utils
@@ -59,15 +57,6 @@ class Transformer(api.RecordTransformer):
     def load(self, path):
         self.class_map = io_utils.load_pickle("class_map.pkl", path)
         self.inverse_class_map = io_utils.load_pickle("inverse_class_map.pkl", path)
-
-
-def net(input_dim, dense_dim, num_dense, num_classes):
-    inputs = layers.Input(shape=(input_dim,), name="input")
-    x = inputs
-    for _ in range(num_dense):
-        x = layers.Dense(dense_dim, activation="relu")(x)
-    outputs = layers.Dense(num_classes, activation="softmax", name="softmax")(x)
-    return Model(inputs=inputs, outputs=outputs)
 
 
 def test_simple_output(artifact_dir):
