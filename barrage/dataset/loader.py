@@ -4,7 +4,7 @@ from barrage import api
 
 
 class KeySelector(api.RecordLoader):
-    """Record loader for transforming keys from a DataFrame into DataRecord.
+    """Record loader for directly transforming keys from a record into a data record.
 
     Args:
         mode: RecordMode, load mode.
@@ -22,9 +22,7 @@ class KeySelector(api.RecordLoader):
 
         valid_keys = {"inputs", "outputs", "sample_weights"}
         if not set(params.keys()) <= valid_keys:
-            raise KeyError(
-                f"Column selector accepts the following params: {valid_keys}"
-            )
+            raise KeyError(f"Key selector accepts the following params: {valid_keys}")
         if "inputs" not in params:
             raise KeyError("KeySelector required param 'inputs' missing")
         if "outputs" not in params:
