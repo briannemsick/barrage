@@ -4,10 +4,10 @@ Barrage Dataset
 
 .. contents:: **Table of Contents**:
 
-Barrage datasets are flexible, performant, and powerful data iterators built around
-``list of dictionaries`` -> **DataFrame-like**. The underlying data can be conveniently
-stored directly inside the DataFrame for small datasets or as filepaths inside the
-DataFrame for large datasets.
+Barrage datasets are flexible, performant, and powerful data iterators build around
+``records`` - list of dictionaries. For smaller datasets it is often convenient for
+each ``record`` to contain a direct mapping to the underlying data. For larger datasets each
+``record`` can simply contain paths or references to where the data is actually stored.
 
 Datasets are comprised of three components:
 
@@ -16,6 +16,13 @@ Datasets are comprised of three components:
 #. Transformers: fit transforms and apply them at batch time.
 
 #. Augmentor: apply a chain of augmentation functions.
+
+
+Datasets support the following input record types:
+
+#. List of dictionaries
+
+#. Pandas DataFrames
 
 ----------
 High-level
@@ -70,6 +77,21 @@ Data Types
 ~~~~~~~~~~
 
 Data types are critical at each hand-off between components. Here is a summary of the data types:
+
+
+``InputRecords``: a list of dictionaries or a Pandas DataFrame converted to ``Records``:
+
+.. code-block:: python
+
+  # Example: list of dicts
+  records = [{"x1": 1, "x2": 2, "y": 0}, {"x1": 2, "x2": 1, "y": 1}]
+
+  # Example: Pandas DataFrame
+  import pandas as pd
+
+
+  records = pd.DataFrame([{"x1": 1, "x2": 2, "y": 0}, {"x1": 2, "x2": 1, "y": 1}])
+
 
 ``Record``: a dictionary that can be loaded into a ``Data Record``.
 
@@ -150,6 +172,8 @@ predict.
 +------------------------------+-----------------+------------------+
 | Component Action             | Input Data Type | Output Data Type |
 +==============================+=================+==================+
+| RecordDataset(...)           | Input Records   | Records          |
++------------------------------+-----------------+------------------+
 | loader.load(...)             | Record          | Data Record      |
 +------------------------------+-----------------+------------------+
 | transformer.fit(...)         | Records         | None             |

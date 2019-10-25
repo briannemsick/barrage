@@ -27,7 +27,7 @@ class RecordDataset(tf.keras.utils.Sequence):
     Args:
         artifact_dir: str, path to artifact directory.
         cfg_dataset: dict, dataset subsection of config.
-        records: Union[pd.DataFrame, Records], data records.
+        records: api.InputRecords, records.
         mode: RecordMode, transform mode.
         batch_size: int, batch size.
     """
@@ -36,7 +36,7 @@ class RecordDataset(tf.keras.utils.Sequence):
         self,
         artifact_dir: str,
         cfg_dataset: dict,
-        records: Union[pd.DataFrame, api.Records],
+        records: api.InputRecords,
         mode: api.RecordMode,
         batch_size: int,
     ):
@@ -44,6 +44,7 @@ class RecordDataset(tf.keras.utils.Sequence):
         if not isinstance(mode, api.RecordMode):
             raise TypeError("mode must be type RecordMode")
 
+        # Standardize InputRecords to Records
         if isinstance(records, pd.DataFrame):
             records.reset_index(drop=True, inplace=True)
             self.records = records.to_dict(orient="records")

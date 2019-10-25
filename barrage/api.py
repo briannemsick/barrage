@@ -3,9 +3,11 @@ import enum
 from typing import Any, Dict, List, Tuple, Union
 
 import numpy as np
+import pandas as pd
 
 Record = Dict[str, Any]
 Records = List[Record]
+InputRecords = Union[Records, pd.DataFrame]
 
 DataRecord = Tuple[Dict[str, Union[np.ndarray, float]], ...]
 BatchDataRecords = Tuple[Dict[str, np.ndarray], ...]

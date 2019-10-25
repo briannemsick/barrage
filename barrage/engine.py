@@ -1,6 +1,3 @@
-from typing import Union
-
-import pandas as pd
 import tensorflow as tf
 
 from barrage import api, config, dataset, logger, model, services, solver
@@ -22,8 +19,8 @@ class BarrageModel(object):
     def train(
         self,
         cfg: dict,
-        records_train: Union[pd.DataFrame, api.Records],
-        records_validation: Union[pd.DataFrame, api.Records],
+        records_train: api.InputRecords,
+        records_validation: api.InputRecords,
         workers: int = 10,
         max_queue_size: int = 10,
     ) -> tf.keras.Model:
@@ -31,8 +28,8 @@ class BarrageModel(object):
 
         Args:
             cfg: dict, config.
-            records_train: Union[pd.DataFrame, Records], training records.
-            records_validation: Union[pd.DataFrame, Records], validation records.
+            records_train: InputRecords, training records.
+            records_validation: InputRecords, validation records.
             workers: int (OPTIONAL = 10), number of process threads for the sequence.
             max_queue_size: int (OPTIONAL = 10), queue size for the sequence.
 
@@ -106,14 +103,14 @@ class BarrageModel(object):
 
     def predict(
         self,
-        records_score: Union[pd.DataFrame, api.Records],
+        records_score: api.InputRecords,
         workers: int = 10,
         max_queue_size: int = 10,
     ) -> api.BatchRecordScores:
         """Score records.
 
         Args:
-            records_score: Union[pd.DataFrame, Records], scoring records.
+            records_score: InputRecords, scoring records.
             workers: int (OPTIONAL = 10), number of process threads for the sequence.
             max_queue_size: int (OPTIONAL = 10), queue size for the sequence.
 
