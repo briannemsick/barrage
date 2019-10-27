@@ -83,6 +83,8 @@ def check_output_names(cfg_model: dict, net: tf.keras.Model):
 
 def sequential_from_config(layers, **kwargs) -> tf.keras.Model:
     """Build a sequential model from a list of layer specifications.
+    Supports references to network_params computed inside Transformers by specifying
+    {{variable name}}.
 
     Args:
         layers: list[dict], layer imports.
