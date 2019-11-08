@@ -63,7 +63,7 @@ class RecordDataset(tf.keras.utils.Sequence):
 
         sample_count = cfg_dataset.get("sample_count")
         if self.mode == api.RecordMode.TRAIN and sample_count is not None:
-            self._sample_inds = RecordDataset.convert_sample_count_to_inds(
+            self._sample_inds = self.convert_sample_count_to_inds(
                 [record[sample_count] for record in self.records]
             )
         else:
@@ -183,8 +183,8 @@ class RecordAugmentor(object):
     """
 
     def __init__(self, funcs: List[dict]):
-        self.augment_func = RecordAugmentor.reduce_compose(
-            *[import_utils.import_partial_wrap_func(f) for f in reversed(funcs)]
+        self.augment_func = self.reduce_compose(
+            *[import_utils.import_partial_wrap_func(f) for f in funcs]
         )
 
     def __call__(self, data_record: api.DataRecord) -> api.DataRecord:
@@ -210,7 +210,7 @@ class RecordAugmentor(object):
         from functools import reduce
 
         def _compose2(func1, func2):
-            return lambda *a, **kw: func1(func2(*a, **kw))
+            return lambda *args, **kwargs: func2(func1(*args, **kwargs))
 
         return reduce(_compose2, funcs)
 

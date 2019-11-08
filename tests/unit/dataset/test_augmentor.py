@@ -63,9 +63,9 @@ def test_reduce_compose():
         return x * 2
 
     func = RecordAugmentor.reduce_compose(mult2, add1)
-    assert func(1) == 4
-    assert func(2) == 6
-    assert func(13) == 28
+    assert func(1) == 3
+    assert func(2) == 5
+    assert func(13) == 27
 
 
 def test_reduce_compose_no_funcs():
