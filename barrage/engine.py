@@ -14,7 +14,6 @@ class BarrageModel(object):
 
     def __init__(self, artifact_dir):
         self._artifact_dir = artifact_dir
-        self._is_loaded = False
 
     def train(
         self,
@@ -40,29 +39,29 @@ class BarrageModel(object):
         tf_utils.reset()
         cfg = config.prepare_config(cfg)
 
-        logger.info(f"Creating artifact directory: {self._artifact_dir}")
-        services.make_artifact_dir(self._artifact_dir)
-        io_utils.save_json(cfg, "config.json", self._artifact_dir)
-        io_utils.save_pickle(cfg, "config.pkl", self._artifact_dir)
+        logger.info(f"Creating artifact directory: {self.artifact_dir}")
+        services.make_artifact_dir(self.artifact_dir)
+        io_utils.save_json(cfg, "config.json", self.artifact_dir)
+        io_utils.save_pickle(cfg, "config.pkl", self.artifact_dir)
 
         logger.info("Creating datasets")
         ds_train = dataset.RecordDataset(
-            artifact_dir=self._artifact_dir,
+            artifact_dir=self.artifact_dir,
             cfg_dataset=cfg["dataset"],
             records=records_train,
             mode=api.RecordMode.TRAIN,
             batch_size=cfg["solver"]["batch_size"],
         )
         ds_validation = dataset.RecordDataset(
-            artifact_dir=self._artifact_dir,
+            artifact_dir=self.artifact_dir,
             cfg_dataset=cfg["dataset"],
             records=records_validation,
             mode=api.RecordMode.VALIDATION,
             batch_size=cfg["solver"]["batch_size"],
         )
         network_params = ds_train.transformer.network_params
-        io_utils.save_json(network_params, "network_params.json", self._artifact_dir)
-        io_utils.save_pickle(network_params, "network_params.pkl", self._artifact_dir)
+        io_utils.save_json(network_params, "network_params.json", self.artifact_dir)
+        io_utils.save_pickle(network_params, "network_params.pkl", self.artifact_dir)
 
         logger.info("Building network")
         net = model.build_network(cfg["model"], network_params)
@@ -76,7 +75,7 @@ class BarrageModel(object):
 
         logger.info("Creating services")
         callbacks = services.create_all_services(
-            self._artifact_dir, cfg["services"], metrics_names
+            self.artifact_dir, cfg["services"], metrics_names
         )
 
         if "learning_rate_reducer" in cfg["solver"]:
@@ -86,7 +85,7 @@ class BarrageModel(object):
             )
 
         logger.info("Training network")
-        logger.info(net.summary())
+        net.summary()
         net.fit_generator(
             ds_train,
             validation_data=ds_validation,
@@ -117,11 +116,11 @@ class BarrageModel(object):
         Returns:
             BatchRecordScores, scored data records.
         """
-        if not self._is_loaded:
+        if not hasattr(self, "net"):
             self.load()
 
         ds_score = dataset.RecordDataset(
-            artifact_dir=self._artifact_dir,
+            artifact_dir=self.artifact_dir,
             cfg_dataset=self.cfg["dataset"],
             records=records_score,
             mode=api.RecordMode.SCORE,
@@ -148,17 +147,20 @@ class BarrageModel(object):
         """Load the best performing checkpoint."""
 
         # Load artifacts needed to recreate the network
-        self.cfg = io_utils.load_pickle("config.pkl", self._artifact_dir)
-        network_params = io_utils.load_pickle("network_params.pkl", self._artifact_dir)
+        self.cfg = io_utils.load_pickle("config.pkl", self.artifact_dir)
+        network_params = io_utils.load_pickle("network_params.pkl", self.artifact_dir)
 
         # Build network
         self.net = model.build_network(self.cfg["model"], network_params)
 
         # Load best checkpoint
-        path = services.get_best_checkpoint_filepath(self._artifact_dir)
+        path = services.get_best_checkpoint_filepath(self.artifact_dir)
         # TODO: remove expect_partial, _make_predict_function
         self.net.load_weights(path).expect_partial()  # not loading optimizer
         self.net._make_predict_function()  # needed for threading in scoring
 
-        self._is_loaded = True
         return self
+
+    @property
+    def artifact_dir(self):
+        return self._artifact_dir
