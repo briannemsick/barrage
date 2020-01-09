@@ -4,6 +4,7 @@
 *.swp
 build/*
 dist/*
+tmp/*
 *.egg-info
 *html
 
