@@ -20,8 +20,6 @@ class BarrageModel(object):
         cfg: dict,
         records_train: api.InputRecords,
         records_validation: api.InputRecords,
-        workers: int = 10,
-        max_queue_size: int = 10,
     ) -> tf.keras.Model:
         """Train the network.
 
@@ -29,8 +27,6 @@ class BarrageModel(object):
             cfg: dict, config.
             records_train: InputRecords, training records.
             records_validation: InputRecords, validation records.
-            workers: int (OPTIONAL = 10), number of process threads for the sequence.
-            max_queue_size: int (OPTIONAL = 10), queue size for the sequence.
 
         Returns:
             tf.keras.Model, trained network.
@@ -86,32 +82,22 @@ class BarrageModel(object):
 
         logger.info("Training network")
         net.summary()
-        net.fit_generator(
+        net.fit(
             ds_train,
             validation_data=ds_validation,
             epochs=cfg["solver"]["epochs"],
             steps_per_epoch=cfg["solver"].get("steps"),
             callbacks=callbacks,
-            use_multiprocessing=(workers > 1),
-            max_queue_size=max_queue_size,
-            workers=workers,
             verbose=1,
         )
 
         return net
 
-    def predict(
-        self,
-        records_score: api.InputRecords,
-        workers: int = 10,
-        max_queue_size: int = 10,
-    ) -> api.BatchRecordScores:
+    def predict(self, records_score: api.InputRecords) -> api.BatchRecordScores:
         """Score records.
 
         Args:
             records_score: InputRecords, scoring records.
-            workers: int (OPTIONAL = 10), number of process threads for the sequence.
-            max_queue_size: int (OPTIONAL = 10), queue size for the sequence.
 
         Returns:
             BatchRecordScores, scored data records.
@@ -127,13 +113,7 @@ class BarrageModel(object):
             batch_size=self.cfg["solver"]["batch_size"],
         )
 
-        network_output = self.net.predict_generator(
-            ds_score,
-            use_multiprocessing=(workers > 1),
-            max_queue_size=max_queue_size,
-            workers=workers,
-            verbose=1,
-        )
+        network_output = self.net.predict(ds_score, verbose=1)
         scores = [
             ds_score.transformer.postprocess(score)
             for score in dataset.batchify_network_output(
@@ -155,9 +135,7 @@ class BarrageModel(object):
 
         # Load best checkpoint
         path = services.get_best_checkpoint_filepath(self.artifact_dir)
-        # TODO: remove expect_partial, _make_predict_function
         self.net.load_weights(path).expect_partial()  # not loading optimizer
-        self.net._make_predict_function()  # needed for threading in scoring
 
         return self
 

@@ -91,12 +91,7 @@ Installation
 
 .. code-block:: bash
 
-    # TensorFlow CPU
-    pip install barrage[tensorflow]
-
-    # TensorFlow GPU
-    pip install barrage[tensorflow-gpu]
-
+    pip install barrage
 
 **GitHub source**:
 

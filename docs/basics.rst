@@ -34,16 +34,6 @@ The Barrage ``python`` Model API is concise and simple:
   # Score a model
   scores = bm.predict(testing_records)
 
-in both ``BarrageModel.train`` and ``BarrageModel.predict`` the number of ``workers``
-and ``max_queue_size`` can be specified for the dataset iterators:
-
-.. code-block:: python
-
-  # To disable multiprocessing: workers = 1
-  bm.train(config, training_records, validation_records, workers=10, max_queue_size=20)
-  bm.score(test_records, workers=10, max_queue_size=20)
-
-
 ---------------------
 Automatic Artifacting
 ---------------------

@@ -18,10 +18,10 @@ def build_network(cfg_model: dict, transform_params: dict) -> tf.keras.Model:
         TypeError, network not a tf.keras.Model.
     """
     path = cfg_model["network"]["import"]
-    params = cfg_model["network"].get("params", {})
+    network_params = cfg_model["network"].get("params", {})
 
     net_func = import_utils.import_obj_with_search_modules(path)
-    net = net_func(**params, **transform_params)
+    net = net_func(**network_params, **transform_params)
 
     if not isinstance(net, tf.keras.Model):
         raise TypeError(f"import network: {net} is not a tf.keras.Model")

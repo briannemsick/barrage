@@ -31,7 +31,6 @@ def test_build_network():
         assert isinstance(net, tf.keras.models.Model)
         result = net.get_config()
 
-    # TODO remove
     tf.keras.backend.reset_uids()
 
     with tf.name_scope("expected"):
@@ -72,14 +71,12 @@ def test_sequential_from_config():
         net = model.build_network(cfg_model, {})
         result1 = net.get_config()
 
-    # TODO remove
     tf.keras.backend.reset_uids()
 
     with tf.name_scope("result2"):
         net = model.sequential_from_config(cfg_model["network"]["params"]["layers"])
         result2 = net.get_config()
 
-    # TODO remove
     tf.keras.backend.reset_uids()
 
     with tf.name_scope("expected"):

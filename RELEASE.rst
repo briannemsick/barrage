@@ -5,6 +5,24 @@ Barrage
 .. contents:: **Versions**:
 
 -------------
+Version 0.3.0
+-------------
+
+``barrage`` syncs  with  breaking changes in  ``TensorFlow 2.1.0``.
+
+~~~~~~~~~
+Bug Fixes
+~~~~~~~~~
+
+*  fix logging issue with ``model.summary()``.
+
+~~~~~~~~~~~
+Improvments
+~~~~~~~~~~~
+
+* ``TensorFlow 2.1.0`` integrated cpu and gpu install.
+
+-------------
 Version 0.2.0
 -------------
 
