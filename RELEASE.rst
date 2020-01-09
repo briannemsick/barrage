@@ -16,9 +16,9 @@ Bug Fixes
 
 *  fix logging issue with ``model.summary()``.
 
-~~~~~~~~~~~
-Improvments
-~~~~~~~~~~~
+~~~~~~~~~~~~
+Improvements
+~~~~~~~~~~~~
 
 * ``TensorFlow 2.1.0`` integrated cpu and gpu install.
 
