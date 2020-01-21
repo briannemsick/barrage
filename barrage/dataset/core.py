@@ -73,9 +73,7 @@ class RecordDataset(tf.keras.utils.Sequence):
         loader_cls = import_utils.import_obj_with_search_modules(
             cfg_dataset["loader"]["import"], search_modules=SEARCH_MODULES
         )
-        self.loader = loader_cls(
-            mode=mode, params=cfg_dataset["loader"].get("params", {})
-        )
+        self.loader = loader_cls(mode=mode, **cfg_dataset["loader"].get("params", {}))
         if not isinstance(self.loader, api.RecordLoader):
             raise TypeError(f"loader {self.loader} is not of type RecordLoader")
 
@@ -85,7 +83,7 @@ class RecordDataset(tf.keras.utils.Sequence):
         self.transformer = transformer_cls(
             mode=self.mode,
             loader=self.loader,
-            params=cfg_dataset["transformer"].get("params", {}),
+            **cfg_dataset["transformer"].get("params", {}),
         )
         if not isinstance(self.transformer, api.RecordTransformer):
             raise TypeError(

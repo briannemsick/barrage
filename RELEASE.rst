@@ -5,6 +5,18 @@ Barrage
 .. contents:: **Versions**:
 
 -------------
+Version 0.3.1
+-------------
+
+``barrage`` improves params handling from the config.
+
+~~~~~~~~~~~~
+Improvements
+~~~~~~~~~~~~
+
+* improve params handling form the config in ``api.py``.
+
+-------------
 Version 0.3.0
 -------------
 

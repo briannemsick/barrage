@@ -68,50 +68,52 @@ def net(vocab_size, embedding_dim, seq_len, num_classes):
 class CustomKerasTokenizerWrapper(RecordTransformer):
     """Wrap a Keras preprocessing tokenizer."""
 
-    def __init__(self, mode, loader, params):
-        super().__init__(mode, loader, params)
+    def __init__(self, mode, loader, input_key, output_key, pad, tokenizer):
+        super().__init__(mode, loader)
 
-        # Required params: tokenizer, input_key, output_key, pad
-        self.tokenizer = Tokenizer(**params["tokenizer"])
-        self.in_key = params["input_key"]
-        self.out_key = params["output_key"]
-        self.pad_params = params["pad"]
+        self.tokenizer = Tokenizer(**tokenizer)
+        self.vocab_size = tokenizer["num_words"]
+        self.pad = pad
+
+        self.input_ind = 0
+        self.output_ind = 1
+        self.input_key = input_key
+        self.output_key = output_key
 
     def fit(self, records):
-
-        # Generator over the text: input data - 0, key - dict key, 0 - remove from array
-        def _text_generator(records):
-            for ii in range(len(records)):
-                yield self.loader.load(records[ii])[0][self.in_key][0]
 
         # Use the generator API
         # Note because we yield a generator over the loader, the data could have
         # been filepaths
-        gen = _text_generator(records)
+        gen = (
+            self.loader.load(records[ii])[self.input_ind][self.input_key][0]
+            for ii in range(len(records))
+        )
         self.tokenizer.fit_on_texts(gen)
 
         # Pass the network params to network builder
         self.network_params = {
-            "vocab_size": self.params["tokenizer"]["num_words"],
-            "seq_len": self.params["pad"]["maxlen"],
+            "vocab_size": self.vocab_size,
+            "seq_len": self.pad["maxlen"],
         }
 
-    def transform(self, record):
+    def transform(self, data_record):
         # Pad sequences is designed to return a slice of a batch (1, n)
         # We need a (n, )
-        record[0][self.in_key] = pad_sequences(
-            self.tokenizer.texts_to_sequences(record[0][self.in_key]), **self.pad_params
-        )[0, :]
+        text = data_record[self.input_ind][self.input_key]
+        transformed_text = self.tokenizer.texts_to_sequences(text)
+        padded_text = pad_sequences(transformed_text, **self.pad)
 
-        return record
+        data_record[self.input_ind][self.input_key] = padded_text[0, :]
+        return data_record
 
     def postprocess(self, score):
         # Threshold 0.5 / Argmax the score
 
         if len(score) == 1:
-            score[self.out_key] = float(score[self.out_key] > 0.5)
+            score[self.output_key] = float(score[self.output_key] > 0.5)
         else:
-            score[self.out_key] = np.argmax(score[self.out_key])
+            score[self.output_key] = np.argmax(score[self.output_key])
 
         return score
 

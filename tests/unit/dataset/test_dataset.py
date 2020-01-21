@@ -164,6 +164,11 @@ def test_dataset_sample_order(
 
 
 class SimpleTransformer(RecordTransformer):
+    def __init__(self, mode, loader, input_key, output_key):
+        super().__init__(mode, loader)
+        self.input_key = input_key
+        self.output_key = output_key
+
     def fit(self, records):
         num_records = len(records)
         data_record = self.loader(records[0])
@@ -172,13 +177,13 @@ class SimpleTransformer(RecordTransformer):
             "num_outputs": len(data_record[1]),
         }
 
-        sum_input = np.zeros_like(data_record[0][self.params["input_key"]])
-        sum_output = np.zeros_like(data_record[1][self.params["output_key"]])
+        sum_input = np.zeros_like(data_record[0][self.input_key])
+        sum_output = np.zeros_like(data_record[1][self.output_key])
 
         for ind in range(num_records):
             data_record = self.loader.load(records[ind])
-            sum_input += data_record[0][self.params["input_key"]]
-            sum_output += data_record[1][self.params["output_key"]]
+            sum_input += data_record[0][self.input_key]
+            sum_output += data_record[1][self.output_key]
 
         mean_input = sum_input / float(num_records)
         mean_output = sum_output / float(num_records)
@@ -187,13 +192,13 @@ class SimpleTransformer(RecordTransformer):
         self.network_params = network_params
 
     def transform(self, data_record):
-        data_record[0][self.params["input_key"]] -= self.obj["mean_input"]
+        data_record[0][self.input_key] -= self.obj["mean_input"]
         if self.mode == RecordMode.TRAIN or self.mode == RecordMode.VALIDATION:
-            data_record[1][self.params["output_key"]] -= self.obj["mean_output"]
+            data_record[1][self.output_key] -= self.obj["mean_output"]
         return data_record
 
     def postprocess(self, score):
-        score[self.params["output_key"]] += self.obj["mean_output"]
+        score[self.output_key] += self.obj["mean_output"]
         return score
 
     def save(self, path):

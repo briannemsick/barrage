@@ -13,9 +13,7 @@ def test_identity_transformer(artifact_path, mode):
     records = pd.DataFrame([{"x_1": 1, "x_2": 0, "y": 0}, {"x_1": 0, "x_2": 1, "y": 1}])
 
     loader = None  # IdentityTransformer doesn't need a loader
-    transformer = IdentityTransformer(mode, loader, {"test": "param"})
-    assert transformer.params == {"test": "param"}
-
+    transformer = IdentityTransformer(mode, loader)
     # Fit
     assert transformer.network_params == {}
     transformer.fit(records)

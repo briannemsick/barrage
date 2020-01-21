@@ -236,7 +236,7 @@ Base Class
 
   from barrage.api import RecordLoader
 
-``RecordLoader`` is an abstract base class with properties ``self.mode`` (``RecordMode``) and ``self.params`` from the config.
+``RecordLoader`` is an abstract base class with property ``self.mode`` (``RecordMode``).
 To write a new ``RecordLoader`` implement the abstract ``load`` method:
 
 .. code-block:: python
@@ -286,7 +286,7 @@ Base Class
   from barrage.api import RecordTransformer
 
 
-``RecordTransformer`` is an abstract base class with properties ``self.mode`` (``RecordMode``) and ``self.params`` from the config.
+``RecordTransformer`` is an abstract base class with property ``self.mode`` (``RecordMode``).
 In addition, it has ``self.loader`` a handle to the ``RecordLoader`` which allows the ``RecordTransformer`` to be agnostic to how
 the data was stored by the user. To write a new ``RecordTransformer`` implement the ``fit``, ``transform``,
 ``postprocess``, ``save``, and ``load`` methods:

@@ -27,12 +27,10 @@ class RecordLoader(abc.ABC):
 
     Args:
         mode: RecordMode, load mode.
-        params: dict.
     """
 
-    def __init__(self, mode: RecordMode, params: dict):
+    def __init__(self, mode: RecordMode, **params):
         self.mode = mode
-        self.params = params
 
     def __call__(self, record: Record) -> DataRecord:
         return self.load(record)
@@ -59,13 +57,11 @@ class RecordTransformer(abc.ABC):
     Args:
         mode: RecordMode, transform mode.
         loader: RecordLoader, record loader.
-        params: dict.
     """
 
-    def __init__(self, mode: RecordMode, loader: RecordLoader, params: dict):
+    def __init__(self, mode: RecordMode, loader: RecordLoader, **params):
         self.mode = mode
         self.loader = loader
-        self.params = params
         self._network_params = {}  # type: dict
 
     @abc.abstractmethod

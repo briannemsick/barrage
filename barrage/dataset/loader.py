@@ -1,3 +1,5 @@
+from typing import Optional
+
 import numpy as np
 
 from barrage import api
@@ -8,29 +10,26 @@ class KeySelector(api.RecordLoader):
 
     Args:
         mode: RecordMode, load mode.
-        params: dict,
-            inputs: dict, {input: key or [keys], ...}
-            outputs: dict, {output: key or [keys], ...}
-            sample_weights: dict or None (OPTIONAL), {output: key, ...}
+        inputs: dict, {input: key or [keys], ...}.
+        outputs: dict, {output: key or [keys], ...}.
+        sample_weights: dict or None (OPTIONAL), {output: key, ...}.
 
     Raises:
-        KeyError/TypeError, illegal params.
+        TypeError, invalid params.
     """
 
-    def __init__(self, mode: api.RecordMode, params: dict):
-        super().__init__(mode, params)
+    def __init__(
+        self,
+        mode: api.RecordMode,
+        inputs: dict,
+        outputs: dict,
+        sample_weights: Optional[dict] = None,
+    ):
+        super().__init__(mode)
 
-        valid_keys = {"inputs", "outputs", "sample_weights"}
-        if not set(params.keys()) <= valid_keys:
-            raise KeyError(f"Key selector accepts the following params: {valid_keys}")
-        if "inputs" not in params:
-            raise KeyError("KeySelector required param 'inputs' missing")
-        if "outputs" not in params:
-            raise KeyError("KeySelector required param 'outputs' missing")
-
-        self.inputs = params["inputs"]
-        self.outputs = params["outputs"]
-        self.sample_weights = params.get("sample_weights", None)
+        self.inputs = inputs
+        self.outputs = outputs
+        self.sample_weights = sample_weights
 
         if not isinstance(self.inputs, dict):
             raise TypeError("KeySelector param 'inputs' must be type dict")

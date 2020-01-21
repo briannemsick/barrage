@@ -23,10 +23,10 @@ def gen_records(num_samples):
 
 
 class Transformer(api.RecordTransformer):
-    def __init__(self, mode, loader, params):
-        super().__init__(mode, loader, params)
-        self.output_key = list(self.loader.params["outputs"].values())[0][0]
-        self.output_name = list(self.loader.params["outputs"].keys())[0]
+    def __init__(self, mode, loader):
+        super().__init__(mode, loader)
+        self.output_key = list(self.loader.outputs.values())[0][0]
+        self.output_name = list(self.loader.outputs.keys())[0]
 
     def fit(self, records):
         class_names = list({record[self.output_key] for record in records})
@@ -34,7 +34,7 @@ class Transformer(api.RecordTransformer):
         self.inverse_class_map = dict(map(reversed, self.class_map.items()))
 
         self.network_params = {
-            "input_dim": len(list(self.loader.params["inputs"].values())[0]),
+            "input_dim": len(list(self.loader.inputs.values())[0]),
             "num_classes": len(class_names),
         }
 
