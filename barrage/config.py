@@ -99,15 +99,15 @@ def _validate_schema(cfg: dict):
             )
 
 
-def _render_params(cfg: dict, params: dict) -> dict:  # noqa C:901
+def _render_params(cfg, params: dict):  # noqa C:901
     """Render a config or config section with params jinja style.
 
     Args:
-        cfg: dict, config.
+        cfg: config.
         params: dict, render params.
 
     Returns:
-        dict, rendered config.
+        config.
     """
 
     def _replace_item(obj, old, new):

@@ -3,8 +3,7 @@ build:
 
 python:
   version: 3.7
-  setup_py_install: true
-  use_system_site-packages: true
+  setup_py_install: False
 
 formats: []
 
