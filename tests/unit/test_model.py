@@ -242,28 +242,6 @@ def test_check_output_names(compiled, cfg_model, net_func, result):
             model.check_output_names(cfg_model, net)
 
 
-# tf.keras API checks
-def test_get_metrics_names_single_output():
-    net = single_output_net(True)
-    result = net.metrics_names
-    expected = ["loss", "mae"]
-    assert result == expected
-
-
-def test_get_metrics_names_multi_output():
-    net = multi_output_net(True)
-    result = net.metrics_names
-    expected = [
-        "loss",
-        "out_1_loss",
-        "out_2_loss",
-        "out_1_mse",
-        "out_1_mae",
-        "out_2_acc",
-    ]
-    assert result == expected
-
-
 @pytest.mark.parametrize("compiled", [True, False])
 def test_get_output_names_single_output(compiled):
     net = single_output_net(compiled)

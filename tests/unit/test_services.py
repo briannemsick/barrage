@@ -37,8 +37,7 @@ def test_create_all_services(artifact_dir):
             "min_delta": 1e-2,
         },
     }
-    metrics_names = ["loss"]
-    result = services.create_all_services(artifact_dir, cfg_services, metrics_names)
+    result = services.create_all_services(artifact_dir, cfg_services)
     assert isinstance(result[0], tf.keras.callbacks.ModelCheckpoint)
     assert isinstance(result[1], tf.keras.callbacks.ModelCheckpoint)
     assert isinstance(result[2], tf.keras.callbacks.TensorBoard)
@@ -49,14 +48,14 @@ def test_create_all_services(artifact_dir):
 
 
 @pytest.mark.parametrize(
-    "cfg_services,metrics_names",
+    "cfg_services",
     [
-        ({"best_checkpoint": {"monitor": "acc", "mode": "max"}}, ["loss", "acc"]),
-        ({"best_checkpoint": {"monitor": "val_acc", "mode": "max"}}, ["loss", "acc"]),
+        {"best_checkpoint": {"monitor": "acc", "mode": "max"}},
+        {"best_checkpoint": {"monitor": "val_acc", "mode": "max"}},
     ],
 )
-def test_create_best_checkpoint(artifact_dir, cfg_services, metrics_names):
-    result = services._create_best_checkpoint(artifact_dir, cfg_services, metrics_names)
+def test_create_best_checkpoint(artifact_dir, cfg_services):
+    result = services._create_best_checkpoint(artifact_dir, cfg_services)
     filepath = os.path.join(artifact_dir, services.BEST_CHECKPOINT, services.BEST_MODEL)
     expected = tf.keras.callbacks.ModelCheckpoint(
         filepath=filepath,
@@ -113,34 +112,28 @@ def test_csv_logger(artifact_dir):
 
 
 @pytest.mark.parametrize(
-    "cfg_services,metrics_names",
+    "cfg_services",
     [
-        (
-            {
-                "train_early_stopping": {
-                    "monitor": "acc",
-                    "mode": "max",
-                    "patience": 5,
-                    "min_delta": 0.1,
-                }
-            },
-            ["loss", "acc"],
-        ),
-        (
-            {
-                "train_early_stopping": {
-                    "monitor": "val_acc",
-                    "mode": "max",
-                    "patience": 5,
-                    "min_delta": 0.1,
-                }
-            },
-            ["loss", "acc"],
-        ),
+        {
+            "train_early_stopping": {
+                "monitor": "acc",
+                "mode": "max",
+                "patience": 5,
+                "min_delta": 0.1,
+            }
+        },
+        {
+            "train_early_stopping": {
+                "monitor": "val_acc",
+                "mode": "max",
+                "patience": 5,
+                "min_delta": 0.1,
+            }
+        },
     ],
 )
-def test_train_early_stopping(artifact_dir, cfg_services, metrics_names):
-    result = services._create_train_early_stopping(cfg_services, metrics_names)
+def test_train_early_stopping(artifact_dir, cfg_services):
+    result = services._create_train_early_stopping(cfg_services)
     expected = tf.keras.callbacks.EarlyStopping(
         monitor="acc", mode="max", min_delta=0.1, patience=5
     )
@@ -149,34 +142,28 @@ def test_train_early_stopping(artifact_dir, cfg_services, metrics_names):
 
 
 @pytest.mark.parametrize(
-    "cfg_services,metrics_names",
+    "cfg_services",
     [
-        (
-            {
-                "validation_early_stopping": {
-                    "monitor": "acc",
-                    "mode": "max",
-                    "patience": 5,
-                    "min_delta": 0.1,
-                }
-            },
-            ["loss", "acc"],
-        ),
-        (
-            {
-                "validation_early_stopping": {
-                    "monitor": "val_acc",
-                    "mode": "max",
-                    "patience": 5,
-                    "min_delta": 0.1,
-                }
-            },
-            ["loss", "acc"],
-        ),
+        {
+            "validation_early_stopping": {
+                "monitor": "acc",
+                "mode": "max",
+                "patience": 5,
+                "min_delta": 0.1,
+            }
+        },
+        {
+            "validation_early_stopping": {
+                "monitor": "val_acc",
+                "mode": "max",
+                "patience": 5,
+                "min_delta": 0.1,
+            }
+        },
     ],
 )
-def test_validation_early_stopping(artifact_dir, cfg_services, metrics_names):
-    result = services._create_validation_early_stopping(cfg_services, metrics_names)
+def test_validation_early_stopping(artifact_dir, cfg_services):
+    result = services._create_validation_early_stopping(cfg_services)
     expected = tf.keras.callbacks.EarlyStopping(
         monitor="val_acc", mode="max", min_delta=0.1, patience=5
     )
@@ -198,34 +185,3 @@ def test_get_resume_checkpoints_filepath(artifact_path):
         artifact_path, services.RESUME_CHECKPOINTS, services.RESUME_MODEL
     )
     assert result == expected
-
-
-@pytest.mark.parametrize(
-    "monitor,metrics_names,to_val,result",
-    [
-        ("loss", ["loss", "acc"], True, "val_loss"),
-        ("acc", ["loss", "acc"], True, "val_acc"),
-        ("val_loss", ["loss", "acc"], True, "val_loss"),
-        ("val_acc", ["loss", "acc"], True, "val_acc"),
-        ("auc", ["loss", "acc"], True, ValueError),
-        ("val_auc", ["loss", "acc"], True, ValueError),
-        ("loss", ["loss", "acc"], False, "loss"),
-        ("acc", ["loss", "acc"], False, "acc"),
-        ("val_loss", ["loss", "acc"], False, "loss"),
-        ("val_acc", ["loss", "acc"], False, "acc"),
-        ("auc", ["loss", "acc"], False, ValueError),
-        ("val_auc", ["loss", "acc"], False, ValueError),
-    ],
-)
-def test_force_monitor_to_mode(monitor, metrics_names, to_val, result):
-    service_name = "unit-test"
-    if isinstance(result, str):
-        out = services._force_monitor_to_mode(
-            monitor, metrics_names, to_val, service_name
-        )
-        assert out == result
-    else:
-        with pytest.raises(result):
-            out = services._force_monitor_to_mode(
-                monitor, metrics_names, to_val, service_name
-            )

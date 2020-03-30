@@ -1,5 +1,3 @@
-from typing import List
-
 from tensorflow.python.keras import callbacks
 from tensorflow.python.keras.optimizer_v2 import learning_rate_schedule, optimizer_v2
 
@@ -45,29 +43,15 @@ def build_optimizer(cfg_solver: dict) -> optimizer_v2.OptimizerV2:
     return opt
 
 
-def create_learning_rate_reducer(
-    cfg_solver: dict, metrics_names: List[str]
-) -> callbacks.ReduceLROnPlateau:
+def create_learning_rate_reducer(cfg_solver: dict) -> callbacks.ReduceLROnPlateau:
     """Create a ReduceLROnPlateau callback.
 
     Args:
         cfg_solver: dict, solver subsection of config.
-        metrics_names: list[str], 'metrics' names.
 
     Returns:
         ReduceLROnPlateau, ReduceLROnPlateau callback.
-
-    Raises:
-        ValueError, monitor not in 'metrics' names.
     """
-    monitor = cfg_solver["learning_rate_reducer"]["monitor"]
-    val_metrics_names = [f"val_{mm}" for mm in metrics_names]
-
-    if (monitor not in metrics_names) and (monitor not in val_metrics_names):
-        raise ValueError(
-            f"monitor: {monitor} not found in model metrics names: "
-            f"{metrics_names + val_metrics_names}"
-        )
     params = cfg_solver["learning_rate_reducer"]
     params["verbose"] = 1
 

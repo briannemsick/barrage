@@ -33,45 +33,43 @@ def make_artifact_dir(artifact_dir: str):
 
 
 def create_all_services(
-    artifact_dir: str, cfg_services: dict, metrics_names: List[str]
+    artifact_dir: str, cfg_services: dict
 ) -> List[callbacks.Callback]:
     """Create all services (callbacks).
 
     Args:
         artifact_dir: str, path to artifact directory.
         cfg_services: dict, services subsection of config.
-        metrics_names: list[str], 'metrics' names.
 
     Returns:
         list[Callback], all services.
     """
     return [
-        _create_best_checkpoint(artifact_dir, cfg_services, metrics_names),
+        _create_best_checkpoint(artifact_dir, cfg_services),
         _create_resume_checkpoint(artifact_dir),
         _create_tensorboard(artifact_dir, cfg_services),
         _create_csv_logger(artifact_dir),
-        _create_train_early_stopping(cfg_services, metrics_names),
-        _create_validation_early_stopping(cfg_services, metrics_names),
+        _create_train_early_stopping(cfg_services),
+        _create_validation_early_stopping(cfg_services),
         callbacks.TerminateOnNaN(),
     ]
 
 
 def _create_best_checkpoint(
-    artifact_dir: str, cfg_services: dict, metrics_names: List[str]
+    artifact_dir: str, cfg_services: dict
 ) -> callbacks.ModelCheckpoint:
     """Create a callback that saves the best model.
 
     Args:
         artifact_dir: str, path to artifact directory.
         cfg_services: dict, services subsection of config.
-        metrics_names: list[str], 'metrics' names.
 
     Returns:
         ModelCheckpoint, callback that saves the best model.
     """
     checkpoint_params = cfg_services["best_checkpoint"]
     checkpoint_params["monitor"] = _force_monitor_to_mode(
-        checkpoint_params["monitor"], metrics_names, True, "best_checkpoint"
+        checkpoint_params["monitor"], True, "best_checkpoint"
     )
     filepath = get_best_checkpoint_filepath(artifact_dir)
     return callbacks.ModelCheckpoint(
@@ -134,43 +132,34 @@ def _create_csv_logger(artifact_dir: str) -> callbacks.CSVLogger:
     return callbacks.CSVLogger(filename=filename, separator=",", append=True)
 
 
-def _create_train_early_stopping(
-    cfg_services: dict, metrics_names: List[str]
-) -> callbacks.EarlyStopping:
+def _create_train_early_stopping(cfg_services: dict,) -> callbacks.EarlyStopping:
     """Create an early stopping callback that monitors a training 'metric'.
 
     Args:
         cfg_services: dict, services subsection of config.
-        metrics_names: list[str], 'metrics' names.
 
     Returns:
         EarlyStopping, EarlyStopping callback that monitors a training 'metric'.
     """
     early_stopping_params = cfg_services["train_early_stopping"]
     early_stopping_params["monitor"] = _force_monitor_to_mode(
-        early_stopping_params["monitor"], metrics_names, False, "train_early_stopping"
+        early_stopping_params["monitor"], False, "train_early_stopping"
     )
     return callbacks.EarlyStopping(**early_stopping_params)
 
 
-def _create_validation_early_stopping(
-    cfg_services: dict, metrics_names: List[str]
-) -> callbacks.EarlyStopping:
+def _create_validation_early_stopping(cfg_services: dict) -> callbacks.EarlyStopping:
     """Create an early stopping callback that monitors a validation 'metric'.
 
     Args:
         cfg_services: dict, services subsection of config.
-        metrics_names: list[str], 'metrics' names.
 
     Returns:
         EarlyStopping, EarlyStopping callback that monitors a validation 'metric'.
     """
     early_stopping_params = cfg_services["validation_early_stopping"]
     early_stopping_params["monitor"] = _force_monitor_to_mode(
-        early_stopping_params["monitor"],
-        metrics_names,
-        True,
-        "validation_early_stopping",
+        early_stopping_params["monitor"], True, "validation_early_stopping"
     )
     return callbacks.EarlyStopping(**early_stopping_params)
 
@@ -199,30 +188,18 @@ def get_resume_checkpoints_filepath(artifact_dir: str) -> str:
     return os.path.join(artifact_dir, RESUME_CHECKPOINTS, RESUME_MODEL)
 
 
-def _force_monitor_to_mode(
-    monitor: str, metrics_names: List[str], to_val: bool, service_name: str
-) -> str:
+def _force_monitor_to_mode(monitor: str, to_val: bool, service_name: str) -> str:
     """Force a monitor quantity to either train or validation mode. For
     example 'loss' - train, 'val_loss' - validation.
 
     Args:
         monitor: str, metric to monitor.
-        metrics_names: list[str], 'metrics' names.
         to_val: bool, validation if true, else false.
         service_name: str, corresponding service (for warning purposes).
 
     Returns:
         str, monitor maybe forced.
-
-    Raises:
-        ValueError, monitor not in 'metrics' names.
     """
-    val_metrics_names = [f"val_{mm}" for mm in metrics_names]
-    if (monitor not in metrics_names) and (monitor not in val_metrics_names):
-        raise ValueError(
-            f"monitor: {monitor} not found in model metrics names: "
-            f"{metrics_names + val_metrics_names}"
-        )
     if to_val and not monitor.startswith("val_"):
         monitor = f"val_{monitor}"
         logger.warning(

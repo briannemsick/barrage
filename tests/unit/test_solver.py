@@ -73,8 +73,7 @@ def test_create_learning_rate_reducer():
             "verbose": 0,
         }
     }
-    metrics_names = ["loss"]
-    result = solver.create_learning_rate_reducer(cfg_solver, metrics_names)
+    result = solver.create_learning_rate_reducer(cfg_solver)
     expected = tf.keras.callbacks.ReduceLROnPlateau(
         monitor="val_loss", mode="min", patience=5, factor=0.1, verbose=1
     )
@@ -93,9 +92,6 @@ def test_create_learning_rate_reducer():
             "factor": 0.1,
         }
     }
-    metrics_names = ["loss"]
-    with pytest.raises(ValueError):
-        solver.create_learning_rate_reducer(cfg_solver, metrics_names)
 
 
 class FakeOptimizer(object):

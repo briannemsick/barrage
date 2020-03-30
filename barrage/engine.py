@@ -67,18 +67,13 @@ class BarrageModel(object):
         opt = solver.build_optimizer(cfg["solver"])
         objective = model.build_objective(cfg["model"])
         net.compile(optimizer=opt, **objective)
-        metrics_names = net.metrics_names
 
         logger.info("Creating services")
-        callbacks = services.create_all_services(
-            self.artifact_dir, cfg["services"], metrics_names
-        )
+        callbacks = services.create_all_services(self.artifact_dir, cfg["services"])
 
         if "learning_rate_reducer" in cfg["solver"]:
             logger.info("Creating learning rate reducer")
-            callbacks.append(
-                solver.create_learning_rate_reducer(cfg["solver"], metrics_names)
-            )
+            callbacks.append(solver.create_learning_rate_reducer(cfg["solver"]))
 
         logger.info("Training network")
         net.summary()
