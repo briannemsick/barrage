@@ -110,26 +110,24 @@ def _render_params(cfg, params: dict):  # noqa C:901
         config.
     """
 
-    def _replace_item(obj, old, new):
+    def _replace_item(obj, mapping):
 
         if isinstance(obj, dict):
             for k, v in obj.items():
                 if isinstance(v, (list, dict)):
-                    obj[k] = _replace_item(v, old, new)
-                elif isinstance(v, str) and obj[k] == old:
-                    obj[k] = new
+                    obj[k] = _replace_item(v, mapping)
+                elif isinstance(v, str) and v in mapping:
+                    obj[k] = mapping[v]
         elif isinstance(obj, list):
             for k, v in enumerate(obj):
                 if isinstance(v, (list, dict)):
-                    obj[k] = _replace_item(v, old, new)
-                elif isinstance(v, str) and obj[k] == old:
-                    obj[k] = new
-
+                    obj[k] = _replace_item(v, mapping)
+                elif isinstance(v, str) and v in mapping:
+                    obj[k] = mapping[v]
         return obj
 
-    for k, v in params.items():
-        # jinja style
-        jk = "{{" + k + "}}"
-        cfg = _replace_item(cfg, jk, v)
+    # jinja style
+    mapping = {"{{" + k + "}}": v for k, v in params.items()}
+    cfg = _replace_item(cfg, mapping)
 
     return cfg

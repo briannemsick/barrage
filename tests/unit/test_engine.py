@@ -69,12 +69,6 @@ def cfg():
                     },
                 },
             },
-            "learning_rate_reducer": {
-                "monitor": "val_loss",
-                "mode": "min",
-                "patience": 5,
-                "factor": 0.1,
-            },
         },
         "services": {
             "best_checkpoint": {"monitor": "val_loss", "mode": "min"},

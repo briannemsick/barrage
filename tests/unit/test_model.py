@@ -29,12 +29,12 @@ def test_build_network():
     with tf.name_scope("result"):
         net = model.build_network(cfg_model, {"input_dim": 6})
         assert isinstance(net, tf.keras.models.Model)
-        result = net.get_config()
+        result = net.to_json()
 
     tf.keras.backend.reset_uids()
 
     with tf.name_scope("expected"):
-        expected = simple_net(dense_dim=7, input_dim=6).get_config()
+        expected = simple_net(dense_dim=7, input_dim=6).to_json()
     assert result == expected
 
     cfg_model = {"network": {"import": "tests.unit.test_model.fake_net"}}
@@ -69,18 +69,18 @@ def test_sequential_from_config():
 
     with tf.name_scope("result1"):
         net = model.build_network(cfg_model, {})
-        result1 = net.get_config()
+        result1 = net.to_json()
 
     tf.keras.backend.reset_uids()
 
     with tf.name_scope("result2"):
         net = model.sequential_from_config(cfg_model["network"]["params"]["layers"])
-        result2 = net.get_config()
+        result2 = net.to_json()
 
     tf.keras.backend.reset_uids()
 
     with tf.name_scope("expected"):
-        expected = simple_net(output_dim=4, dense_dim=5, input_dim=6).get_config()
+        expected = simple_net(output_dim=4, dense_dim=5, input_dim=6).to_json()
 
     assert result1 == expected
     assert result2 == expected
@@ -127,22 +127,20 @@ def test_sequential_from_config_render_params():
 
     with tf.name_scope("result1"):
         net = model.build_network(cfg_model, network_params)
-        result1 = net.get_config()
+        result1 = net.to_json()
 
-    # TODO remove
     tf.keras.backend.reset_uids()
 
     with tf.name_scope("result2"):
         net = model.sequential_from_config(
             cfg_model["network"]["params"]["layers"], **network_params
         )
-        result2 = net.get_config()
+        result2 = net.to_json()
 
-    # TODO remove
     tf.keras.backend.reset_uids()
 
     with tf.name_scope("expected"):
-        expected = simple_net(output_dim=4, dense_dim=5, input_dim=6).get_config()
+        expected = simple_net(output_dim=4, dense_dim=5, input_dim=6).to_json()
 
     assert result1 == expected
     assert result2 == expected

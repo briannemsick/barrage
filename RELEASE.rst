@@ -5,6 +5,11 @@ Barrage
 .. contents:: **Versions**:
 
 -------------
+Version 0.4.0
+-------------
+``barrage`` syncs  with  breaking changes in  ``TensorFlow 2.2.0``.
+
+-------------
 Version 0.3.1
 -------------
 

@@ -72,7 +72,7 @@ Please run ``lint``, ``type hint``, and ``test`` before raising a pull request.
 
 .. code-block:: bash
 
-  python -m pytest --cov=barrage --cov-config=setup.cfg tests/
+  pytest --cov=barrage --cov-config=setup.cfg tests/
 
 To build the ``Read the Docs`` locally:
 
