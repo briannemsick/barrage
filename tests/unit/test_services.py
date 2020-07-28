@@ -66,7 +66,6 @@ def test_create_best_checkpoint(artifact_dir, cfg_services):
         save_weights_only=True,
     )
     assert type(result) == type(expected)
-    assert vars(result) == vars(expected)
 
 
 def test_create_resume_checkpoint(artifact_dir):
@@ -83,7 +82,6 @@ def test_create_resume_checkpoint(artifact_dir):
         save_weights_only=True,
     )
     assert type(result) == type(expected)
-    assert vars(result) == vars(expected)
 
 
 @pytest.mark.parametrize(

@@ -1,4 +1,4 @@
-dist: bionic
+dist: xenial
 language: python
 python:
   - "3.6"
@@ -9,8 +9,8 @@ install:
 script:
   # format, lint, imports, mypy
   - black . --check
-  - flake8
-  - isort --check
+  - flake8 .
+  - isort . --check
   - find . -name "*.py" | xargs mypy
   # tests
   - pytest -vv --cov=barrage --cov-config=setup.cfg tests/

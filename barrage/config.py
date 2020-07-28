@@ -87,7 +87,7 @@ def _validate_schema(cfg: dict):
     num_unique_names = len({o["name"] for o in cfg["model"]["outputs"]})
     if num_outputs != num_unique_names:
         raise jsonschema.ValidationError(
-            f"invalid barrage config: 'outputs' names are not unique"
+            "invalid barrage config: 'outputs' names are not unique"
         )
 
     # Check that multi-output networks have loss weights for each output
