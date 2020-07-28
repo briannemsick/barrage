@@ -59,8 +59,8 @@ Please run ``lint``, ``type hint``, and ``test`` before raising a pull request.
 .. code-block:: bash
 
   black . --check
-  flake8
-  isort --check
+  flake8 .
+  isort . --check
 
 ``type hint``:
 
@@ -80,8 +80,6 @@ To build the ``Read the Docs`` locally:
 
   cd docs
   pip install -r requirements.txt
-  rm barrage.*
-  sphinx-apidoc -f -o . ../barrage
   make html
 
 Upload to ``PyPi`` (**project owner only**):

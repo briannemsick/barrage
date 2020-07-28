@@ -3,7 +3,8 @@ cytoolz
 jsonschema
 numpy
 pandas
-sphinx
+sphinx>3.0
 sphinx-autodoc-typehints
 sphinx-click
 sphinx_rtd_theme
+sphinxcontrib-apidoc

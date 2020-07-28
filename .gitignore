@@ -6,6 +6,7 @@ build/*
 dist/*
 tmp/*
 *.egg-info
+.eggs/
 *html
 
 # Testing
@@ -14,6 +15,9 @@ tmp/*
 .pytest_cache
 .mypy_cache
 _build
+
+# Docs
+docs/api/*
 
 # Package
 artifact*/

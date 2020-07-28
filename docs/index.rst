@@ -14,7 +14,7 @@ Welcome to barrage's documentation!
    config
    dataset
    cli
-   modules
+   api/modules
 
 
 Indices and tables
