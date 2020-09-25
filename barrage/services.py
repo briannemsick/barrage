@@ -132,7 +132,7 @@ def _create_csv_logger(artifact_dir: str) -> callbacks.CSVLogger:
     return callbacks.CSVLogger(filename=filename, separator=",", append=True)
 
 
-def _create_train_early_stopping(cfg_services: dict,) -> callbacks.EarlyStopping:
+def _create_train_early_stopping(cfg_services: dict) -> callbacks.EarlyStopping:
     """Create an early stopping callback that monitors a training 'metric'.
 
     Args:
