@@ -10,7 +10,7 @@ sys.path.insert(0, os.path.abspath(".."))
 project = "barrage"
 copyright = "2019, Brian Nemsick"
 author = "Brian Nemsick"
-version = "0.5.0"
+version = "0.6.0"
 
 # -- General configuration ---------------------------------------------------
 extensions = [

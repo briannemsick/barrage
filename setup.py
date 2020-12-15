@@ -9,7 +9,7 @@ TensorFlow 2.x library using the Tensorflow.Keras API.
 
 setup(
     name="barrage",
-    version="0.5.0",
+    version="0.6.0",
     description="A supervised deep learning tool.",
     long_description=long_description,
     author="Brian Nemsick",
@@ -18,13 +18,12 @@ setup(
     license="MIT",
     python_requires=">=3.6",
     install_requires=[
-        "absl-py>=0.8.0",  # <0.8.0 conflicts with logging module
         "click",
         "cytoolz>=0.9.0",
         "jsonschema>=3.0",
         "numpy",
         "pandas",
-        "tensorflow>=2.3.0, <2.4",
+        "tensorflow>=2.4.0, <2.5",
     ],
     extras_require={
         "tests": [
